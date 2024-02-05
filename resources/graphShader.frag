@@ -45,5 +45,11 @@ void main() {
         }
     }
 
+    // Check for axis lines
+    if (abs(coords.x) < RADIUS || abs(coords.y) < RADIUS) {
+        fragColor = vec4(1.0, 1.0, 1.0, 1.0);
+        return;
+    }
+
     fragColor = vec4(0.0, 0.0, 0.0, 1.0);
 }
