@@ -2,11 +2,12 @@
 
 uniform vec2 xRange;
 uniform vec2 yRange;
+uniform float radiusUV;
 
 in vec2 texCoords;
 out vec4 fragColor;
 
-float RADIUS = 0.0025 * (abs(xRange.x) + abs(xRange.y));
+float RADIUS = radiusUV * (abs(xRange.x) + abs(xRange.y));
 float STEP = RADIUS / 10;
 
 /**
