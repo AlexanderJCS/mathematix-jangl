@@ -6,8 +6,8 @@ uniform vec2 yRange;
 in vec2 texCoords;
 out vec4 fragColor;
 
-float RADIUS = 0.005 * (abs(xRange.x) + abs(xRange.y));
-float STEP = 0.0005 * (abs(xRange.x) + abs(xRange.y));
+float RADIUS = 0.0025 * (abs(xRange.x) + abs(xRange.y));
+float STEP = RADIUS / 10;
 
 /**
  * Map a value from one range to another
