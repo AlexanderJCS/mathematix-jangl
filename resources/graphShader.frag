@@ -35,6 +35,7 @@ void main() {
 
     coords.y = -coords.y;  // flip the graph due to how texture coords are
 
+    // Iterate through a series of x-values and see if the y-value is within range.
     for (float i = coords.x - RADIUS; i < coords.x + RADIUS; i += STEP) {
         float funcVal = i * i * i;
 
