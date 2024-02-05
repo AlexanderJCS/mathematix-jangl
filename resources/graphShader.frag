@@ -44,5 +44,5 @@ void main() {
         }
     }
 
-    fragColor = texture(texSampler, texCoords);
+    fragColor = vec4(0.0, 0.0, 0.0, 1.0);
 }

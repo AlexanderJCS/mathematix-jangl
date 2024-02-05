@@ -1,17 +1,11 @@
 package grapher;
 
-import jangl.color.ColorFactory;
 import jangl.coords.WorldCoords;
 import jangl.graphics.shaders.ShaderProgram;
 import jangl.graphics.shaders.premade.TextureShaderVert;
-import jangl.graphics.textures.Texture;
-import jangl.graphics.textures.TextureBuilder;
 import jangl.shapes.Rect;
 
 public class Graph {
-    private static final Texture TEXTURE = new TextureBuilder()
-            .fill(ColorFactory.fromNorm(0.1f, 0.1f, 0.1f, 1), 500, 500)
-            .toTexture();
     private final Rect rect;
     private final ShaderProgram shader;
 
@@ -28,7 +22,7 @@ public class Graph {
 
     public void draw() {
         this.shader.bind();
-        this.rect.draw(TEXTURE);
+        this.rect.draw();
         this.shader.unbind();
     }
 }
