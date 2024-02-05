@@ -6,7 +6,7 @@ uniform vec2 yRange;
 in vec2 texCoords;
 out vec4 fragColor;
 
-float RANGE = 0.005 * (abs(xRange.x) + abs(xRange.y));
+float RADIUS = 0.005 * (abs(xRange.x) + abs(xRange.y));
 float STEP = 0.0005 * (abs(xRange.x) + abs(xRange.y));
 
 /**
@@ -35,10 +35,10 @@ void main() {
 
     coords.y = -coords.y;  // flip the graph due to how texture coords are
 
-    for (float i = coords.x - RANGE; i < coords.x + RANGE; i += STEP) {
+    for (float i = coords.x - RADIUS; i < coords.x + RADIUS; i += STEP) {
         float funcVal = i * i * i;
 
-        if (abs(coords.y - funcVal) < RANGE) {
+        if (abs(coords.y - funcVal) < RADIUS) {
             fragColor = vec4(1.0, 0.0, 0.0, 1.0);
             return;
         }
