@@ -25,13 +25,27 @@ struct Graph {
 
 uniform Graph graph;
 
+void computeAddNode(Node node) {
+    int sum = 0;
+
+    for (int i = 0; i < node.inputSize; i++) {
+        sum += graph.nodes[i].nodeValue;
+    }
+
+    node.nodeValue = int(sum);  // TODO: make nodeValue a float
+}
+
 /**
  * Computes a node. Modifies the node and stores the output in nodeValue.
  * It assumes that all connections to the node are already computed.
  * @param node The node to compute
  */
-void computeNode(Node node) {
-
+void computeNode(Node node, float x) {
+    if (node.nodeType == 1) {
+        node.nodeValue = int(x);  // TODO: make nodeValue a float, not int
+    } else if (node.nodeType == 4) {
+        computeAddNode(node);
+    }
 }
 
 /**
@@ -70,9 +84,6 @@ float mapRange(float value, vec2 inRange, vec2 outRange) {
 }
 
 void main() {
-    fragColor = vec4(float(graph.nodes[graph.startAt].inputIDs[0]), 0, 0, 1);
-    return;
-
     vec2 coords = vec2(
         mapRange(texCoords.x, vec2(0, 1), xRange),
         mapRange(texCoords.y, vec2(0, 1), yRange)
