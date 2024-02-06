@@ -3,6 +3,7 @@ import grapher.Graph;
 import jangl.Jangl;
 import jangl.io.Window;
 import jangl.io.mouse.Mouse;
+import jangl.time.Clock;
 
 public class Mathematix {
     private final Graph graph;
@@ -27,6 +28,8 @@ public class Mathematix {
         while (Window.shouldRun()) {
             this.draw();
             this.update();
+
+            Window.setTitle("Mathematix - " + Math.round(Clock.getSmoothedFps()) + " FPS");
 
             Jangl.update();
         }

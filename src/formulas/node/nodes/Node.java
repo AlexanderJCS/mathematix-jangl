@@ -122,11 +122,11 @@ public abstract class Node {
         for (Attachment attachment : this.inputAttachments) {
             Connection connection = attachment.getConnection();
 
-            if (connection == null || connection.getIn().node().uniqueID == this.uniqueID) {
+            if (connection == null || connection.getOut().node().uniqueID == this.uniqueID) {
                 continue;
             }
 
-            connection.getIn().node().addGraphVertex(graph);
+            connection.getOut().node().addGraphVertex(graph);
         }
     }
 
