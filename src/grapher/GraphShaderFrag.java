@@ -10,7 +10,7 @@ public class GraphShaderFrag extends FragmentShader {
     private float radiusUV;
 
     public GraphShaderFrag() {
-        super("resources/graphShader.frag");
+        super("resources/shaders/graphShader.frag");
 
         this.xRange = new Vector2f(-10, 10);
         this.yRange = new Vector2f(-10, 10);
