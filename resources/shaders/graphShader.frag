@@ -26,6 +26,15 @@ struct Graph {
 uniform Graph graph;
 
 /**
+ * Computes a node. Modifies the node and stores the output in nodeValue.
+ * It assumes that all connections to the node are already computed.
+ * @param node The node to compute
+ */
+void computeNode(Node node) {
+
+}
+
+/**
  * Evaluates the graph the x-coordinate x
  * @param x The x-coordinate to find the y coordinate of
  */
