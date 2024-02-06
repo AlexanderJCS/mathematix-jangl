@@ -1,5 +1,7 @@
 package formulas.node.nodes.gpugraph;
 
+import org.lwjgl.opengl.GL41;
+
 import java.nio.IntBuffer;
 
 public class GpuGraph {
@@ -36,5 +38,16 @@ public class GpuGraph {
         buffer.get(arr);
 
         return arr;
+    }
+
+    public void uploadUniforms(int programID, String uniformName) {
+        int location = GL41.glGetUniformLocation(programID, uniformName + ".startAt");
+        GL41.glUniform1i(location, this.startAt);
+
+        for (int i = 0; i < 100; i++) {
+            if (this.vertices[i] != null) {
+                this.vertices[i].uploadUniforms(programID, uniformName + ".nodes[" + i + "]");
+            }
+        }
     }
 }

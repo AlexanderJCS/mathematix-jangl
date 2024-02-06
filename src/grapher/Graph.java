@@ -1,5 +1,6 @@
 package grapher;
 
+import formulas.node.nodes.gpugraph.GpuGraph;
 import jangl.coords.WorldCoords;
 import jangl.graphics.shaders.ShaderProgram;
 import jangl.graphics.shaders.premade.TextureShaderVert;
@@ -17,8 +18,8 @@ public class Graph {
         );
     }
 
-    public void setGraphData(int[] data) {
-        ((GraphShaderFrag) this.shader.getFragmentShader()).setGraphData(data);
+    public void setGpuGraph(GpuGraph graph) {
+        ((GraphShaderFrag) this.shader.getFragmentShader()).setGpuGraph(graph);
     }
 
     public void draw() {

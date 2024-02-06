@@ -4,6 +4,7 @@ import formulas.node.Attachment;
 import formulas.node.Connection;
 import formulas.node.nodes.GraphNode;
 import formulas.node.nodes.XNode;
+import formulas.node.nodes.gpugraph.GpuGraph;
 import jangl.coords.WorldCoords;
 import formulas.node.nodes.Node;
 import jangl.io.mouse.Mouse;
@@ -11,7 +12,6 @@ import jangl.io.mouse.MouseEvent;
 import jangl.shapes.Shape;
 import org.lwjgl.glfw.GLFW;
 
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,8 +63,8 @@ public class Formula {
         );
     }
 
-    public int[] getGraphData() {
-        return this.nodes.get(0).getGpuGraph().toIntArray();
+    public GpuGraph getGpuGraph() {
+        return this.nodes.get(0).getGpuGraph();
     }
 
     public List<Node> getNodes() {

@@ -1,16 +1,15 @@
 package grapher;
 
+import formulas.node.nodes.gpugraph.GpuGraph;
 import jangl.graphics.shaders.FragmentShader;
 import org.joml.Vector2f;
 import org.lwjgl.opengl.GL41;
-
-import java.nio.IntBuffer;
 
 public class GraphShaderFrag extends FragmentShader {
     private Vector2f xRange;
     private Vector2f yRange;
     private float radiusUV;
-    private int[] graphData;
+    private GpuGraph gpuGraph;
 
     public GraphShaderFrag() {
         super("C:\\Users\\d8amo\\Desktop\\Programming\\Java\\JANGL-projects\\mathematix\\resources\\shaders/graphShader.frag");
@@ -44,8 +43,8 @@ public class GraphShaderFrag extends FragmentShader {
         this.radiusUV = radiusUV;
     }
 
-    public void setGraphData(int[] buffer) {
-        this.graphData = buffer;
+    public void setGpuGraph(GpuGraph graph) {
+        this.gpuGraph = graph;
     }
 
     @Override
@@ -59,7 +58,6 @@ public class GraphShaderFrag extends FragmentShader {
         location = GL41.glGetUniformLocation(programID, "radiusUV");
         GL41.glUniform1f(location, this.radiusUV);
 
-        location = GL41.glGetUniformLocation(programID, "graph");
-        GL41.glUniform1iv(location, this.graphData);
+        this.gpuGraph.uploadUniforms(programID, "graph");
     }
 }
