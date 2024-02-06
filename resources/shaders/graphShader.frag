@@ -54,23 +54,35 @@ void computeNode(Node node, float x) {
  * @return The y-value for the given x value
  */
 float eval(float x) {
-    int index = graph.startAt;
+    // While condition: repeat until the final value is calculated
+    while (graph.nodes[graph.startAt].nodeValue == 0) {
+        // Start at the starting node
+        int index = graph.startAt;
 
-    while (true) {
-        Node node = graph.nodes[index];
+        while (true) {
+            Node node = graph.nodes[index];
 
-        bool allNodesComputed = false;
-        for (int i = 0; i < node.inputSize; i++) {
-            // If a node is not computed, go to that node
-            if (graph.nodes[node.inputIDs[i]].nodeValue == 0) {
-                index = node.inputIDs[i];
+            // Check if all of the nodes are computed.
+            bool allConnectionsComputed = true;
+            for (int i = 0; i < node.inputSize; i++) {
+
+                // If a connection is not computed, go to that node and restart the process
+                if (graph.nodes[node.inputIDs[i]].nodeValue == 0) {
+                    index = node.inputIDs[i];
+                    allConnectionsComputed = false;
+                    break;
+                }
+            }
+
+            // If all connections are computed, compute this node and restart at the beginning node
+            if (allConnectionsComputed) {
+                computeNode(node, x);
+                break;
             }
         }
-
-        break;
     }
 
-    return 0;  // TODO: return something else
+    return graph.nodes[graph.startAt].nodeValue;
 }
 
 /**
