@@ -2,14 +2,18 @@ package formulas;
 
 import formulas.node.Attachment;
 import formulas.node.Connection;
+import formulas.node.nodes.GraphNode;
+import formulas.node.nodes.XNode;
 import jangl.coords.WorldCoords;
-import formulas.node.Node;
+import formulas.node.nodes.Node;
 import jangl.io.mouse.Mouse;
 import jangl.io.mouse.MouseEvent;
 import jangl.shapes.Shape;
 import org.lwjgl.glfw.GLFW;
 
+import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FormulaGui {
@@ -19,7 +23,8 @@ public class FormulaGui {
     public FormulaGui() {
         this.nodes = new ArrayList<>();
         this.connections = new ArrayList<>();
-        this.nodes.add(new Node(WorldCoords.getMiddle(), 2, 1, "Test"));
+        this.nodes.add(new XNode(new WorldCoords(0.1f, 0.8f)));
+        this.nodes.add(new GraphNode(new WorldCoords(0.4f, 0.8f)));
     }
 
     private List<Attachment> getAttachments() {
@@ -60,6 +65,13 @@ public class FormulaGui {
     }
 
     public void update(List<MouseEvent> mouseEvents) {
+        if (!this.connections.isEmpty()) {
+            IntBuffer graph = this.nodes.get(1).getGpuGraph().toIntBuffer();
+            int[] arr = new int[graph.capacity()];
+            graph.get(arr);
+            System.out.println(Arrays.toString(arr));
+        }
+
         for (MouseEvent event : mouseEvents) {
             if (event.button != GLFW.GLFW_MOUSE_BUTTON_1 || event.action != GLFW.GLFW_RELEASE) {
                 continue;
@@ -78,6 +90,8 @@ public class FormulaGui {
 
             if (connection != null) {
                 this.connections.add(connection);
+                selected.get(0).setConnection(connection);
+                selected.get(1).setConnection(connection);
             }
         }
     }

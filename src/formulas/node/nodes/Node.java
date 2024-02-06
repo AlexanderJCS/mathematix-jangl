@@ -1,5 +1,9 @@
-package formulas.node;
+package formulas.node.nodes;
 
+import formulas.node.Attachment;
+import formulas.node.Connection;
+import formulas.node.nodes.gpugraph.GpuGraph;
+import formulas.node.nodes.gpugraph.GpuGraphVertex;
 import jangl.color.ColorFactory;
 import jangl.coords.WorldCoords;
 import jangl.graphics.font.Font;
@@ -13,17 +17,21 @@ import jangl.shapes.Rect;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Node {
+public abstract class Node {
     private final Rect rect;
     private final List<Attachment> inputAttachments;
     private final List<Attachment> outputAttachments;
     private final Text nodeTitle;
+    public final int nodeType;
+    public final int nodeValue;
+    public final int uniqueID;
+    private static int uniqueIDCounter = 0;
 
     private final ShaderProgram colorShader = new ShaderProgram(
             new ColorShader(ColorFactory.fromNorm(0.4f, 0.4f, 0.4f, 1.0f))
     );
 
-    public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle) {
+    public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle, int nodeType, int nodeValue) {
         this.rect = new Rect(pos, 0.2f, 0.4f);
 
         this.nodeTitle = new TextBuilder(
@@ -41,6 +49,12 @@ public class Node {
 
         this.genAttachments(attachmentsIn, this.inputAttachments, true);
         this.genAttachments(attachmentsOut, this.outputAttachments, false);
+
+        this.nodeType = nodeType;
+        this.nodeValue = nodeValue;
+
+        this.uniqueID = uniqueIDCounter;
+        uniqueIDCounter++;
     }
 
     private void genAttachments(int numAttachments, List<Attachment> attachments, boolean input) {
@@ -70,7 +84,7 @@ public class Node {
             attachment.circle().getTransform().setPos(
                     new WorldCoords(
                             rectCenter.x + rectWidth / 2 * multiplier,
-                            rectCenter.y + rectHeight / 2 * multiplier * i / this.inputAttachments.size()
+                            rectCenter.y + rectHeight / 2 * multiplier * i / attachments.size()
                     )
             );
         }
@@ -97,8 +111,35 @@ public class Node {
         return new ArrayList<>(this.outputAttachments);
     }
 
-    public float getOutput() {
-        // TODO: make this abstract
-        return 0;
+    private void addGraphVertex(GpuGraph graph) {
+        int[] inputIDs = new int[this.inputAttachments.size()];
+        for (int i = 0; i < this.inputAttachments.size(); i++) {
+            inputIDs[i] = this.inputAttachments.get(i).node().uniqueID;
+        }
+
+        graph.addVertex(new GpuGraphVertex(inputIDs, this.nodeType, this.nodeValue), this.uniqueID);
+
+        for (Attachment attachment : this.inputAttachments) {
+            Connection connection = attachment.getConnection();
+
+            if (connection == null || connection.getIn().node().uniqueID == this.uniqueID) {
+                continue;
+            }
+
+            connection.getIn().node().addGraphVertex(graph);
+        }
     }
+
+    public GpuGraph getGpuGraph() {
+        GpuGraph graph = new GpuGraph(this.uniqueID);
+        this.addGraphVertex(graph);
+
+        return graph;
+    }
+
+    public static int getUniqueIDCounter() {
+        return uniqueIDCounter;
+    }
+
+    public abstract float getOutput();
 }

@@ -10,6 +10,21 @@ out vec4 fragColor;
 float RADIUS = radiusUV * (abs(xRange.x) + abs(xRange.y));
 float STEP = RADIUS / 10;
 
+struct Node {
+    int inputIDs[2];
+    int inputSize;
+
+    int nodeType;
+    int nodeValue;
+};
+
+struct Graph {
+    int startAt;
+    Node nodes[100];
+};
+
+uniform Graph graph;
+
 /**
  * Map a value from one range to another
  *

@@ -1,12 +1,7 @@
 package formulas.node;
 
-import jangl.io.mouse.Mouse;
-import jangl.io.mouse.MouseEvent;
+import formulas.node.nodes.Node;
 import jangl.shapes.Circle;
-import jangl.shapes.Shape;
-import org.lwjgl.glfw.GLFW;
-
-import java.util.List;
 
 public class Attachment {
     private final Node node;
