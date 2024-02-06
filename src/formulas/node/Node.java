@@ -89,6 +89,14 @@ public class Node {
         }
     }
 
+    public List<Attachment> getInputAttachments() {
+        return new ArrayList<>(this.inputAttachments);
+    }
+
+    public List<Attachment> getOutputAttachments() {
+        return new ArrayList<>(this.outputAttachments);
+    }
+
     public float getOutput() {
         // TODO: make this abstract
         return 0;
