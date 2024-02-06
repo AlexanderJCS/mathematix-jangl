@@ -10,8 +10,7 @@ public class Graph {
     private final ShaderProgram shader;
 
     public Graph() {
-        this.rect = new Rect(new WorldCoords(1, 0), 1, 1);
-        this.rect.getTransform().setPos(WorldCoords.getMiddle());
+        this.rect = new Rect(new WorldCoords(WorldCoords.getTopRight().x - 1, 1), 1, 1);
         this.shader = new ShaderProgram(
                 new TextureShaderVert(),
                 new GraphShaderFrag()
