@@ -4,7 +4,7 @@ import jangl.coords.WorldCoords;
 
 public class GraphNode extends Node {
     public GraphNode(WorldCoords pos) {
-        super(pos, 1, 0, "GpuGraph", 2, 0);
+        super(pos, 1, 0, "Graph", 2, 0);
     }
 
     @Override
