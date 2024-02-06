@@ -15,7 +15,7 @@ struct Node {
     int inputSize;
 
     int nodeType;
-    int nodeValue;
+    float nodeValue;
 };
 
 struct Graph {
@@ -26,13 +26,13 @@ struct Graph {
 uniform Graph graph;
 
 void computeAddNode(Node node) {
-    int sum = 0;
+    float sum = 0;
 
     for (int i = 0; i < node.inputSize; i++) {
         sum += graph.nodes[i].nodeValue;
     }
 
-    node.nodeValue = int(sum);  // TODO: make nodeValue a float
+    node.nodeValue = sum;
 }
 
 /**
@@ -42,7 +42,7 @@ void computeAddNode(Node node) {
  */
 void computeNode(Node node, float x) {
     if (node.nodeType == 1) {
-        node.nodeValue = int(x);  // TODO: make nodeValue a float, not int
+        node.nodeValue = x;
     } else if (node.nodeType == 4) {
         computeAddNode(node);
     }
@@ -55,7 +55,7 @@ void computeNode(Node node, float x) {
  */
 float eval(float x) {
     // While condition: repeat until the final value is calculated
-    while (graph.nodes[graph.startAt].nodeValue == 0) {
+    while (graph.nodes[graph.startAt].nodeValue == 0) {  // TODO: boolean to check if it is computed
         // Start at the starting node
         int index = graph.startAt;
 
