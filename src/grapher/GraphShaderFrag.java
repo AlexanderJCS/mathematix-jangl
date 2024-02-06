@@ -12,7 +12,7 @@ public class GraphShaderFrag extends FragmentShader {
     private GpuGraph gpuGraph;
 
     public GraphShaderFrag() {
-        super("C:\\Users\\d8amo\\Desktop\\Programming\\Java\\JANGL-projects\\mathematix\\resources\\shaders/graphShader.frag");
+        super("resources/shaders/graphShader.frag");
 
         this.xRange = new Vector2f(-10, 10);
         this.yRange = new Vector2f(-10, 10);
