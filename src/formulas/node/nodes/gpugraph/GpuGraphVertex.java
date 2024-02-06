@@ -1,9 +1,6 @@
 package formulas.node.nodes.gpugraph;
 
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL41;
-
-import java.nio.IntBuffer;
 
 public class GpuGraphVertex {
     private final int[] inputIDs;
@@ -33,17 +30,5 @@ public class GpuGraphVertex {
 
         location = GL41.glGetUniformLocation(programID, uniformName + ".nodeValue");
         GL41.glUniform1i(location, this.nodeValue);
-    }
-
-    public IntBuffer toIntBuffer() {
-        IntBuffer buffer = BufferUtils.createIntBuffer(this.inputIDs.length + 3);
-        buffer.put(this.inputIDs);
-        buffer.put(this.inputIDs.length);
-
-        buffer.put(this.nodeType);
-        buffer.put(this.nodeValue);
-
-        buffer.flip();
-        return buffer;
     }
 }
