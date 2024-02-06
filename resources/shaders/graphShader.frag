@@ -15,7 +15,7 @@ struct Node {
     int inputSize;
 
     int nodeType;
-    int nodeValue;
+    float nodeValue;
 };
 
 struct Graph {
@@ -24,6 +24,66 @@ struct Graph {
 };
 
 uniform Graph graph;
+
+void computeAddNode(Node node) {
+    float sum = 0;
+
+    for (int i = 0; i < node.inputSize; i++) {
+        sum += graph.nodes[i].nodeValue;
+    }
+
+    node.nodeValue = sum;
+}
+
+/**
+ * Computes a node. Modifies the node and stores the output in nodeValue.
+ * It assumes that all connections to the node are already computed.
+ * @param node The node to compute
+ */
+void computeNode(Node node, float x) {
+    if (node.nodeType == 1) {
+        node.nodeValue = x;
+    } else if (node.nodeType == 4) {
+        computeAddNode(node);
+    }
+}
+
+/**
+ * Evaluates the graph the y-coordinate for the x-coordinate, x
+ * @param x The x-coordinate to find the y coordinate of
+ * @return The y-value for the given x value
+ */
+float eval(float x) {
+    // While condition: repeat until the final value is calculated
+    while (graph.nodes[graph.startAt].nodeValue == 0) {  // TODO: boolean to check if it is computed
+        // Start at the starting node
+        int index = graph.startAt;
+
+        while (true) {
+            Node node = graph.nodes[index];
+
+            // Check if all of the nodes are computed.
+            bool allConnectionsComputed = true;
+            for (int i = 0; i < node.inputSize; i++) {
+
+                // If a connection is not computed, go to that node and restart the process
+                if (graph.nodes[node.inputIDs[i]].nodeValue == 0) {
+                    index = node.inputIDs[i];
+                    allConnectionsComputed = false;
+                    break;
+                }
+            }
+
+            // If all connections are computed, compute this node and restart at the beginning node
+            if (allConnectionsComputed) {
+                computeNode(node, x);
+                break;
+            }
+        }
+    }
+
+    return graph.nodes[graph.startAt].nodeValue;
+}
 
 /**
  * Map a value from one range to another
@@ -44,9 +104,6 @@ float mapRange(float value, vec2 inRange, vec2 outRange) {
 }
 
 void main() {
-    fragColor = vec4(float(graph.nodes[graph.startAt].inputIDs[0]), 0, 0, 1);
-    return;
-
     vec2 coords = vec2(
         mapRange(texCoords.x, vec2(0, 1), xRange),
         mapRange(texCoords.y, vec2(0, 1), yRange)

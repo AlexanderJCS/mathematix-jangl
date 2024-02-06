@@ -23,7 +23,7 @@ public abstract class Node {
     private final List<Attachment> outputAttachments;
      private final Text nodeTitle;
     public final int nodeType;
-    public final int nodeValue;
+    public final float nodeValue;
     public final int uniqueID;
     private static int uniqueIDCounter = 0;
 
@@ -31,7 +31,7 @@ public abstract class Node {
             new ColorShader(ColorFactory.fromNorm(0.4f, 0.4f, 0.4f, 1.0f))
     );
 
-    public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle, int nodeType, int nodeValue) {
+    public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle, int nodeType, float nodeValue) {
         this.rect = new Rect(pos, 0.2f, 0.4f);
 
         this.nodeTitle = new TextBuilder(
