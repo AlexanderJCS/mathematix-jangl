@@ -15,8 +15,8 @@ import java.util.List;
 
 public class Node {
     private final Rect rect;
-    private final List<Circle> inputAttachments;
-    private final List<Circle> outputAttachments;
+    private final List<Attachment> inputAttachments;
+    private final List<Attachment> outputAttachments;
     private final Text nodeTitle;
 
     private final ShaderProgram colorShader = new ShaderProgram(
@@ -39,43 +39,38 @@ public class Node {
         this.inputAttachments = new ArrayList<>();
         this.outputAttachments = new ArrayList<>();
 
-        this.genAttachments(attachmentsIn, this.inputAttachments);
-        this.genAttachments(attachmentsOut, this.outputAttachments);
+        this.genAttachments(attachmentsIn, this.inputAttachments, true);
+        this.genAttachments(attachmentsOut, this.outputAttachments, false);
     }
 
-    private void genAttachments(int numAttachments, List<Circle> list) {
+    private void genAttachments(int numAttachments, List<Attachment> attachments, boolean input) {
         for (int i = 0; i < numAttachments; i++) {
-            list.add(
-                    new Circle(new WorldCoords(0, 0), 0.02f, 16)
-            );
-        }
-
-        this.updateAttachmentLocation();
-    }
-
-    private void updateAttachmentLocation() {
-        WorldCoords rectCenter = this.rect.getTransform().getCenter();
-        float rectWidth = this.rect.getWidth();
-        float rectHeight = this.rect.getHeight();
-
-        for (int i = 0; i < this.inputAttachments.size(); i++) {
-            Circle attachment = this.inputAttachments.get(i);
-
-            attachment.getTransform().setPos(
-                    new WorldCoords(
-                            rectCenter.x - rectWidth / 2,
-                            rectCenter.y - rectHeight / 2 * i / this.inputAttachments.size()
+            attachments.add(
+                    new Attachment(
+                            this,
+                            new Circle(new WorldCoords(0, 0), 0.02f, 16),
+                            input
                     )
             );
         }
 
-        for (int i = 0; i < this.outputAttachments.size(); i++) {
-            Circle attachment = this.outputAttachments.get(i);
+        this.updateAttachmentLocations(attachments, input);
+    }
 
-            attachment.getTransform().setPos(
+    private void updateAttachmentLocations(List<Attachment> attachments, boolean input) {
+        WorldCoords rectCenter = this.rect.getTransform().getCenter();
+        float rectWidth = this.rect.getWidth();
+        float rectHeight = this.rect.getHeight();
+
+        for (int i = 0; i < attachments.size(); i++) {
+            Attachment attachment = attachments.get(i);
+
+            int multiplier = input ? -1 : 1;
+
+            attachment.circle().getTransform().setPos(
                     new WorldCoords(
-                            rectCenter.x + rectWidth / 2,
-                            rectCenter.y + rectHeight / 2 * i / this.outputAttachments.size()
+                            rectCenter.x + rectWidth / 2 * multiplier,
+                            rectCenter.y + rectHeight / 2 * multiplier * i / this.inputAttachments.size()
                     )
             );
         }
@@ -85,12 +80,17 @@ public class Node {
         this.rect.draw(this.colorShader);
         this.nodeTitle.draw();
 
-        for (Circle attachment : this.inputAttachments) {
+        for (Attachment attachment : this.inputAttachments) {
             attachment.draw();
         }
 
-        for (Circle attachment : this.outputAttachments) {
+        for (Attachment attachment : this.outputAttachments) {
             attachment.draw();
         }
+    }
+
+    public float getOutput() {
+        // TODO: make this abstract
+        return 0;
     }
 }
