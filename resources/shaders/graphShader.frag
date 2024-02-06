@@ -44,7 +44,7 @@ float mapRange(float value, vec2 inRange, vec2 outRange) {
 }
 
 void main() {
-    fragColor = vec4(float(graph.nodes[graph.startAt].inputSize), 0, 0, 1);
+    fragColor = vec4(float(graph.nodes[graph.startAt].inputIDs[0]), 0, 0, 1);
     return;
 
     vec2 coords = vec2(

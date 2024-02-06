@@ -114,11 +114,14 @@ public abstract class Node {
     private void addGraphVertex(GpuGraph graph) {
         int[] inputIDs = new int[this.inputAttachments.size()];
         for (int i = 0; i < this.inputAttachments.size(); i++) {
-            inputIDs[i] = this.inputAttachments.get(i).node().uniqueID;
+            Connection connection = this.inputAttachments.get(i).getConnection();
+
+            inputIDs[i] = connection == null ? -1 : connection.getOut().node().uniqueID;
         }
 
         graph.addVertex(new GpuGraphVertex(inputIDs, this.nodeType, this.nodeValue), this.uniqueID);
 
+        // TODO: this code is iterating over all the attachments for a second time. some optimization can be done
         for (Attachment attachment : this.inputAttachments) {
             Connection connection = attachment.getConnection();
 
