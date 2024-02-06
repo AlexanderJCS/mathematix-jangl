@@ -26,6 +26,23 @@ struct Graph {
 uniform Graph graph;
 
 /**
+ * Evaluates the graph the x-coordinate x
+ * @param x The x-coordinate to find the y coordinate of
+ */
+float evalGraph(float x) {
+    int index = graph.startAt;
+
+    while (true) {
+        Node node = graph.nodes[index];
+        for (int i = 0; i < node.inputSize; i++) {
+            if (graph.nodes[node.inputIDs[i]] != 0) {
+                continue;
+            }
+        }
+    }
+}
+
+/**
  * Map a value from one range to another
  *
  * @param value The value to map
