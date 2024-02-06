@@ -57,9 +57,12 @@ float evalGraph(float x) {
 
     while (true) {
         Node node = graph.nodes[index];
+
+        bool allNodesComputed = false;
         for (int i = 0; i < node.inputSize; i++) {
-            if (graph.nodes[node.inputIDs[i]] != 0) {
-                continue;
+            // If a node is not computed, go to that node
+            if (graph.nodes[node.inputIDs[i]] == 0) {
+                index = node.inputIDs[i];
             }
         }
     }
