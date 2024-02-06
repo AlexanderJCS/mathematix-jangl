@@ -21,7 +21,7 @@ public abstract class Node {
     private final Rect rect;
     private final List<Attachment> inputAttachments;
     private final List<Attachment> outputAttachments;
-    private final Text nodeTitle;
+    // private final Text nodeTitle;
     public final int nodeType;
     public final int nodeValue;
     public final int uniqueID;
@@ -34,14 +34,14 @@ public abstract class Node {
     public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle, int nodeType, int nodeValue) {
         this.rect = new Rect(pos, 0.2f, 0.4f);
 
-        this.nodeTitle = new TextBuilder(
-                new Font("resources/font/arial.fnt", "resources/font/arial.png"),
-                nodeTitle
-        )
-                .setCoords(new WorldCoords(pos.x, pos.y))
-                .setWrapWidth(this.rect.getWidth())
-                .setYHeight(0.05f)
-                .toText();
+//        this.nodeTitle = new TextBuilder(
+//                new Font("resources/font/arial.fnt", "resources/font/arial.png"),
+//                nodeTitle
+//        )
+//                .setCoords(new WorldCoords(pos.x, pos.y))
+//                .setWrapWidth(this.rect.getWidth())
+//                .setYHeight(0.05f)
+//                .toText();
 
         // Both lists must be initialized before calling genAttachments
         this.inputAttachments = new ArrayList<>();
@@ -92,7 +92,7 @@ public abstract class Node {
 
     public void draw() {
         this.rect.draw(this.colorShader);
-        this.nodeTitle.draw();
+        // this.nodeTitle.draw();
 
         for (Attachment attachment : this.inputAttachments) {
             attachment.draw();

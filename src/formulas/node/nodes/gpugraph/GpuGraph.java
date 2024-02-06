@@ -15,20 +15,26 @@ public class GpuGraph {
         this.vertices[index] = vertex;
     }
 
-    public IntBuffer toIntBuffer() {
-        IntBuffer buffer = IntBuffer.allocate(this.vertices.length * 4 + 1);
+    public int[] toIntArray() {
+        // TODO: clean this up
+        IntBuffer buffer = IntBuffer.allocate(this.vertices.length * 5 + 1);
 
         buffer.put(this.startAt);
 
         for (int i = 0; i < 100; i++) {
             if (this.vertices[i] != null) {
+                System.out.println(this.vertices[i].toIntBuffer());
                 buffer.put(this.vertices[i].toIntBuffer());
             } else {
-                buffer.put(new int[]{0, 0, 0, 0});
+                buffer.put(new int[]{0, 0, 0, 0, 0});
             }
         }
 
         buffer.flip();
-        return buffer;
+
+        int[] arr = new int[buffer.capacity()];
+        buffer.get(arr);
+
+        return arr;
     }
 }

@@ -18,8 +18,10 @@ public class GpuGraphVertex {
     }
 
     public IntBuffer toIntBuffer() {
-        IntBuffer buffer = BufferUtils.createIntBuffer(this.inputIDs.length + 2);
+        IntBuffer buffer = BufferUtils.createIntBuffer(this.inputIDs.length + 3);
         buffer.put(this.inputIDs);
+        buffer.put(this.inputIDs.length);
+
         buffer.put(this.nodeType);
         buffer.put(this.nodeValue);
 

@@ -17,6 +17,10 @@ public class Graph {
         );
     }
 
+    public void setGraphData(int[] data) {
+        ((GraphShaderFrag) this.shader.getFragmentShader()).setGraphData(data);
+    }
+
     public void draw() {
         this.shader.bind();
         this.rect.draw();

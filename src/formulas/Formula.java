@@ -13,18 +13,17 @@ import org.lwjgl.glfw.GLFW;
 
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class FormulaGui {
+public class Formula {
     private final List<Node> nodes;
     private final List<Connection> connections;
 
-    public FormulaGui() {
+    public Formula() {
         this.nodes = new ArrayList<>();
         this.connections = new ArrayList<>();
-        this.nodes.add(new XNode(new WorldCoords(0.1f, 0.8f)));
         this.nodes.add(new GraphNode(new WorldCoords(0.4f, 0.8f)));
+        this.nodes.add(new XNode(new WorldCoords(0.1f, 0.8f)));
     }
 
     private List<Attachment> getAttachments() {
@@ -64,14 +63,15 @@ public class FormulaGui {
         );
     }
 
-    public void update(List<MouseEvent> mouseEvents) {
-        if (!this.connections.isEmpty()) {
-            IntBuffer graph = this.nodes.get(1).getGpuGraph().toIntBuffer();
-            int[] arr = new int[graph.capacity()];
-            graph.get(arr);
-            System.out.println(Arrays.toString(arr));
-        }
+    public int[] getGraphData() {
+        return this.nodes.get(0).getGpuGraph().toIntArray();
+    }
 
+    public List<Node> getNodes() {
+        return new ArrayList<>(this.nodes);
+    }
+
+    public void update(List<MouseEvent> mouseEvents) {
         for (MouseEvent event : mouseEvents) {
             if (event.button != GLFW.GLFW_MOUSE_BUTTON_1 || event.action != GLFW.GLFW_RELEASE) {
                 continue;
