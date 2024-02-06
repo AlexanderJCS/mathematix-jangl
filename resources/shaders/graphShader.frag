@@ -49,10 +49,11 @@ void computeNode(Node node, float x) {
 }
 
 /**
- * Evaluates the graph the x-coordinate x
+ * Evaluates the graph the y-coordinate for the x-coordinate, x
  * @param x The x-coordinate to find the y coordinate of
+ * @return The y-value for the given x value
  */
-float evalGraph(float x) {
+float eval(float x) {
     int index = graph.startAt;
 
     while (true) {
@@ -61,11 +62,15 @@ float evalGraph(float x) {
         bool allNodesComputed = false;
         for (int i = 0; i < node.inputSize; i++) {
             // If a node is not computed, go to that node
-            if (graph.nodes[node.inputIDs[i]] == 0) {
+            if (graph.nodes[node.inputIDs[i]].nodeValue == 0) {
                 index = node.inputIDs[i];
             }
         }
+
+        break;
     }
+
+    return 0;  // TODO: return something else
 }
 
 /**
