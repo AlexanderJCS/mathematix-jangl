@@ -8,11 +8,12 @@ public class Line {
 
     public Line(WorldCoords start, WorldCoords end, float thickness) {
         this.rect = new Rect(
-                midpoint(start, end),
+                new WorldCoords(0, 0),
                 length(start, end),
                 thickness
         );
 
+        this.rect.getTransform().setPos(midpoint(start, end));
         this.rect.getTransform().rotate(angle(start, end));
     }
 
@@ -35,6 +36,6 @@ public class Line {
     }
 
     public void draw() {
-
+        this.rect.draw();
     }
 }

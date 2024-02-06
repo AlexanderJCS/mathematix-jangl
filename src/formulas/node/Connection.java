@@ -14,7 +14,7 @@ public class Connection {
         this.line = new Line(
                 this.out.circle().getTransform().getCenter(),
                 this.in.circle().getTransform().getCenter(),
-                0.05f
+                0.01f
         );
     }
 
