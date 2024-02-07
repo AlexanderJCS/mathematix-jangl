@@ -28,6 +28,14 @@ public class Formula {
         this.nodes.add(new XNode(new WorldCoords(0.1f, 0.45f)));
     }
 
+    public GpuGraph getGpuGraph() {
+        return this.nodes.get(0).getGpuGraph();
+    }
+
+    public List<Node> getNodes() {
+        return new ArrayList<>(this.nodes);
+    }
+
     private List<Attachment> getAttachments() {
         List<Attachment> attachments = new ArrayList<>();
 
@@ -37,25 +45,6 @@ public class Formula {
         }
 
         return attachments;
-    }
-
-    private Connection makeConnection(Attachment attachment1, Attachment attachment2) {
-        if (attachment1.isInput() == attachment2.isInput()) {
-            return null;
-        }
-
-        return new Connection(
-                attachment1.isInput() ? attachment2 : attachment1,
-                attachment2.isInput() ? attachment2 : attachment1
-        );
-    }
-
-    public GpuGraph getGpuGraph() {
-        return this.nodes.get(0).getGpuGraph();
-    }
-
-    public List<Node> getNodes() {
-        return new ArrayList<>(this.nodes);
     }
 
     private void selectAttachment(List<MouseEvent> mouseEvents) {
@@ -79,7 +68,20 @@ public class Formula {
         }
     }
 
+    private void makeConnection(Attachment attachment) {
+        if (this.selected == null || this.selected.isInput() == attachment.isInput()) {
+            this.selected = null;
+            return;
+        }
 
+        Connection connection = new Connection(
+                this.selected.isInput() ? attachment : this.selected,
+                attachment.isInput() ? attachment : this.selected
+        );
+
+        this.selected.setConnection(connection);
+        attachment.setConnection(connection);
+    }
 
     private void performAction(Attachment attachment) {
         if (this.selected == null) {
@@ -87,16 +89,16 @@ public class Formula {
             return;
         }
 
-        if (this.selected.isInput() != attachment.isInput()) {
-            Connection connection = this.makeConnection(this.selected, attachment);
-
-            if (connection != null) {
-                this.selected.setConnection(connection);
-                attachment.setConnection(connection);
-            }
+        if (this.selected == attachment) {
+            this.selected = null;
+            return;
         }
 
-        this.selected = null;
+        if (this.selected.getConnection() == null && attachment.getConnection() == null) {
+            this.makeConnection(attachment);
+        } else {
+            this.selected = null;
+        }
     }
 
     public void update(List<MouseEvent> mouseEvents) {
