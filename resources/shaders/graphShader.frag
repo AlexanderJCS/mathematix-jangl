@@ -51,8 +51,11 @@ void computeGraphNode(Node node, int nodeIndex, float x) {
 }
 
 void computeSubNode(Node node, int nodeIndex, float x) {
-    float diff = nodeResults[node.inputIDs[0]] - nodeResults[node.inputIDs[1]];
-    nodeResults[nodeIndex] = diff;
+    nodeResults[nodeIndex] = nodeResults[node.inputIDs[0]] - nodeResults[node.inputIDs[1]];;
+}
+
+void computeMulNode(Node node, int nodeIndex, float x) {
+    nodeResults[nodeIndex] = nodeResults[node.inputIDs[0]] * nodeResults[node.inputIDs[1]];;
 }
 
 /**
@@ -72,9 +75,23 @@ float computeNode(Node node, int nodeIndex, float x) {
         computeAddNode(node, nodeIndex, x);
     } else if (node.nodeType == 4) {
         computeSubNode(node, nodeIndex, x);
+    } else if (node.nodeType == 5) {
+        computeMulNode(node, nodeIndex, x);
     }
 
     return nodeResults[nodeIndex];
+}
+
+void copyNodeResults() {
+    for (int i = 0; i < nodeResults.length(); i++) {
+        nodeResults[i] = graph.nodes[i].nodeValue;
+    }
+}
+
+void copyNodeComputed() {
+    for (int i = 0; i < nodeComputed.length(); i++) {
+        nodeComputed[i] = graph.nodes[i].computed;
+    }
 }
 
 /**
@@ -83,6 +100,8 @@ float computeNode(Node node, int nodeIndex, float x) {
  * @return The y-value for the given x value
  */
 float eval(float x) {
+    copyNodeComputed();
+
     // While condition: repeat until the final value is calculated
     while (!nodeComputed[graph.startAt]) {
         // Start at the starting node
@@ -133,20 +152,13 @@ float mapRange(float value, vec2 inRange, vec2 outRange) {
     return mappedValue;
 }
 
-void copyNodeResultsAndComputed() {
-    for (int i = 0; i < nodeResults.length(); i++) {
-        nodeResults[i] = graph.nodes[i].nodeValue;
-        nodeComputed[i] = graph.nodes[i].computed;
-    }
-}
-
 void main() {
     vec2 coords = vec2(
         mapRange(texCoords.x, vec2(0, 1), xRange),
         mapRange(texCoords.y, vec2(0, 1), yRange)
     );
 
-    copyNodeResultsAndComputed();
+    copyNodeResults();
 
     coords.y = -coords.y;  // flip the graph due to how texture coords are
 

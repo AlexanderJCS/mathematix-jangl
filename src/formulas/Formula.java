@@ -24,7 +24,7 @@ public class Formula {
 
         this.nodes = new ArrayList<>();
         this.nodes.add(new GraphNode(new WorldCoords(0.7f, 0.8f)));
-        this.nodes.add(new SubNode(new WorldCoords(0.4f, 0.8f)));
+        this.nodes.add(new MulNode(new WorldCoords(0.4f, 0.8f)));
         this.nodes.add(new XNode(new WorldCoords(0.1f, 0.95f)));
         this.nodes.add(new XNode(new WorldCoords(0.1f, 0.45f)));
     }
