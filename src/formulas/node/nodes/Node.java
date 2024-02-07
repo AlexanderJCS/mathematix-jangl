@@ -55,7 +55,7 @@ public class Node {
     }
 
     public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle, int nodeType, Float nodeValue) {
-        this.rect = new Rect(pos, 0.2f, 0.4f);
+        this.rect = new Rect(pos, 0.2f, 0.3f);
         this.dragBar = new Rect(pos, this.rect.getWidth(), this.rect.getWidth() / 5);
         this.closeBox = new Rect(new WorldCoords(pos.x + this.dragBar.getWidth() - this.dragBar.getHeight(), pos.y), this.dragBar.getHeight(), this.dragBar.getHeight());
         this.useCloseBox = true;
