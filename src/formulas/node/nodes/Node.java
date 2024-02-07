@@ -112,11 +112,24 @@ public class Node {
     }
 
     private void addGraphVertex(GpuGraph graph) {
-        int[] inputIDs = new int[this.inputAttachments.size()];
-        for (int i = 0; i < this.inputAttachments.size(); i++) {
-            Connection connection = this.inputAttachments.get(i).getConnection();
+        int connections = 0;
+        for (Attachment attachment : this.inputAttachments) {
+            if (attachment.getConnection() != null) {
+                connections++;
+            }
+        }
 
-            inputIDs[i] = connection == null ? -1 : connection.getOut().node().uniqueID;
+        int[] inputIDs = new int[connections];
+        int index = 0;
+        for (Attachment inputAttachment : this.inputAttachments) {
+            Connection connection = inputAttachment.getConnection();
+
+            if (connection == null) {
+                continue;
+            }
+
+            inputIDs[index] = connection.getOut().node().uniqueID;
+            index++;
         }
 
         graph.addVertex(new GpuGraphVertex(inputIDs, this.nodeType, this.nodeValue), this.uniqueID);

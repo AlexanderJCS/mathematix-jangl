@@ -27,27 +27,56 @@ struct Graph {
 
 uniform Graph graph;
 
-void computeAddNode(Node node) {
+float nodeResults[100];
+bool nodeComputed[100];
+
+float getNodeResult(int index, float x) {
+    // If the node is x, return x
+    if (graph.nodes[index].nodeType == 1) {
+        return x;
+    }
+
+    return nodeResults[index];
+}
+
+void computeAddNode(Node node, int nodeIndex, float x) {
     float sum = 0;
 
     for (int i = 0; i < node.inputSize; i++) {
-        sum += graph.nodes[i].nodeValue;
+        sum += getNodeResult(node.inputIDs[i], x);
     }
 
-    node.nodeValue = sum;
+    nodeResults[nodeIndex] = sum;
+}
+
+void computeGraphNode(Node node, int nodeIndex, float x) {
+    // If there is no connection, exit instantly
+    if (node.inputSize == 0) {
+        nodeResults[nodeIndex] = 0;
+        return;
+    }
+
+    nodeResults[nodeIndex] = getNodeResult(node.inputIDs[0], x);
 }
 
 /**
  * Computes a node. Modifies the node and stores the output in nodeValue.
  * It assumes that all connections to the node are already computed.
  * @param node The node to compute
+ * @return the computed value of the node
  */
-void computeNode(Node node, float x) {
-    if (node.nodeType == 1) {
-        node.nodeValue = x;
+float computeNode(Node node, int nodeIndex, float x) {
+    nodeComputed[nodeIndex] = true;
+
+    if (node.nodeType == 0) {
+        computeGraphNode(node, nodeIndex, x);
+    } else if (node.nodeType == 1) {
+        nodeResults[nodeIndex] = x;
     } else if (node.nodeType == 4) {
-        computeAddNode(node);
+        computeAddNode(node, nodeIndex, x);
     }
+
+    return nodeResults[nodeIndex];
 }
 
 /**
@@ -57,7 +86,7 @@ void computeNode(Node node, float x) {
  */
 float eval(float x) {
     // While condition: repeat until the final value is calculated
-    while (graph.nodes[graph.startAt].nodeValue == 0) {  // TODO: boolean to check if it is computed
+    while (!nodeComputed[graph.startAt]) {
         // Start at the starting node
         int index = graph.startAt;
 
@@ -69,8 +98,9 @@ float eval(float x) {
             for (int i = 0; i < node.inputSize; i++) {
 
                 // If a connection is not computed, go to that node and restart the process
-                if (graph.nodes[node.inputIDs[i]].nodeValue == 0) {
+                if (!nodeComputed[node.inputIDs[i]]) {
                     index = node.inputIDs[i];
+                    node = graph.nodes[index];  // technically not needed but it's nice-to-have just in case
                     allConnectionsComputed = false;
                     break;
                 }
@@ -78,13 +108,13 @@ float eval(float x) {
 
             // If all connections are computed, compute this node and restart at the beginning node
             if (allConnectionsComputed) {
-                computeNode(node, x);
+                computeNode(node, index, x);
                 break;
             }
         }
     }
 
-    return graph.nodes[graph.startAt].nodeValue;
+    return nodeResults[graph.startAt];
 }
 
 /**
@@ -105,13 +135,27 @@ float mapRange(float value, vec2 inRange, vec2 outRange) {
     return mappedValue;
 }
 
+void copyNodeResultsAndComputed() {
+    for (int i = 0; i < nodeResults.length(); i++) {
+        nodeResults[i] = graph.nodes[i].nodeValue;
+        nodeComputed[i] = graph.nodes[i].computed;
+    }
+}
+
+
 void main() {
     vec2 coords = vec2(
         mapRange(texCoords.x, vec2(0, 1), xRange),
         mapRange(texCoords.y, vec2(0, 1), yRange)
     );
 
+    copyNodeResultsAndComputed();
+
     coords.y = -coords.y;  // flip the graph due to how texture coords are
+
+
+    fragColor = vec4(eval(coords.x), 0, 0, 1);
+    return;
 
     // Iterate through a series of x-values and see if the y-value is within range.
     for (float i = coords.x - RADIUS; i < coords.x + RADIUS; i += STEP) {

@@ -4,10 +4,12 @@ import org.lwjgl.opengl.GL41;
 
 public class GpuGraphVertex {
     private final int[] inputIDs;
+    private final int inputIDLength;
     private final int nodeType;
     private final Float nodeValue;
 
     public GpuGraphVertex(int[] inputIDs, int nodeType, Float nodeValue) {
+        this.inputIDLength = inputIDs.length;
         this.inputIDs = new int[2];
         System.arraycopy(inputIDs, 0, this.inputIDs, 0, inputIDs.length);
 
@@ -23,7 +25,7 @@ public class GpuGraphVertex {
         GL41.glUniform1i(location, this.inputIDs[1]);
 
         location = GL41.glGetUniformLocation(programID, uniformName + ".inputSize");
-        GL41.glUniform1i(location, this.inputIDs.length);
+        GL41.glUniform1i(location, this.inputIDLength);
 
         location = GL41.glGetUniformLocation(programID, uniformName + ".nodeType");
         GL41.glUniform1i(location, this.nodeType);
@@ -32,6 +34,6 @@ public class GpuGraphVertex {
         GL41.glUniform1f(location, this.nodeValue != null ? this.nodeValue : 0.0f);
 
         location = GL41.glGetUniformLocation(programID, uniformName + ".computed");
-        GL41.glUniform1i(location, this.nodeValue != null ? 1 : 0);
+        GL41.glUniform1i(location, this.nodeValue == null ? 0 : 1);
     }
 }
