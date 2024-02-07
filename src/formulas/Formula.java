@@ -18,6 +18,7 @@ import java.util.List;
 
 public class Formula {
     private final List<Node> nodes;
+    private Attachment selected;
 
     public Formula() {
         this.nodes = new ArrayList<>();
@@ -38,22 +39,7 @@ public class Formula {
         return attachments;
     }
 
-    private List<Attachment> getSelectedAttachments() {
-        List<Attachment> selected = new ArrayList<>();
-
-        for (Attachment attachment : this.getAttachments()) {
-            if (attachment.isSelected()) {
-                selected.add(attachment);
-            }
-        }
-
-        return selected;
-    }
-
     private Connection makeConnection(Attachment attachment1, Attachment attachment2) {
-        attachment1.deselect();
-        attachment2.deselect();
-
         if (attachment1.isInput() == attachment2.isInput()) {
             return null;
         }
@@ -78,29 +64,43 @@ public class Formula {
                 continue;
             }
 
+            boolean selected = false;
             for (Attachment attachment : this.getAttachments()) {
                 if (Shape.collides(attachment.circle(), Mouse.getMousePos())) {
-                    attachment.flipSelection();
+                    selected = true;
+                    this.performAction(attachment);
+                    break;
                 }
+            }
+
+            if (!selected) {
+                this.selected = null;
             }
         }
     }
 
-    private void addConnections() {
-        List<Attachment> selected = this.getSelectedAttachments();
-        if (selected.size() > 1) {
-            Connection connection = this.makeConnection(selected.get(0), selected.get(1));
+
+
+    private void performAction(Attachment attachment) {
+        if (this.selected == null) {
+            this.selected = attachment;
+            return;
+        }
+
+        if (this.selected.isInput() != attachment.isInput()) {
+            Connection connection = this.makeConnection(this.selected, attachment);
 
             if (connection != null) {
-                selected.get(0).setConnection(connection);
-                selected.get(1).setConnection(connection);
+                this.selected.setConnection(connection);
+                attachment.setConnection(connection);
             }
         }
+
+        this.selected = null;
     }
 
     public void update(List<MouseEvent> mouseEvents) {
         this.selectAttachment(mouseEvents);
-        this.addConnections();
     }
 
     public void draw() {
