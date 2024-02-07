@@ -75,7 +75,7 @@ float computeNode(Node node, int nodeIndex, float x) {
         computeGraphNode(node, nodeIndex, x);
     } else if (node.nodeType == 1) {
         nodeResults[nodeIndex] = x;
-    } else if (node.nodeType == 4) {
+    } else if (node.nodeType == 3) {
         computeAddNode(node, nodeIndex, x);
     }
 
