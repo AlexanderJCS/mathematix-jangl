@@ -2,6 +2,9 @@ package formulas.node.nodes.gpugraph;
 
 import org.lwjgl.opengl.GL41;
 
+/**
+ * Represents a single vertex in the GpuGraph. This vertex contains the input IDs, the node type, and the node value.
+ */
 public class GpuGraphVertex {
     private final int[] inputIDs;
     private final int inputIDLength;

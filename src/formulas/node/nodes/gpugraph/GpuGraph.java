@@ -2,6 +2,10 @@ package formulas.node.nodes.gpugraph;
 
 import org.lwjgl.opengl.GL41;
 
+/**
+ * Represents the graph of nodes that will be computed by the GPU. This GpuGraph contains several GpuGraphVertex objects
+ * which represent the nodes. The GpuGraph is responsible for uploading the uniforms of the graph to the GPU.
+ */
 public class GpuGraph {
     private final GpuGraphVertex[] vertices;
     private final int startAt;
