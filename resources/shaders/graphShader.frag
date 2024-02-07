@@ -143,7 +143,6 @@ void copyNodeResultsAndComputed() {
     }
 }
 
-
 void main() {
     vec2 coords = vec2(
         mapRange(texCoords.x, vec2(0, 1), xRange),
