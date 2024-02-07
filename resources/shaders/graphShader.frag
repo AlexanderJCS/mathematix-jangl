@@ -31,6 +31,7 @@ float nodeResults[100];
 bool nodeComputed[100];
 
 float getNodeResult(int index, float x) {
+    // TODO: this is kinda jank. in the future make it so you don't need to check if it's x, make x in the result array
     // If the node is x, return x
     if (graph.nodes[index].nodeType == 1) {
         return x;
