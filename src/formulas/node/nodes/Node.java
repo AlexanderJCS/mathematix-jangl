@@ -11,7 +11,6 @@ import jangl.graphics.font.Text;
 import jangl.graphics.font.TextBuilder;
 import jangl.graphics.shaders.ShaderProgram;
 import jangl.graphics.shaders.premade.ColorShader;
-import jangl.io.mouse.Mouse;
 import jangl.shapes.Circle;
 import jangl.shapes.Rect;
 import jangl.shapes.Shape;
@@ -20,11 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Node {
+    private final Rect closeBox;
+    protected boolean useCloseBox;
     private final Rect dragBar;
     private final Rect rect;
     private final List<Attachment> inputAttachments;
     private final List<Attachment> outputAttachments;
-     private final Text nodeTitle;
+    private final Text nodeTitle;
     public final int nodeType;
     public final Float nodeValue;
     public final int uniqueID;
@@ -38,9 +39,15 @@ public class Node {
             new ColorShader(ColorFactory.fromNorm(0.4f, 0.4f, 0.4f, 1.0f))
     );
 
+    private static final ShaderProgram CLOSE_COLOR = new ShaderProgram(
+            new ColorShader(ColorFactory.fromNorm(0.8f, 0.2f, 0.2f, 1.0f))
+    );
+
     public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle, int nodeType, Float nodeValue) {
         this.rect = new Rect(pos, 0.2f, 0.4f);
         this.dragBar = new Rect(pos, this.rect.getWidth(), this.rect.getWidth() / 5);
+        this.closeBox = new Rect(new WorldCoords(pos.x + this.dragBar.getWidth() - this.dragBar.getHeight(), pos.y), this.dragBar.getHeight(), this.dragBar.getHeight());
+        this.useCloseBox = true;
 
         this.nodeTitle = new TextBuilder(
                 new Font("resources/font/arial.fnt", "resources/font/arial.png"),
@@ -98,9 +105,18 @@ public class Node {
         }
     }
 
+    public boolean shouldClose(WorldCoords mousePos) {
+        return this.useCloseBox && Shape.collides(this.closeBox, mousePos);
+    }
+
     public void draw() {
         this.rect.draw(NODE_COLOR);
         this.dragBar.draw(BAR_COLOR);
+
+        if (this.useCloseBox) {
+            this.closeBox.draw(CLOSE_COLOR);
+        }
+
         this.nodeTitle.draw();
 
         for (Attachment attachment : this.inputAttachments) {

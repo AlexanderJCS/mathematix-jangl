@@ -48,7 +48,7 @@ public class Formula {
         return attachments;
     }
 
-    private void selectAttachment(List<MouseEvent> mouseEvents) {
+    private void updateAttachments(List<MouseEvent> mouseEvents) {
         for (MouseEvent event : mouseEvents) {
             if (event.button != GLFW.GLFW_MOUSE_BUTTON_1 || event.action != GLFW.GLFW_RELEASE) {
                 continue;
@@ -120,13 +120,52 @@ public class Formula {
         this.selected = null;
     }
 
+    /**
+     * Remove all boxes that should be removed when the mouse is clicked.
+     */
+    private void removeBoxes(List<MouseEvent> mouseEvents) {
+        boolean clicked = false;
+        for (MouseEvent event : mouseEvents) {
+            if (event.button == GLFW.GLFW_MOUSE_BUTTON_1 && event.action == GLFW.GLFW_RELEASE) {
+                clicked = true;
+                break;
+            }
+        }
+
+        if (!clicked) {
+            return;
+        }
+
+        for (Node node : this.nodes) {
+            if (!node.shouldClose(Mouse.getMousePos())) {
+                continue;
+            }
+
+            for (Attachment attachment : node.getInputAttachments()) {
+                this.removeConnection(attachment);
+            }
+
+            for (Attachment attachment : node.getOutputAttachments()) {
+                this.removeConnection(attachment);
+            }
+
+            this.nodes.remove(node);
+            break;
+        }
+    }
+
     public void update(List<MouseEvent> mouseEvents) {
+        // Update the selection line
         if (this.selected != null) {
             this.selectionLine.setStart(this.selected.circle().getTransform().getCenter());
             this.selectionLine.setEnd(Mouse.getMousePos());
         }
 
-        this.selectAttachment(mouseEvents);
+        // Handle selecting / removing attachments
+        this.updateAttachments(mouseEvents);
+
+        // Handle the closing of nodes
+        this.removeBoxes(mouseEvents);
     }
 
     public void draw() {
