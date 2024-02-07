@@ -106,7 +106,7 @@ public class Formula {
 
         // If you try to connect to a node that already has a connection, and you currently have no selection, then
         // remove the connection
-        if (this.selected == null) {
+        if (this.selected == null && attachment != null) {
             this.removeConnection(attachment);
             return;
         }
