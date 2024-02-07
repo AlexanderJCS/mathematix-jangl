@@ -8,7 +8,6 @@ in vec2 texCoords;
 out vec4 fragColor;
 
 float RADIUS = radiusUV * (abs(xRange.x) + abs(xRange.y));
-float STEP = RADIUS / 10;
 
 struct Node {
     int inputIDs[2];
