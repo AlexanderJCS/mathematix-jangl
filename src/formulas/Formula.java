@@ -72,7 +72,7 @@ public class Formula {
         return new ArrayList<>(this.nodes);
     }
 
-    public void update(List<MouseEvent> mouseEvents) {
+    private void selectAttachment(List<MouseEvent> mouseEvents) {
         for (MouseEvent event : mouseEvents) {
             if (event.button != GLFW.GLFW_MOUSE_BUTTON_1 || event.action != GLFW.GLFW_RELEASE) {
                 continue;
@@ -84,7 +84,9 @@ public class Formula {
                 }
             }
         }
+    }
 
+    private void addConnections() {
         List<Attachment> selected = this.getSelectedAttachments();
         if (selected.size() > 1) {
             Connection connection = this.makeConnection(selected.get(0), selected.get(1));
@@ -94,6 +96,11 @@ public class Formula {
                 selected.get(1).setConnection(connection);
             }
         }
+    }
+
+    public void update(List<MouseEvent> mouseEvents) {
+        this.selectAttachment(mouseEvents);
+        this.addConnections();
     }
 
     public void draw() {
