@@ -12,6 +12,7 @@ import jangl.io.mouse.Mouse;
 import jangl.io.mouse.MouseEvent;
 import jangl.shapes.Shape;
 import org.lwjgl.glfw.GLFW;
+import ui.Line;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,11 @@ import java.util.List;
 public class Formula {
     private final List<Node> nodes;
     private Attachment selected;
+    private final Line selectionLine;
 
     public Formula() {
+        this.selectionLine = new Line(new WorldCoords(0, 0), new WorldCoords(0, 0), 0.01f);
+
         this.nodes = new ArrayList<>();
         this.nodes.add(new GraphNode(new WorldCoords(0.7f, 0.8f)));
         this.nodes.add(new AddNode(new WorldCoords(0.4f, 0.8f)));
@@ -102,10 +106,21 @@ public class Formula {
     }
 
     public void update(List<MouseEvent> mouseEvents) {
+        if (this.selected != null) {
+            this.selectionLine.setStart(this.selected.circle().getTransform().getCenter());
+            this.selectionLine.setEnd(Mouse.getMousePos());
+        }
+
         this.selectAttachment(mouseEvents);
     }
 
     public void draw() {
+        // Draw nodes
+        for (Node node : this.nodes) {
+            node.draw();
+        }
+
+        // Draw connections
         for (Node node : this.nodes) {
             for (Attachment attachment : node.getInputAttachments()) {
                 Connection connection = attachment.getConnection();
@@ -113,8 +128,10 @@ public class Formula {
                     connection.draw();
                 }
             }
+        }
 
-            node.draw();
+        if (this.selected != null) {
+            this.selectionLine.draw();
         }
     }
 }

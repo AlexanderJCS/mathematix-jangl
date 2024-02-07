@@ -5,16 +5,50 @@ import jangl.shapes.Rect;
 
 public class Line {
     private final Rect rect;
+    private WorldCoords start;
+    private WorldCoords end;
 
     public Line(WorldCoords start, WorldCoords end, float thickness) {
         this.rect = new Rect(
                 new WorldCoords(0, 0),
-                length(start, end),
+                1,
                 thickness
         );
 
-        this.rect.getTransform().setPos(midpoint(start, end));
-        this.rect.getTransform().rotate(angle(start, end));
+        this.start = start;
+        this.end = end;
+
+        this.refresh();
+    }
+
+    private void refresh() {
+        this.rect.getTransform().setWidth(length(this.start, this.end), 1);
+        this.rect.getTransform().setPos(midpoint(this.start, this.end));
+        this.rect.getTransform().setRotation(angle(this.start, this.end));
+    }
+
+    public void setStart(WorldCoords start) {
+        this.start = new WorldCoords(start);
+        this.refresh();
+    }
+
+    public void setEnd(WorldCoords end) {
+        this.end = new WorldCoords(end);
+        this.refresh();
+    }
+
+    public void setEnds(WorldCoords start, WorldCoords end) {
+        this.setStart(start);
+        this.setEnd(end);
+        this.refresh();
+    }
+
+    public WorldCoords getStart() {
+        return new WorldCoords(this.start);
+    }
+
+    public WorldCoords getEnd() {
+        return new WorldCoords(this.end);
     }
 
     private static float angle(WorldCoords start, WorldCoords end) {
