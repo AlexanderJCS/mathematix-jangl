@@ -18,11 +18,9 @@ import java.util.List;
 
 public class Formula {
     private final List<Node> nodes;
-    private final List<Connection> connections;
 
     public Formula() {
         this.nodes = new ArrayList<>();
-        this.connections = new ArrayList<>();
         this.nodes.add(new GraphNode(new WorldCoords(0.7f, 0.8f)));
         this.nodes.add(new AddNode(new WorldCoords(0.4f, 0.8f)));
         this.nodes.add(new XNode(new WorldCoords(0.1f, 0.95f)));
@@ -92,7 +90,6 @@ public class Formula {
             Connection connection = this.makeConnection(selected.get(0), selected.get(1));
 
             if (connection != null) {
-                this.connections.add(connection);
                 selected.get(0).setConnection(connection);
                 selected.get(1).setConnection(connection);
             }
@@ -101,11 +98,14 @@ public class Formula {
 
     public void draw() {
         for (Node node : this.nodes) {
-            node.draw();
-        }
+            for (Attachment attachment : node.getInputAttachments()) {
+                Connection connection = attachment.getConnection();
+                if (connection != null) {
+                    connection.draw();
+                }
+            }
 
-        for (Connection connection : this.connections) {
-            connection.draw();
+            node.draw();
         }
     }
 }
