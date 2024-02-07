@@ -17,13 +17,13 @@ import jangl.shapes.Rect;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Node {
+public class Node {
     private final Rect rect;
     private final List<Attachment> inputAttachments;
     private final List<Attachment> outputAttachments;
      private final Text nodeTitle;
     public final int nodeType;
-    public final float nodeValue;
+    public final Float nodeValue;
     public final int uniqueID;
     private static int uniqueIDCounter = 0;
 
@@ -31,7 +31,7 @@ public abstract class Node {
             new ColorShader(ColorFactory.fromNorm(0.4f, 0.4f, 0.4f, 1.0f))
     );
 
-    public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle, int nodeType, float nodeValue) {
+    public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle, int nodeType, Float nodeValue) {
         this.rect = new Rect(pos, 0.2f, 0.4f);
 
         this.nodeTitle = new TextBuilder(
@@ -143,6 +143,4 @@ public abstract class Node {
     public static int getUniqueIDCounter() {
         return uniqueIDCounter;
     }
-
-    public abstract float getOutput();
 }

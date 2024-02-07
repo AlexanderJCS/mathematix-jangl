@@ -16,6 +16,8 @@ struct Node {
 
     int nodeType;
     float nodeValue;
+
+    bool computed;
 };
 
 struct Graph {
