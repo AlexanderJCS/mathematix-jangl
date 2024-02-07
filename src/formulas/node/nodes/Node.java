@@ -11,13 +11,16 @@ import jangl.graphics.font.Text;
 import jangl.graphics.font.TextBuilder;
 import jangl.graphics.shaders.ShaderProgram;
 import jangl.graphics.shaders.premade.ColorShader;
+import jangl.io.mouse.Mouse;
 import jangl.shapes.Circle;
 import jangl.shapes.Rect;
+import jangl.shapes.Shape;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Node {
+    private final Rect dragBar;
     private final Rect rect;
     private final List<Attachment> inputAttachments;
     private final List<Attachment> outputAttachments;
@@ -27,18 +30,23 @@ public class Node {
     public final int uniqueID;
     private static int uniqueIDCounter = 0;
 
-    private final ShaderProgram colorShader = new ShaderProgram(
+    private static final ShaderProgram BAR_COLOR = new ShaderProgram(
+            new ColorShader(ColorFactory.fromNorm(0.2f, 0.2f, 0.2f, 1.0f))
+    );
+
+    private static final ShaderProgram NODE_COLOR = new ShaderProgram(
             new ColorShader(ColorFactory.fromNorm(0.4f, 0.4f, 0.4f, 1.0f))
     );
 
     public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle, int nodeType, Float nodeValue) {
         this.rect = new Rect(pos, 0.2f, 0.4f);
+        this.dragBar = new Rect(pos, this.rect.getWidth(), this.rect.getWidth() / 5);
 
         this.nodeTitle = new TextBuilder(
                 new Font("resources/font/arial.fnt", "resources/font/arial.png"),
                 nodeTitle
         )
-                .setCoords(new WorldCoords(pos.x, pos.y))
+                .setCoords(new WorldCoords(pos.x, pos.y - this.dragBar.getHeight()))
                 .setWrapWidth(this.rect.getWidth())
                 .setYHeight(0.05f)
                 .toText();
@@ -91,8 +99,9 @@ public class Node {
     }
 
     public void draw() {
-        this.rect.draw(this.colorShader);
-         this.nodeTitle.draw();
+        this.rect.draw(NODE_COLOR);
+        this.dragBar.draw(BAR_COLOR);
+        this.nodeTitle.draw();
 
         for (Attachment attachment : this.inputAttachments) {
             attachment.draw();
