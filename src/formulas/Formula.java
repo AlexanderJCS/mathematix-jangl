@@ -2,6 +2,7 @@ package formulas;
 
 import formulas.node.Attachment;
 import formulas.node.Connection;
+import formulas.node.nodes.AddNode;
 import formulas.node.nodes.GraphNode;
 import formulas.node.nodes.XNode;
 import formulas.node.nodes.gpugraph.GpuGraph;
@@ -22,8 +23,10 @@ public class Formula {
     public Formula() {
         this.nodes = new ArrayList<>();
         this.connections = new ArrayList<>();
-        this.nodes.add(new GraphNode(new WorldCoords(0.4f, 0.8f)));
-        this.nodes.add(new XNode(new WorldCoords(0.1f, 0.8f)));
+        this.nodes.add(new GraphNode(new WorldCoords(0.7f, 0.8f)));
+        this.nodes.add(new AddNode(new WorldCoords(0.4f, 0.8f)));
+        this.nodes.add(new XNode(new WorldCoords(0.1f, 0.95f)));
+        this.nodes.add(new XNode(new WorldCoords(0.1f, 0.45f)));
     }
 
     private List<Attachment> getAttachments() {
