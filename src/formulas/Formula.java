@@ -2,12 +2,9 @@ package formulas;
 
 import formulas.node.Attachment;
 import formulas.node.Connection;
-import formulas.node.nodes.AddNode;
-import formulas.node.nodes.GraphNode;
-import formulas.node.nodes.XNode;
+import formulas.node.nodes.*;
 import formulas.node.nodes.gpugraph.GpuGraph;
 import jangl.coords.WorldCoords;
-import formulas.node.nodes.Node;
 import jangl.io.mouse.Mouse;
 import jangl.io.mouse.MouseEvent;
 import jangl.shapes.Shape;
@@ -27,7 +24,7 @@ public class Formula {
 
         this.nodes = new ArrayList<>();
         this.nodes.add(new GraphNode(new WorldCoords(0.7f, 0.8f)));
-        this.nodes.add(new AddNode(new WorldCoords(0.4f, 0.8f)));
+        this.nodes.add(new SubNode(new WorldCoords(0.4f, 0.8f)));
         this.nodes.add(new XNode(new WorldCoords(0.1f, 0.95f)));
         this.nodes.add(new XNode(new WorldCoords(0.1f, 0.45f)));
     }

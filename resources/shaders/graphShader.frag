@@ -62,6 +62,11 @@ void computeGraphNode(Node node, int nodeIndex, float x) {
     nodeResults[nodeIndex] = getNodeResult(node.inputIDs[0], x);
 }
 
+void computeSubNode(Node node, int nodeIndex, float x) {
+    float diff = getNodeResult(node.inputIDs[0], x) - getNodeResult(node.inputIDs[1], x);
+    nodeResults[nodeIndex] = diff;
+}
+
 /**
  * Computes a node. Modifies the node and stores the output in nodeValue.
  * It assumes that all connections to the node are already computed.
@@ -77,6 +82,8 @@ float computeNode(Node node, int nodeIndex, float x) {
         nodeResults[nodeIndex] = x;
     } else if (node.nodeType == 3) {
         computeAddNode(node, nodeIndex, x);
+    } else if (node.nodeType == 4) {
+        computeSubNode(node, nodeIndex, x);
     }
 
     return nodeResults[nodeIndex];
