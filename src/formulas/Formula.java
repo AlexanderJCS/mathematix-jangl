@@ -87,9 +87,27 @@ public class Formula {
         attachment.setConnection(connection);
     }
 
+    private void removeConnection(Attachment attachment) {
+        Connection connection = attachment.getConnection();
+
+        if (connection == null) {
+            return;
+        }
+
+        connection.getIn().setConnection(null);
+        connection.getOut().setConnection(null);
+    }
+
     private void performAction(Attachment attachment) {
-        if (this.selected == null) {
+        if (this.selected == null && attachment != null && attachment.getConnection() == null) {
             this.selected = attachment;
+            return;
+        }
+
+        // If you try to connect to a node that already has a connection, and you currently have no selection, then
+        // remove the connection
+        if (this.selected == null) {
+            this.removeConnection(attachment);
             return;
         }
 
