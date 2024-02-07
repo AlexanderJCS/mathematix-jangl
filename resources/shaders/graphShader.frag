@@ -162,14 +162,20 @@ void main() {
 
     coords.y = -coords.y;  // flip the graph due to how texture coords are
 
-    // Iterate through a series of x-values and see if the y-value is within range.
-    for (float i = coords.x - RADIUS; i < coords.x + RADIUS; i += STEP) {
-        float funcVal = eval(i);
+    float yValue = eval(coords.x);  // f(x)
 
-        if (abs(coords.y - funcVal) < RADIUS) {
-            fragColor = vec4(1.0, 0.0, 0.0, 1.0);
-            return;
-        }
+    // Derivative of the function
+    // Since we can't do limits, we'll just use a really small value for h as a good approximation
+    // f'(x) = (f(x + h) - f(x)) / h
+    float h = 0.0001;
+    float fPrime = (eval(coords.x + h) - yValue) / h;  // f`(x)
+
+    // Line-point distance formula for any given point (x, y):
+    // abs(f(x) - y) / sqrt(1 + f'(x)^2)
+    float distance = abs(yValue - coords.y) / sqrt(1 + fPrime * fPrime);
+    if (distance < RADIUS) {
+        fragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        return;
     }
 
     // Check for axis lines
