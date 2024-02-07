@@ -154,13 +154,9 @@ void main() {
 
     coords.y = -coords.y;  // flip the graph due to how texture coords are
 
-
-    fragColor = vec4(eval(coords.x), 0, 0, 1);
-    return;
-
     // Iterate through a series of x-values and see if the y-value is within range.
     for (float i = coords.x - RADIUS; i < coords.x + RADIUS; i += STEP) {
-        float funcVal = i * i * i;
+        float funcVal = eval(i);
 
         if (abs(coords.y - funcVal) < RADIUS) {
             fragColor = vec4(1.0, 0.0, 0.0, 1.0);
