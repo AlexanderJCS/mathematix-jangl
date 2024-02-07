@@ -100,9 +100,9 @@ public class Formula {
 
         if (this.selected.getConnection() == null && attachment.getConnection() == null) {
             this.makeConnection(attachment);
-        } else {
-            this.selected = null;
         }
+
+        this.selected = null;
     }
 
     public void update(List<MouseEvent> mouseEvents) {
