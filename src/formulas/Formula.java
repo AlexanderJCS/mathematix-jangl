@@ -166,6 +166,10 @@ public class Formula {
 
         // Handle the closing of nodes
         this.removeBoxes(mouseEvents);
+
+        for (Node node : this.nodes) {
+            node.update(mouseEvents);
+        }
     }
 
     public void draw() {

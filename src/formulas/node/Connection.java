@@ -18,6 +18,16 @@ public class Connection {
         );
     }
 
+    /**
+     * Updates the position of the line based on the position of the attachments
+     */
+    public void update() {
+        this.line.setEnds(
+                this.out.circle().getTransform().getCenter(),
+                this.in.circle().getTransform().getCenter()
+        );
+    }
+
     public Attachment getOut() {
         return out;
     }

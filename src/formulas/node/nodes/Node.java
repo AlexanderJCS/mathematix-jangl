@@ -11,14 +11,20 @@ import jangl.graphics.font.Text;
 import jangl.graphics.font.TextBuilder;
 import jangl.graphics.shaders.ShaderProgram;
 import jangl.graphics.shaders.premade.ColorShader;
+import jangl.io.mouse.Mouse;
+import jangl.io.mouse.MouseEvent;
 import jangl.shapes.Circle;
 import jangl.shapes.Rect;
 import jangl.shapes.Shape;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.system.linux.XSelectionClearEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Node {
+    private final SelectionData selectionData;
+    // TODO: make fields private that can be private
     private final Rect closeBox;
     protected boolean useCloseBox;
     private final Rect dragBar;
@@ -42,6 +48,11 @@ public class Node {
     private static final ShaderProgram CLOSE_COLOR = new ShaderProgram(
             new ColorShader(ColorFactory.fromNorm(0.8f, 0.2f, 0.2f, 1.0f))
     );
+
+    private class SelectionData {
+        boolean selected = false;
+        WorldCoords lastMousePos = new WorldCoords(0, 0);
+    }
 
     public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle, int nodeType, Float nodeValue) {
         this.rect = new Rect(pos, 0.2f, 0.4f);
@@ -70,6 +81,8 @@ public class Node {
 
         this.uniqueID = uniqueIDCounter;
         uniqueIDCounter++;
+
+        this.selectionData = new SelectionData();
     }
 
     private void genAttachments(int numAttachments, List<Attachment> attachments, boolean input) {
@@ -125,6 +138,60 @@ public class Node {
 
         for (Attachment attachment : this.outputAttachments) {
             attachment.draw();
+        }
+    }
+
+    private void updateSelectionData(List<MouseEvent> mouseEvents) {
+        for (MouseEvent event : mouseEvents) {
+            if (event.button != GLFW.GLFW_MOUSE_BUTTON_1 || !Shape.collides(this.dragBar, Mouse.getMousePos())) {
+                continue;
+            }
+
+            if (event.action == GLFW.GLFW_PRESS) {
+                this.selectionData.selected = true;
+                this.selectionData.lastMousePos = Mouse.getMousePos();
+
+            } else if (event.action == GLFW.GLFW_RELEASE) {
+                this.selectionData.selected = false;
+            }
+        }
+    }
+
+    private void drag() {
+        WorldCoords mousePos = Mouse.getMousePos();
+        WorldCoords offset = new WorldCoords(
+                mousePos.x - this.selectionData.lastMousePos.x,
+                mousePos.y - this.selectionData.lastMousePos.y
+        );
+
+        this.nodeTitle.getTransform().shift(offset);
+        this.rect.getTransform().shift(offset);
+        this.dragBar.getTransform().shift(offset);
+        this.closeBox.getTransform().shift(offset);
+
+        for (Attachment attachment : this.inputAttachments) {
+            attachment.circle().getTransform().shift(offset);
+
+            if (attachment.getConnection() != null) {
+                attachment.getConnection().update();
+            }
+        }
+
+        for (Attachment attachment : this.outputAttachments) {
+            attachment.circle().getTransform().shift(offset);
+
+            if (attachment.getConnection() != null) {
+                attachment.getConnection().update();
+            }
+        }
+    }
+
+    public void update(List<MouseEvent> mouseEvents) {
+        this.updateSelectionData(mouseEvents);
+
+        if (this.selectionData.selected) {
+            this.drag();
+            this.selectionData.lastMousePos = Mouse.getMousePos();
         }
     }
 
