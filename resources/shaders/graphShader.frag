@@ -5,12 +5,12 @@
 uniform vec2 xRange;
 uniform vec2 yRange;
 uniform float radiusUV;
+uniform float yValues[1000];
 
 in vec2 texCoords;
 out vec4 fragColor;
 
 float RADIUS = radiusUV * (abs(xRange.x) + abs(xRange.y));
-float yValues[1000];
 
 /**
  * Map a value from one range to another
@@ -30,9 +30,15 @@ float mapRange(float value, vec2 inRange, vec2 outRange) {
     return mappedValue;
 }
 
-int closestIndex(float x) {
+float closestIndex(float x) {
     // TODO: linearly interpolate between indices
-    return int(mapRange(x, xRange, vec2(0, NUM_INPUTS)));
+    return int(mapRange(x, xRange, vec2(0, NUM_INPUTS - 1)));
+}
+
+float calc(float x) {
+    float closestIndex = mapRange(x, xRange, vec2(0, NUM_INPUTS - 1));
+    float onlyDecimals = closestIndex - floor(closestIndex);
+    return mix(yValues[int(closestIndex)], yValues[int(closestIndex) + 1], onlyDecimals);
 }
 
 void main() {
@@ -43,16 +49,15 @@ void main() {
 
     coords.y = -coords.y;  // flip the graph due to how texture coords are
 
-    int closestIndex = closestIndex(coords.x);
-    float yValue = yValues[closestIndex];  // f(x)
+    float yValue = calc(coords.x);  // f(x)
 
     // Derivative of the function
     // Since we can't do limits, we'll just use a really small value for h as a good approximation
     // f'(x) = (f(x + h) - f(x)) / h
 
     // TODO: once linear interpolation is done, lower the h value
-    float h = 0.1;
-    float fPrime = (yValues[closestIndex(coords.x + h)] - yValue) / h;  // f`(x)
+    float h = 0.0001;
+    float fPrime = (calc(coords.x + h) - yValue) / h;  // f`(x)
 
     // Line-point distance formula for any given point (x, y):
     // abs(f(x) - y) / sqrt(1 + f'(x)^2)
