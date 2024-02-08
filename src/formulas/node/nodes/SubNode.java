@@ -7,7 +7,7 @@ import jangl.coords.WorldCoords;
 import java.util.List;
 
 public class SubNode extends Node {
-        public SubNode(WorldCoords pos) {
+    public SubNode(WorldCoords pos) {
             super(pos, 2, 1, "Sub", null);
         }
 
