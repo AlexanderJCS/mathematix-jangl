@@ -9,7 +9,7 @@ public class GpuGraphVertex {
     private final int[] inputIDs;
     private final int inputIDLength;
     private final int nodeType;
-    private final Float nodeValue;
+    public final Float nodeValue;
 
     public GpuGraphVertex(int[] inputIDs, int nodeType, Float nodeValue) {
         this.inputIDLength = inputIDs.length;

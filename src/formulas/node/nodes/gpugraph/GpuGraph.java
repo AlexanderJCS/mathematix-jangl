@@ -26,6 +26,12 @@ public class GpuGraph {
         for (int i = 0; i < 100; i++) {
             if (this.vertices[i] != null) {
                 this.vertices[i].uploadUniforms(programID, uniformName + ".nodes[" + i + "]");
+
+                location = GL41.glGetUniformLocation(programID, uniformName + ".originalNodeValues[" + i + "]");
+                GL41.glUniform1f(location, this.vertices[i].nodeValue != null ? this.vertices[i].nodeValue : 0.0f);
+
+                location = GL41.glGetUniformLocation(programID, uniformName + ".originalComputed[" + i + "]");
+                GL41.glUniform1i(location, this.vertices[i].nodeValue == null ? 0 : 1);
             }
         }
     }

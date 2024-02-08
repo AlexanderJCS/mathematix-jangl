@@ -21,40 +21,43 @@ struct Node {
 
 struct Graph {
     int startAt;
+    float originalNodeValues[100];
+    bool originalComputed[100];
+
     Node nodes[100];
 };
 
 uniform Graph graph;
 
-float nodeResults[100];
+float nodeValues[100];
 bool nodeComputed[100];
 
 void computeAddNode(Node node, int nodeIndex, float x) {
     float sum = 0;
 
     for (int i = 0; i < node.inputSize; i++) {
-        sum += nodeResults[node.inputIDs[i]];
+        sum += nodeValues[node.inputIDs[i]];
     }
 
-    nodeResults[nodeIndex] = sum;
+    nodeValues[nodeIndex] = sum;
 }
 
 void computeGraphNode(Node node, int nodeIndex, float x) {
     // If there is no connection, exit instantly
     if (node.inputSize == 0) {
-        nodeResults[nodeIndex] = 0;
+        nodeValues[nodeIndex] = 0;
         return;
     }
 
-    nodeResults[nodeIndex] = nodeResults[node.inputIDs[0]];
+    nodeValues[nodeIndex] = nodeValues[node.inputIDs[0]];
 }
 
 void computeSubNode(Node node, int nodeIndex, float x) {
-    nodeResults[nodeIndex] = nodeResults[node.inputIDs[0]] - nodeResults[node.inputIDs[1]];;
+    nodeValues[nodeIndex] = nodeValues[node.inputIDs[0]] - nodeValues[node.inputIDs[1]];;
 }
 
 void computeMulNode(Node node, int nodeIndex, float x) {
-    nodeResults[nodeIndex] = nodeResults[node.inputIDs[0]] * nodeResults[node.inputIDs[1]];;
+    nodeValues[nodeIndex] = nodeValues[node.inputIDs[0]] * nodeValues[node.inputIDs[1]];;
 }
 
 /**
@@ -69,7 +72,7 @@ float computeNode(Node node, int nodeIndex, float x) {
     if (node.nodeType == 0) {
         computeGraphNode(node, nodeIndex, x);
     } else if (node.nodeType == 1) {
-        nodeResults[nodeIndex] = x;
+        nodeValues[nodeIndex] = x;
     } else if (node.nodeType == 3) {
         computeAddNode(node, nodeIndex, x);
     } else if (node.nodeType == 4) {
@@ -78,19 +81,15 @@ float computeNode(Node node, int nodeIndex, float x) {
         computeMulNode(node, nodeIndex, x);
     }
 
-    return nodeResults[nodeIndex];
+    return nodeValues[nodeIndex];
 }
 
-void copyNodeResults() {
-    for (int i = 0; i < nodeResults.length(); i++) {
-        nodeResults[i] = graph.nodes[i].nodeValue;
-    }
+void copyNodeValues() {
+    nodeValues = graph.originalNodeValues;
 }
 
 void copyNodeComputed() {
-    for (int i = 0; i < nodeComputed.length(); i++) {
-        nodeComputed[i] = graph.nodes[i].computed;
-    }
+    nodeComputed = graph.originalComputed;
 }
 
 /**
@@ -130,7 +129,7 @@ float eval(float x) {
         }
     }
 
-    return nodeResults[graph.startAt];
+    return nodeValues[graph.startAt];
 }
 
 /**
