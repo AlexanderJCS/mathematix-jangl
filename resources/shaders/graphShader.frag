@@ -156,7 +156,7 @@ void main() {
         mapRange(texCoords.y, vec2(0, 1), yRange)
     );
 
-    copyNodeResults();
+    copyNodeValues();
 
     coords.y = -coords.y;  // flip the graph due to how texture coords are
 
