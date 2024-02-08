@@ -32,11 +32,5 @@ public class GpuGraphVertex {
 
         location = GL41.glGetUniformLocation(programID, uniformName + ".nodeType");
         GL41.glUniform1i(location, this.nodeType);
-
-        location = GL41.glGetUniformLocation(programID, uniformName + ".nodeValue");
-        GL41.glUniform1f(location, this.nodeValue != null ? this.nodeValue : 0.0f);
-
-        location = GL41.glGetUniformLocation(programID, uniformName + ".computed");
-        GL41.glUniform1i(location, this.nodeValue == null ? 0 : 1);
     }
 }
