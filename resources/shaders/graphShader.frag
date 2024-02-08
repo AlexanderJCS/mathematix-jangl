@@ -14,9 +14,6 @@ struct Node {
     int inputSize;
 
     int nodeType;
-    float nodeValue;
-
-    bool computed;
 };
 
 struct Graph {
