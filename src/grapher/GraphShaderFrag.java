@@ -1,6 +1,6 @@
 package grapher;
 
-import formulas.node.nodes.gpugraph.GpuGraph;
+import formulas.Formula;
 import jangl.graphics.shaders.FragmentShader;
 import org.joml.Vector2f;
 import org.lwjgl.opengl.GL41;
@@ -9,7 +9,7 @@ public class GraphShaderFrag extends FragmentShader {
     private Vector2f xRange;
     private Vector2f yRange;
     private float radiusUV;
-    private GpuGraph gpuGraph;
+    private Formula formula;
 
     public GraphShaderFrag() {
         super("resources/shaders/graphShader.frag");
@@ -43,8 +43,8 @@ public class GraphShaderFrag extends FragmentShader {
         this.radiusUV = radiusUV;
     }
 
-    public void setGpuGraph(GpuGraph graph) {
-        this.gpuGraph = graph;
+    public void setFormula(Formula formula) {
+        this.formula = formula;
     }
 
     @Override
@@ -58,6 +58,6 @@ public class GraphShaderFrag extends FragmentShader {
         location = GL41.glGetUniformLocation(programID, "radiusUV");
         GL41.glUniform1f(location, this.radiusUV);
 
-        this.gpuGraph.uploadUniforms(programID, "graph");
+        this.formula.uploadUniforms(xRange.x, xRange.y, 1000, "yValues", programID);
     }
 }

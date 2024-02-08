@@ -5,6 +5,7 @@ import jangl.coords.WorldCoords;
 import jangl.graphics.shaders.ShaderProgram;
 import jangl.graphics.shaders.premade.TextureShaderVert;
 import jangl.shapes.Rect;
+import formulas.Formula;
 
 public class Graph {
     private final Rect rect;
@@ -18,8 +19,8 @@ public class Graph {
         );
     }
 
-    public void setGpuGraph(GpuGraph graph) {
-        ((GraphShaderFrag) this.shader.getFragmentShader()).setGpuGraph(graph);
+    public void setFormula(Formula gpuGraph) {
+        ((GraphShaderFrag) this.shader.getFragmentShader()).setFormula(gpuGraph);
     }
 
     public void draw() {

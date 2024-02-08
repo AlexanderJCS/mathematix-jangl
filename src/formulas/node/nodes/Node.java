@@ -2,8 +2,9 @@ package formulas.node.nodes;
 
 import formulas.node.Attachment;
 import formulas.node.Connection;
-import formulas.node.nodes.gpugraph.GpuGraph;
+import formulas.Formula;
 import formulas.node.nodes.gpugraph.GpuGraphVertex;
+import formulas.node.nodes.gpugraph.GpuGraph;
 import jangl.color.ColorFactory;
 import jangl.coords.WorldCoords;
 import jangl.graphics.font.Font;
@@ -17,7 +18,6 @@ import jangl.shapes.Circle;
 import jangl.shapes.Rect;
 import jangl.shapes.Shape;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.system.linux.XSelectionClearEvent;
 
 import java.util.ArrayList;
 import java.util.List;

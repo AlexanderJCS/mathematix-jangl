@@ -1,14 +1,15 @@
 package formulas;
 
+import formulas.node.nodes.gpugraph.GpuGraph;
 import formulas.node.Attachment;
 import formulas.node.Connection;
 import formulas.node.nodes.*;
-import formulas.node.nodes.gpugraph.GpuGraph;
 import jangl.coords.WorldCoords;
 import jangl.io.mouse.Mouse;
 import jangl.io.mouse.MouseEvent;
 import jangl.shapes.Shape;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL41;
 import ui.Line;
 
 import java.util.ArrayList;
@@ -27,6 +28,21 @@ public class Formula {
         this.nodes.add(new MulNode(new WorldCoords(0.4f, 0.8f)));
         this.nodes.add(new XNode(new WorldCoords(0.1f, 0.95f)));
         this.nodes.add(new XNode(new WorldCoords(0.1f, 0.45f)));
+    }
+
+    public void uploadUniforms(float start, float end, int n, String uniformName, int programID) {
+        float[] yValues = new float[n];
+
+        float step = (end - start) / n;
+        for (int i = 0; i < yValues.length; i++) {
+            float xValue = start + step * i;
+            yValues[i] = xValue;
+        }
+
+        for (int i = 0; i < yValues.length; i++) {
+            int location = GL41.glGetUniformLocation(programID, uniformName + "[" + i + "]");
+            GL41.glUniform1f(location, yValues[i]);
+        }
     }
 
     public GpuGraph getGpuGraph() {

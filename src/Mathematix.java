@@ -26,7 +26,7 @@ public class Mathematix {
 
     public void run() {
         while (Window.shouldRun()) {
-            this.graph.setGpuGraph(this.formulaGui.getGpuGraph());
+            this.graph.setFormula(this.formulaGui);
 
             this.draw();
             this.update();
