@@ -18,7 +18,7 @@ public class MulNode extends Node {
 
         for (Attachment input : inputs) {
             if (input.getConnection() == null) {
-                continue;
+                return 0;
             }
 
             product *= input.getConnection().getOut().node().compute(x);
