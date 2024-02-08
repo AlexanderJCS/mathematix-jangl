@@ -22,7 +22,7 @@ import org.lwjgl.system.linux.XSelectionClearEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Node {
+public abstract class Node {
     private final SelectionData selectionData;
     // TODO: make fields private that can be private
     private final Rect closeBox;
@@ -248,4 +248,6 @@ public class Node {
     public static int getUniqueIDCounter() {
         return uniqueIDCounter;
     }
+
+    public abstract float compute(float x);
 }

@@ -9,4 +9,17 @@ public class AddNode extends Node {
     public AddNode(WorldCoords pos) {
         super(pos, 2, 1, "Add", 3, null);
     }
+
+    @Override
+    public float compute(float x) {
+        List<Attachment> inputs = this.getInputAttachments();
+
+        float sum = 0;
+
+        for (Attachment input : inputs) {
+            sum += input.getConnection().getOut().node().compute(x);
+        }
+
+        return sum;
+    }
 }

@@ -6,4 +6,9 @@ public class XNode extends Node {
     public XNode(WorldCoords pos) {
         super(pos, 0, 1, "X", 1, null);
     }
+
+    @Override
+    public float compute(float x) {
+        return x;
+    }
 }

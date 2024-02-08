@@ -1,5 +1,6 @@
 package formulas.node.nodes;
 
+import formulas.node.Attachment;
 import jangl.coords.WorldCoords;
 
 public class GraphNode extends Node {
@@ -7,5 +8,14 @@ public class GraphNode extends Node {
         super(pos, 1, 0, "Graph", 0, null);
 
         this.useCloseBox = false;  // do not close the graph node
+    }
+
+    @Override
+    public float compute(float x) {
+        if (this.getInputAttachments().get(0).getConnection() != null) {
+            return this.getInputAttachments().get(0).getConnection().getOut().node().compute(x);
+        }
+
+        return 0;
     }
 }
