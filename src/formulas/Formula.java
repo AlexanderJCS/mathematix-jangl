@@ -29,13 +29,30 @@ public class Formula {
         this.nodes.add(new XNode(new WorldCoords(0.1f, 0.45f)));
     }
 
+    private Node getGraphNode() {
+        for (Node node : this.nodes) {
+            if (node instanceof GraphNode) {
+                return node;
+            }
+        }
+
+        return null;
+    }
+
     public void uploadUniforms(float start, float end, int n, String uniformName, int programID) {
         float[] yValues = new float[n];
 
         float step = (end - start) / n;
         for (int i = 0; i < yValues.length; i++) {
             float xValue = start + step * i;
-            yValues[i] = this.getNodes().get(0).compute(xValue);  // TODO: Make a function to get the graph node
+
+            Node graphNode = this.getGraphNode();
+            if (graphNode == null) {
+                yValues[i] = 0;
+                continue;
+            }
+
+            yValues[i] = graphNode.compute(xValue);
         }
 
         for (int i = 0; i < yValues.length; i++) {
