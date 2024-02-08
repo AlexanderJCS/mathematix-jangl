@@ -72,7 +72,7 @@ public class Formula {
         return attachments;
     }
 
-    private void updateAttachments(List<MouseEvent> mouseEvents) {
+    private void updateConnections(List<MouseEvent> mouseEvents) {
         for (MouseEvent event : mouseEvents) {
             if (event.button != GLFW.GLFW_MOUSE_BUTTON_1 || event.action != GLFW.GLFW_RELEASE) {
                 continue;
@@ -137,7 +137,9 @@ public class Formula {
             return;
         }
 
-        if (this.selected.getConnection() == null && attachment.getConnection() == null) {
+        boolean bothNoConnection = this.selected.getConnection() == null && attachment.getConnection() == null;
+        boolean differentNode = this.selected.node() != attachment.node();
+        if (bothNoConnection && differentNode) {
             this.makeConnection(attachment);
         }
 
@@ -186,7 +188,7 @@ public class Formula {
         }
 
         // Handle selecting / removing attachments
-        this.updateAttachments(mouseEvents);
+        this.updateConnections(mouseEvents);
 
         // Handle the closing of nodes
         this.removeBoxes(mouseEvents);
