@@ -8,7 +8,7 @@ import java.util.List;
 
 public class SubNode extends Node {
         public SubNode(WorldCoords pos) {
-            super(pos, 2, 1, "Sub", 4, null);
+            super(pos, 2, 1, "Sub", null);
         }
 
     @Override

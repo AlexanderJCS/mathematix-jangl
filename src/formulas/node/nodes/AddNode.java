@@ -7,7 +7,7 @@ import java.util.List;
 
 public class AddNode extends Node {
     public AddNode(WorldCoords pos) {
-        super(pos, 2, 1, "Add", 3, null);
+        super(pos, 2, 1, "Add",  null);
     }
 
     @Override

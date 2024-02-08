@@ -20,7 +20,6 @@ import java.util.List;
 
 public abstract class Node {
     private final SelectionData selectionData;
-    // TODO: make fields private that can be private
     private final Rect closeBox;
     protected boolean useCloseBox;
     private final Rect dragBar;
@@ -28,10 +27,7 @@ public abstract class Node {
     private final List<Attachment> inputAttachments;
     private final List<Attachment> outputAttachments;
     private final Text nodeTitle;
-    public final int nodeType;
-    public final Float nodeValue;
-    public final int uniqueID;
-    private static int uniqueIDCounter = 0;
+    protected Float nodeValue;
 
     private static final ShaderProgram BAR_COLOR = new ShaderProgram(
             new ColorShader(ColorFactory.fromNorm(0.2f, 0.2f, 0.2f, 1.0f))
@@ -50,7 +46,7 @@ public abstract class Node {
         WorldCoords lastMousePos = new WorldCoords(0, 0);
     }
 
-    public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle, int nodeType, Float nodeValue) {
+    public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle, Float nodeValue) {
         this.rect = new Rect(pos, 0.2f, 0.3f);
         this.dragBar = new Rect(pos, this.rect.getWidth(), this.rect.getWidth() / 5);
         this.closeBox = new Rect(new WorldCoords(pos.x + this.dragBar.getWidth() - this.dragBar.getHeight(), pos.y), this.dragBar.getHeight(), this.dragBar.getHeight());
@@ -71,12 +67,7 @@ public abstract class Node {
 
         this.genAttachments(attachmentsIn, this.inputAttachments, true);
         this.genAttachments(attachmentsOut, this.outputAttachments, false);
-
-        this.nodeType = nodeType;
         this.nodeValue = nodeValue;
-
-        this.uniqueID = uniqueIDCounter;
-        uniqueIDCounter++;
 
         this.selectionData = new SelectionData();
     }
@@ -197,10 +188,6 @@ public abstract class Node {
 
     public List<Attachment> getOutputAttachments() {
         return new ArrayList<>(this.outputAttachments);
-    }
-
-    public static int getUniqueIDCounter() {
-        return uniqueIDCounter;
     }
 
     public abstract float compute(float x);
