@@ -13,6 +13,7 @@ import org.lwjgl.opengl.GL41;
 import ui.Line;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Formula {
@@ -36,7 +37,7 @@ public class Formula {
         float step = (end - start) / n;
         for (int i = 0; i < yValues.length; i++) {
             float xValue = start + step * i;
-            yValues[i] = xValue;
+            yValues[i] = this.getNodes().get(0).compute(xValue);
         }
 
         for (int i = 0; i < yValues.length; i++) {
