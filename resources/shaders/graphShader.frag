@@ -26,10 +26,7 @@ struct Graph {
 
 uniform Graph graph;
 
-float nodeValues[100];
-bool nodeComputed[100];
-
-void computeAddNode(Node node, int nodeIndex, float x) {
+void computeAddNode(inout float[100] nodeValues, Node node, int nodeIndex, float x) {
     float sum = 0;
 
     for (int i = 0; i < node.inputSize; i++) {
@@ -39,7 +36,7 @@ void computeAddNode(Node node, int nodeIndex, float x) {
     nodeValues[nodeIndex] = sum;
 }
 
-void computeGraphNode(Node node, int nodeIndex, float x) {
+void computeGraphNode(inout float[100] nodeValues, Node node, int nodeIndex, float x) {
     // If there is no connection, exit instantly
     if (node.inputSize == 0) {
         nodeValues[nodeIndex] = 0;
@@ -49,11 +46,11 @@ void computeGraphNode(Node node, int nodeIndex, float x) {
     nodeValues[nodeIndex] = nodeValues[node.inputIDs[0]];
 }
 
-void computeSubNode(Node node, int nodeIndex, float x) {
+void computeSubNode(inout float[100] nodeValues, Node node, int nodeIndex, float x) {
     nodeValues[nodeIndex] = nodeValues[node.inputIDs[0]] - nodeValues[node.inputIDs[1]];;
 }
 
-void computeMulNode(Node node, int nodeIndex, float x) {
+void computeMulNode(inout float[100] nodeValues, Node node, int nodeIndex, float x) {
     nodeValues[nodeIndex] = nodeValues[node.inputIDs[0]] * nodeValues[node.inputIDs[1]];;
 }
 
@@ -63,31 +60,27 @@ void computeMulNode(Node node, int nodeIndex, float x) {
  * @param node The node to compute
  * @return the computed value of the node
  */
-float computeNode(Node node, int nodeIndex, float x) {
-    nodeComputed[nodeIndex] = true;
-
+void computeNode(inout float[100] nodeValues, Node node, int nodeIndex, float x) {
     if (node.nodeType == 0) {
-        computeGraphNode(node, nodeIndex, x);
+        computeGraphNode(nodeValues, node, nodeIndex, x);
     } else if (node.nodeType == 1) {
         nodeValues[nodeIndex] = x;
     } else if (node.nodeType == 3) {
-        computeAddNode(node, nodeIndex, x);
+        computeAddNode(nodeValues, node, nodeIndex, x);
     } else if (node.nodeType == 4) {
-        computeSubNode(node, nodeIndex, x);
+        computeSubNode(nodeValues, node, nodeIndex, x);
     } else if (node.nodeType == 5) {
-        computeMulNode(node, nodeIndex, x);
+        computeMulNode(nodeValues, node, nodeIndex, x);
     }
-
-    return nodeValues[nodeIndex];
 }
 
-void copyNodeValues() {
-    nodeValues = graph.originalNodeValues;
-}
-
-void copyNodeComputed() {
-    nodeComputed = graph.originalComputed;
-}
+//void copyNodeValues() {
+//    nodeValues = graph.originalNodeValues;
+//}
+//
+//void copyNodeComputed() {
+//    nodeComputed = graph.originalComputed;
+//}
 
 /**
  * Evaluates the graph the y-coordinate for the x-coordinate, x
@@ -95,10 +88,11 @@ void copyNodeComputed() {
  * @return The y-value for the given x value
  */
 float eval(float x) {
-    copyNodeComputed();
+    bool[100] computed = graph.originalComputed;
+    float[100] values = graph.originalNodeValues;
 
     // While condition: repeat until the final value is calculated
-    while (!nodeComputed[graph.startAt]) {
+    while (!computed[graph.startAt]) {
         // Start at the starting node
         int index = graph.startAt;
 
@@ -110,7 +104,7 @@ float eval(float x) {
             for (int i = 0; i < node.inputSize; i++) {
 
                 // If a connection is not computed, go to that node and restart the process
-                if (!nodeComputed[node.inputIDs[i]]) {
+                if (!computed[node.inputIDs[i]]) {
                     index = node.inputIDs[i];
                     node = graph.nodes[index];  // technically not needed but it's nice-to-have just in case
                     allConnectionsComputed = false;
@@ -120,13 +114,14 @@ float eval(float x) {
 
             // If all connections are computed, compute this node and restart at the beginning node
             if (allConnectionsComputed) {
-                computeNode(node, index, x);
+                computed[index] = true;
+                computeNode(values, node, index, x);
                 break;
             }
         }
     }
 
-    return nodeValues[graph.startAt];
+    return values[graph.startAt];
 }
 
 /**
@@ -153,7 +148,7 @@ void main() {
         mapRange(texCoords.y, vec2(0, 1), yRange)
     );
 
-    copyNodeValues();
+    // copyNodeValues();
 
     coords.y = -coords.y;  // flip the graph due to how texture coords are
 
