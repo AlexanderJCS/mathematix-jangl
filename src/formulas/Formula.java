@@ -137,8 +137,12 @@ public class Formula {
             return;
         }
 
+        // do not double-up on connections
         boolean bothNoConnection = this.selected.getConnection() == null && attachment.getConnection() == null;
+
+        // do not connect to itself
         boolean differentNode = this.selected.node() != attachment.node();
+
         if (bothNoConnection && differentNode) {
             this.makeConnection(attachment);
         }
