@@ -61,10 +61,6 @@ public class Formula {
         }
     }
 
-    public List<Node> getNodes() {
-        return new ArrayList<>(this.nodes);
-    }
-
     private List<Attachment> getAttachments() {
         List<Attachment> attachments = new ArrayList<>();
 
