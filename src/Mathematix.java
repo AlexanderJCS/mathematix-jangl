@@ -31,7 +31,7 @@ public class Mathematix {
             this.draw();
             this.update();
 
-            Window.setTitle("Mathematix | " + Math.round(Clock.getSmoothedFps()) + " FPS | " + (Math.round(100000 / Clock.getSmoothedFps()) / 100f) + " ms");
+            Window.setTitle("Mathematix | " + Math.round(Clock.getSmoothedFps()) + " FPS | " + (Math.round(100000 / Clock.getSmoothedFps()) / 1000f) + " ms");
 
             Jangl.update();
         }
