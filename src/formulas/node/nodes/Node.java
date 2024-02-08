@@ -1,10 +1,6 @@
 package formulas.node.nodes;
 
 import formulas.node.Attachment;
-import formulas.node.Connection;
-import formulas.Formula;
-import formulas.node.nodes.gpugraph.GpuGraphVertex;
-import formulas.node.nodes.gpugraph.GpuGraph;
 import jangl.color.ColorFactory;
 import jangl.coords.WorldCoords;
 import jangl.graphics.font.Font;
@@ -201,48 +197,6 @@ public abstract class Node {
 
     public List<Attachment> getOutputAttachments() {
         return new ArrayList<>(this.outputAttachments);
-    }
-
-    private void addGraphVertex(GpuGraph graph) {
-        int connections = 0;
-        for (Attachment attachment : this.inputAttachments) {
-            if (attachment.getConnection() != null) {
-                connections++;
-            }
-        }
-
-        int[] inputIDs = new int[connections];
-        int index = 0;
-        for (Attachment inputAttachment : this.inputAttachments) {
-            Connection connection = inputAttachment.getConnection();
-
-            if (connection == null) {
-                continue;
-            }
-
-            inputIDs[index] = connection.getOut().node().uniqueID;
-            index++;
-        }
-
-        graph.addVertex(new GpuGraphVertex(inputIDs, this.nodeType, this.nodeValue), this.uniqueID);
-
-        // TODO: this code is iterating over all the attachments for a second time. some optimization can be done
-        for (Attachment attachment : this.inputAttachments) {
-            Connection connection = attachment.getConnection();
-
-            if (connection == null || connection.getOut().node().uniqueID == this.uniqueID) {
-                continue;
-            }
-
-            connection.getOut().node().addGraphVertex(graph);
-        }
-    }
-
-    public GpuGraph getGpuGraph() {
-        GpuGraph graph = new GpuGraph(this.uniqueID);
-        this.addGraphVertex(graph);
-
-        return graph;
     }
 
     public static int getUniqueIDCounter() {

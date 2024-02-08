@@ -1,6 +1,5 @@
 package grapher;
 
-import formulas.node.nodes.gpugraph.GpuGraph;
 import jangl.coords.WorldCoords;
 import jangl.graphics.shaders.ShaderProgram;
 import jangl.graphics.shaders.premade.TextureShaderVert;

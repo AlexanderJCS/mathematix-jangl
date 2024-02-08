@@ -1,6 +1,5 @@
 package formulas;
 
-import formulas.node.nodes.gpugraph.GpuGraph;
 import formulas.node.Attachment;
 import formulas.node.Connection;
 import formulas.node.nodes.*;
@@ -44,10 +43,6 @@ public class Formula {
             int location = GL41.glGetUniformLocation(programID, uniformName + "[" + i + "]");
             GL41.glUniform1f(location, yValues[i]);
         }
-    }
-
-    public GpuGraph getGpuGraph() {
-        return this.nodes.get(0).getGpuGraph();
     }
 
     public List<Node> getNodes() {
