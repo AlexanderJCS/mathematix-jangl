@@ -37,7 +37,7 @@ public class Formula {
         float step = (end - start) / n;
         for (int i = 0; i < yValues.length; i++) {
             float xValue = start + step * i;
-            yValues[i] = this.getNodes().get(0).compute(xValue);
+            yValues[i] = this.getNodes().get(0).compute(xValue);  // TODO: Make a function to get the graph node
         }
 
         for (int i = 0; i < yValues.length; i++) {
