@@ -75,6 +75,3 @@ void main() {
 
     fragColor = vec4(0.0, 0.0, 0.0, 1.0);
 }
-
-// TODO: verify if this needs to be here
-#undef NUM_INPUTS
