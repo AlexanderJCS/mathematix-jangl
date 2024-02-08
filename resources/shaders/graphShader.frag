@@ -30,11 +30,6 @@ float mapRange(float value, vec2 inRange, vec2 outRange) {
     return mappedValue;
 }
 
-float closestIndex(float x) {
-    // TODO: linearly interpolate between indices
-    return int(mapRange(x, xRange, vec2(0, NUM_INPUTS - 1)));
-}
-
 float calc(float x) {
     float closestIndex = mapRange(x, xRange, vec2(0, NUM_INPUTS - 1));
     float onlyDecimals = closestIndex - floor(closestIndex);
@@ -54,8 +49,6 @@ void main() {
     // Derivative of the function
     // Since we can't do limits, we'll just use a really small value for h as a good approximation
     // f'(x) = (f(x + h) - f(x)) / h
-
-    // TODO: once linear interpolation is done, lower the h value
     float h = 0.0001;
     float fPrime = (calc(coords.x + h) - yValue) / h;  // f`(x)
 
