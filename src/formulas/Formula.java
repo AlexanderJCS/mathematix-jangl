@@ -27,7 +27,7 @@ public class Formula {
         this.nodes.add(new GraphNode(new WorldCoords(0.7f, 0.8f)));
         this.nodes.add(new DivNode(new WorldCoords(0.4f, 0.8f)));
         this.nodes.add(new XNode(new WorldCoords(0.1f, 0.95f)));
-        this.nodes.add(new ValueNode(new WorldCoords(0.1f, 0.45f), 3));
+        this.nodes.add(new ValueNode(new WorldCoords(0.1f, 0.45f)));
 
         LinkedHashMap<String, Class<? extends Node>> selectionItems = new LinkedHashMap<>();
         selectionItems.put("X", XNode.class);
