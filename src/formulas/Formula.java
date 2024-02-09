@@ -1,5 +1,6 @@
 package formulas;
 
+import com.sun.jdi.Value;
 import formulas.node.Attachment;
 import formulas.node.Connection;
 import formulas.node.nodes.*;
@@ -24,9 +25,9 @@ public class Formula {
 
         this.nodes = new ArrayList<>();
         this.nodes.add(new GraphNode(new WorldCoords(0.7f, 0.8f)));
-        this.nodes.add(new MulNode(new WorldCoords(0.4f, 0.8f)));
+        this.nodes.add(new DivNode(new WorldCoords(0.4f, 0.8f)));
         this.nodes.add(new XNode(new WorldCoords(0.1f, 0.95f)));
-        this.nodes.add(new XNode(new WorldCoords(0.1f, 0.45f)));
+        this.nodes.add(new ValueNode(new WorldCoords(0.1f, 0.45f), 3));
     }
 
     private Node getGraphNode() {
