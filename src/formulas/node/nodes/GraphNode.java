@@ -1,6 +1,5 @@
 package formulas.node.nodes;
 
-import formulas.node.Attachment;
 import jangl.coords.WorldCoords;
 
 public class GraphNode extends Node {
