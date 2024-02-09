@@ -17,6 +17,10 @@ public class AddNode extends Node {
         float sum = 0;
 
         for (Attachment input : inputs) {
+            if (input.getConnection() == null) {
+                continue;
+            }
+
             sum += input.getConnection().getOut().node().compute(x);
         }
 
