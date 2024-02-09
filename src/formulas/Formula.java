@@ -24,10 +24,7 @@ public class Formula {
         this.selectionLine = new Line(new WorldCoords(0, 0), new WorldCoords(0, 0), 0.01f);
 
         this.nodes = new ArrayList<>();
-        this.nodes.add(new GraphNode(new WorldCoords(0.7f, 0.8f)));
-        this.nodes.add(new DivNode(new WorldCoords(0.4f, 0.8f)));
-        this.nodes.add(new XNode(new WorldCoords(0.1f, 0.95f)));
-        this.nodes.add(new ValueNode(new WorldCoords(0.1f, 0.45f)));
+        this.nodes.add(new GraphNode(new WorldCoords(0.4f, 0.8f)));
 
         LinkedHashMap<String, Class<? extends Node>> selectionItems = new LinkedHashMap<>();
         selectionItems.put("X", XNode.class);
@@ -37,7 +34,7 @@ public class Formula {
         selectionItems.put("Mul", MulNode.class);
         selectionItems.put("Div", DivNode.class);
 
-        this.nodeCreator = new NodeCreator(selectionItems);
+        this.nodeCreator = new NodeCreator(selectionItems, this.nodes);
     }
 
     private Node getGraphNode() {

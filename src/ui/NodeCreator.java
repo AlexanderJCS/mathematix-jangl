@@ -23,6 +23,7 @@ public class NodeCreator {
     // TODO: refactor: make an object called TitledRect that contains a text and a rect
     private final List<Rect> itemRects;
     private final List<Text> itemTexts;
+    private final List<Node> nodes;
     private boolean visible;
 
     private static final float HEIGHT_PER_ITEM = 0.05f;
@@ -34,8 +35,9 @@ public class NodeCreator {
             new ColorShader(ColorFactory.fromNorm(0.2f, 0.2f, 0.2f, 1.0f))
     );
 
-    public NodeCreator(LinkedHashMap<String, Class<? extends Node>> selectionItems) {
+    public NodeCreator(LinkedHashMap<String, Class<? extends Node>> selectionItems, List<Node> nodes) {
         this.visible = false;
+        this.nodes = nodes;
 
         this.selectionItems = selectionItems;
         this.rect = new Rect(new WorldCoords(0, 0), 0.2f, HEIGHT_PER_ITEM * selectionItems.size());
@@ -93,6 +95,21 @@ public class NodeCreator {
             }
 
             if (event.button == GLFW.GLFW_MOUSE_BUTTON_1) {
+                if (this.visible) {
+                    for (int i = 0; i < this.itemRects.size(); i++) {
+                        if (Shape.collides(this.itemRects.get(i), Mouse.getMousePos())) {
+                            Node node = this.createNode(
+                                    this.itemTexts.get(i).getText(),
+                                    Mouse.getMousePos()
+                            );
+
+                            if (node != null) {
+                                this.nodes.add(node);
+                            }
+                        }
+                    }
+                }
+
                 this.setVisible(false);
             }
 
