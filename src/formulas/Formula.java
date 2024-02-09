@@ -88,14 +88,14 @@ public class Formula {
             }
 
             if (!selected) {
-                this.selected = null;
+                this.select(null);
             }
         }
     }
 
     private void makeConnection(Attachment attachment) {
         if (this.selected == null || this.selected.isInput() == attachment.isInput()) {
-            this.selected = null;
+            this.select(null);
             return;
         }
 
@@ -121,7 +121,7 @@ public class Formula {
 
     private void performAction(Attachment attachment) {
         if (this.selected == null && attachment != null && attachment.getConnection() == null) {
-            this.selected = attachment;
+            this.select(attachment);
             return;
         }
 
@@ -133,7 +133,7 @@ public class Formula {
         }
 
         if (this.selected == attachment) {
-            this.selected = null;
+            this.select(null);
             return;
         }
 
@@ -147,7 +147,7 @@ public class Formula {
             this.makeConnection(attachment);
         }
 
-        this.selected = null;
+        this.select(null);
     }
 
     /**
@@ -184,12 +184,23 @@ public class Formula {
         }
     }
 
-    public void update(List<MouseEvent> mouseEvents) {
-        // Update the selection line
+    /**
+     * Updates this.selected and the selection line.
+     */
+    private void select(Attachment attachment) {
+        this.selected = attachment;
+        this.updateSelectionLine();
+    }
+
+    private void updateSelectionLine() {
         if (this.selected != null) {
             this.selectionLine.setStart(this.selected.circle().getTransform().getCenter());
             this.selectionLine.setEnd(Mouse.getMousePos());
         }
+    }
+
+    public void update(List<MouseEvent> mouseEvents) {
+        this.updateSelectionLine();
 
         // Handle selecting / removing attachments
         this.updateConnections(mouseEvents);
