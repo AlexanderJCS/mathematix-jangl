@@ -1,6 +1,5 @@
 package formulas;
 
-import com.sun.jdi.Value;
 import formulas.node.Attachment;
 import formulas.node.Connection;
 import formulas.node.nodes.*;
@@ -11,14 +10,15 @@ import jangl.shapes.Shape;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL41;
 import ui.Line;
+import ui.NodeCreator;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Formula {
     private final List<Node> nodes;
     private Attachment selected;
     private final Line selectionLine;
+    private final NodeCreator nodeCreator;
 
     public Formula() {
         this.selectionLine = new Line(new WorldCoords(0, 0), new WorldCoords(0, 0), 0.01f);
@@ -28,6 +28,16 @@ public class Formula {
         this.nodes.add(new DivNode(new WorldCoords(0.4f, 0.8f)));
         this.nodes.add(new XNode(new WorldCoords(0.1f, 0.95f)));
         this.nodes.add(new ValueNode(new WorldCoords(0.1f, 0.45f), 3));
+
+        LinkedHashMap<String, Class<? extends Node>> selectionItems = new LinkedHashMap<>();
+        selectionItems.put("X", XNode.class);
+        selectionItems.put("Value", ValueNode.class);
+        selectionItems.put("Add", AddNode.class);
+        selectionItems.put("Sub", SubNode.class);
+        selectionItems.put("Mul", MulNode.class);
+        selectionItems.put("Div", DivNode.class);
+
+        this.nodeCreator = new NodeCreator(selectionItems);
     }
 
     private Node getGraphNode() {
@@ -212,6 +222,8 @@ public class Formula {
         for (Node node : this.nodes) {
             node.update(mouseEvents);
         }
+
+        this.nodeCreator.update(mouseEvents);
     }
 
     public void draw() {
@@ -233,5 +245,7 @@ public class Formula {
         if (this.selected != null) {
             this.selectionLine.draw();
         }
+
+        this.nodeCreator.draw();
     }
 }
