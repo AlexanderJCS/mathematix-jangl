@@ -3,8 +3,12 @@ import grapher.Graph;
 import jangl.Jangl;
 import jangl.io.Window;
 import jangl.io.mouse.Mouse;
+import jangl.io.mouse.MouseEvent;
 import jangl.io.mouse.Scroll;
+import jangl.io.mouse.ScrollEvent;
 import jangl.time.Clock;
+
+import java.util.List;
 
 public class Mathematix {
     private final Graph graph;
@@ -22,7 +26,11 @@ public class Mathematix {
     }
 
     private void update() {
-        this.formulaGui.update(Mouse.getEvents(), Scroll.getEvents());
+        List<MouseEvent> mouseEvents = Mouse.getEvents();
+        List<ScrollEvent> scrollEvents = Scroll.getEvents();
+
+        this.formulaGui.update(mouseEvents, scrollEvents);
+        this.graph.update(scrollEvents);
     }
 
     public void run() {

@@ -24,19 +24,19 @@ public class GraphShaderFrag extends FragmentShader {
     }
 
     public void setXRange(Vector2f xRange) {
-        this.xRange = xRange;
+        this.xRange = new Vector2f(xRange);
     }
 
     public Vector2f getYRange() {
-        return this.yRange;
+        return new Vector2f(this.yRange);
     }
 
     public void setYRange(Vector2f yRange) {
-        this.yRange = yRange;
+        this.yRange = new Vector2f(yRange);
     }
 
     public float getRadiusUV() {
-        return radiusUV;
+        return this.radiusUV;
     }
 
     public void setRadiusUV(float radiusUV) {
