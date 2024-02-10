@@ -20,7 +20,7 @@ public class GraphShaderFrag extends FragmentShader {
     }
 
     public Vector2f getXRange() {
-        return this.xRange;
+        return new Vector2f(this.xRange);
     }
 
     public void setXRange(Vector2f xRange) {

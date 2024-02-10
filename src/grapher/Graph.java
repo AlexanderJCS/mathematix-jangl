@@ -52,6 +52,9 @@ public class Graph {
         // Adjust the new range to be centered around the given coordinate
         xRange.add(new Vector2f(x - xRangeCenter));
         yRange.add(new Vector2f(y - yRangeCenter));
+
+        shader.setXRange(xRange);
+        shader.setYRange(yRange);
     }
 
     public void update(List<ScrollEvent> scrollEvents) {

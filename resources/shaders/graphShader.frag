@@ -10,7 +10,7 @@ uniform float yValues[1000];
 in vec2 texCoords;
 out vec4 fragColor;
 
-float RADIUS = radiusUV * (abs(xRange.x) + abs(xRange.y));
+float RADIUS = (xRange.y - xRange.x) * radiusUV;
 
 /**
  * Map a value from one range to another
