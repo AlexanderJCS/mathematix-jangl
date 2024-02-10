@@ -16,12 +16,14 @@ import jangl.shapes.Rect;
 import jangl.shapes.Shape;
 import jangl.shapes.Transform;
 import org.lwjgl.glfw.GLFW;
+import ui.drag.Draggable;
+import ui.drag.Dragger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Node {
-    private final SelectionData selectionData;
+public abstract class Node implements Draggable {
+    private final Dragger dragger;
     private final Rect closeBox;
     private boolean useCloseBox;
     private final Rect dragBar;
@@ -42,11 +44,6 @@ public abstract class Node {
     private static final ShaderProgram CLOSE_COLOR = new ShaderProgram(
             new ColorShader(ColorFactory.fromNorm(0.8f, 0.2f, 0.2f, 1.0f))
     );
-
-    private static class SelectionData {
-        boolean selected = false;
-        WorldCoords lastMousePos = new WorldCoords(0, 0);
-    }
 
     public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle, Float nodeValue) {
         this.rect = new Rect(pos, 0.2f, 0.2f);
@@ -74,7 +71,7 @@ public abstract class Node {
         this.genAttachments(attachmentsOut, this.outputAttachments, false);
         this.nodeValue = nodeValue;
 
-        this.selectionData = new SelectionData();
+        this.dragger = new Dragger(this);
     }
 
     protected void useCloseBox(boolean use) {
@@ -189,7 +186,7 @@ public abstract class Node {
     private void updateSelectionData(List<MouseEvent> mouseEvents) {
         for (MouseEvent event : mouseEvents) {
             if (event.action == GLFW.GLFW_RELEASE) {
-                this.selectionData.selected = false;
+                this.dragger.deselect();
             }
 
             if (event.button != GLFW.GLFW_MOUSE_BUTTON_1 || !Shape.collides(this.dragBar, Mouse.getMousePos())) {
@@ -197,9 +194,7 @@ public abstract class Node {
             }
 
             if (event.action == GLFW.GLFW_PRESS) {
-                this.selectionData.selected = true;
-                this.selectionData.lastMousePos = Mouse.getMousePos();
-
+                this.dragger.select();
             }
         }
     }
@@ -218,13 +213,8 @@ public abstract class Node {
         }
     }
 
-    private void drag() {
-        WorldCoords mousePos = Mouse.getMousePos();
-        WorldCoords offset = new WorldCoords(
-                mousePos.x - this.selectionData.lastMousePos.x,
-                mousePos.y - this.selectionData.lastMousePos.y
-        );
-
+    @Override
+    public void drag(WorldCoords offset) {
         this.nodeTitle.getTransform().shift(offset);
         this.rect.getTransform().shift(offset);
         this.dragBar.getTransform().shift(offset);
@@ -243,11 +233,7 @@ public abstract class Node {
 
     public void update(List<MouseEvent> mouseEvents) {
         this.updateSelectionData(mouseEvents);
-
-        if (this.selectionData.selected) {
-            this.drag();
-            this.selectionData.lastMousePos = Mouse.getMousePos();
-        }
+        this.dragger.update();
     }
 
     public List<Attachment> getInputAttachments() {
