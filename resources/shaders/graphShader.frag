@@ -86,13 +86,13 @@ void main() {
 
     float gridlineSep = getGridlineSpacing(abs(xRange.y - xRange.x));
     if (mod(coords.x, gridlineSep) < RADIUS / 1.5 || mod(coords.y, gridlineSep) < RADIUS / 1.5) {
-        fragColor = vec4(0.5, 0.5, 0.5, 1.0);
+        fragColor = vec4(0.4, 0.4, 0.4, 1.0);
         return;
     }
 
     // Draw sub-grid lines, which occur 5x as often as the main grid lines
     if (mod(coords.x, gridlineSep / 4) < RADIUS / 2 || mod(coords.y, gridlineSep / 4) < RADIUS / 2) {
-        fragColor = vec4(0.3, 0.3, 0.3, 1.0);
+        fragColor = vec4(0.2, 0.2, 0.2, 1.0);
         return;
     }
 
