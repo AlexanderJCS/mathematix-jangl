@@ -42,16 +42,16 @@ public class Graph {
         float yRangeCenter = (yRange.x + yRange.y) / 2;
 
         // Adjust the new range to be centered around the given coordinate
-        xRange.sub(new Vector2f(x - xRangeCenter));
-        yRange.add(new Vector2f(y + yRangeCenter));
+        xRange.sub(new Vector2f(x + xRangeCenter));
+        yRange.sub(new Vector2f(y + yRangeCenter));
 
         // Adjust the new range to be scaled by the given amount
         xRange.mul(amount);
         yRange.mul(amount);
 
         // Adjust the new range to be centered around the given coordinate
-        xRange.add(new Vector2f(x - xRangeCenter));
-        yRange.sub(new Vector2f(y + yRangeCenter));
+        xRange.add(new Vector2f(x + xRangeCenter));
+        yRange.add(new Vector2f(y + yRangeCenter));
 
         shader.setXRange(xRange);
         shader.setYRange(yRange);
@@ -62,11 +62,11 @@ public class Graph {
         WorldCoords delta = new WorldCoords(mousePos);
         delta.sub(this.rect.getTransform().getCenter());
 
-        float xAdjusted = delta.x / this.rect.getWidth() * this.getShader().getXRange().x;
+        float xAdjusted = delta.x / this.rect.getWidth() * this.getShader().getXRange().y;
         float yAdjusted = delta.y / this.rect.getHeight() * this.getShader().getYRange().y;
 
         for (ScrollEvent event : scrollEvents) {
-            if (event.yOffset > 0) {
+            if (event.yOffset < 0) {
                 this.zoom(xAdjusted, yAdjusted, 1.1f);
             } else {
                 this.zoom(xAdjusted, yAdjusted, 0.9f);

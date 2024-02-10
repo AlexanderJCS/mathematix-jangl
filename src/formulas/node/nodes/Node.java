@@ -188,6 +188,10 @@ public abstract class Node {
 
     private void updateSelectionData(List<MouseEvent> mouseEvents) {
         for (MouseEvent event : mouseEvents) {
+            if (event.action == GLFW.GLFW_RELEASE) {
+                this.selectionData.selected = false;
+            }
+
             if (event.button != GLFW.GLFW_MOUSE_BUTTON_1 || !Shape.collides(this.dragBar, Mouse.getMousePos())) {
                 continue;
             }
@@ -196,8 +200,6 @@ public abstract class Node {
                 this.selectionData.selected = true;
                 this.selectionData.lastMousePos = Mouse.getMousePos();
 
-            } else if (event.action == GLFW.GLFW_RELEASE) {
-                this.selectionData.selected = false;
             }
         }
     }
