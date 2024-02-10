@@ -57,7 +57,19 @@ public class Graph {
         shader.setYRange(yRange);
     }
 
+    /**
+     * Clamps the graph to the right side of the screen, ensuring that it does not shift when the window is resized.
+     */
+    private void clampToRight() {
+        this.rect.getTransform().setPos(
+                WorldCoords.getTopRight().x - this.rect.getWidth() / 2,
+                this.rect.getTransform().getCenter().y
+        );
+    }
+
     public void update(List<ScrollEvent> scrollEvents) {
+        this.clampToRight();
+
         WorldCoords mousePos = Mouse.getMousePos();
         WorldCoords delta = new WorldCoords(mousePos);
         delta.sub(this.rect.getTransform().getCenter());
