@@ -3,6 +3,8 @@ package formulas.node;
 import ui.Line;
 
 public class Connection {
+    public static final float THICKNESS = 0.005f;
+
     private final Attachment out;
     private final Attachment in;
     private final Line line;
@@ -14,7 +16,7 @@ public class Connection {
         this.line = new Line(
                 this.out.circle().getTransform().getCenter(),
                 this.in.circle().getTransform().getCenter(),
-                0.01f
+                THICKNESS
         );
     }
 

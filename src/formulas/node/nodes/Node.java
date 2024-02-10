@@ -23,7 +23,7 @@ import java.util.List;
 public abstract class Node {
     private final SelectionData selectionData;
     private final Rect closeBox;
-    protected boolean useCloseBox;
+    private boolean useCloseBox;
     private final Rect dragBar;
     private final Rect rect;
     private final List<Attachment> inputAttachments;
@@ -77,6 +77,11 @@ public abstract class Node {
         this.selectionData = new SelectionData();
     }
 
+    protected void useCloseBox(boolean use) {
+        this.useCloseBox = use;
+        this.refreshTextPos();  // since the text pos depends on if there's a close box
+    }
+
     /**
      * Refreshes the position of the close box to be at the top right of the drag bar.
      */
@@ -110,9 +115,14 @@ public abstract class Node {
     private void refreshTextPos() {
         Transform dragTransform = this.dragBar.getTransform();
 
+        float xOffset = 0;
+        if (this.useCloseBox) {
+            xOffset = -this.closeBox.getWidth() * this.closeBox.getTransform().getScaleX() / 2;
+        }
+
         this.nodeTitle.getTransform().setPos(
                 new WorldCoords(
-                        dragTransform.getCenter().x - this.closeBox.getWidth() * this.closeBox.getTransform().getScaleX() / 2,
+                        dragTransform.getCenter().x + xOffset,
                         dragTransform.getCenter().y
                 )
         );
@@ -123,7 +133,7 @@ public abstract class Node {
             attachments.add(
                     new Attachment(
                             this,
-                            new Circle(new WorldCoords(0, 0), 0.02f, 16),
+                            new Circle(new WorldCoords(0, 0), 0.015f, 16),
                             input
                     )
             );

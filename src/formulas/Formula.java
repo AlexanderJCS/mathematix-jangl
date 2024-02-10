@@ -6,7 +6,6 @@ import formulas.node.nodes.*;
 import jangl.coords.WorldCoords;
 import jangl.io.mouse.Mouse;
 import jangl.io.mouse.MouseEvent;
-import jangl.io.mouse.Scroll;
 import jangl.io.mouse.ScrollEvent;
 import jangl.shapes.Shape;
 import org.lwjgl.glfw.GLFW;
@@ -24,7 +23,7 @@ public class Formula {
     private float scale;
 
     public Formula() {
-        this.selectionLine = new Line(new WorldCoords(0, 0), new WorldCoords(0, 0), 0.01f);
+        this.selectionLine = new Line(new WorldCoords(0, 0), new WorldCoords(0, 0), Connection.THICKNESS);
 
         this.nodes = new ArrayList<>();
         this.nodes.add(new GraphNode(new WorldCoords(0.4f, 0.8f)));
