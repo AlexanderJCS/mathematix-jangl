@@ -61,7 +61,7 @@ public abstract class Node {
         )
                 .setWrapWidth(this.rect.getWidth())
                 .setJustification(Justify.CENTER)
-                .setHeight(this.dragBar.getHeight() - 0.01f)
+                .setHeight(this.dragBar.getHeight() * 0.9f)
                 .toText();
 
         this.refreshTextPos();
