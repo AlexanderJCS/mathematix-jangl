@@ -4,9 +4,12 @@ import formulas.node.Attachment;
 import formulas.node.Connection;
 import formulas.node.nodes.*;
 import jangl.coords.WorldCoords;
+import jangl.graphics.shaders.ShaderProgram;
+import jangl.graphics.shaders.premade.TextureShaderVert;
 import jangl.io.mouse.Mouse;
 import jangl.io.mouse.MouseEvent;
 import jangl.io.mouse.ScrollEvent;
+import jangl.shapes.Rect;
 import jangl.shapes.Shape;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL41;
@@ -16,13 +19,20 @@ import ui.NodeCreator;
 import java.util.*;
 
 public class Formula {
+    private final Rect background;
     private final List<Node> nodes;
     private Attachment selected;
     private final Line selectionLine;
     private final NodeCreator nodeCreator;
     private float scale;
 
+    private static final ShaderProgram BG_SHADER = new ShaderProgram(
+            new TextureShaderVert(),
+            new NodeAreaBackgroundFrag()
+    );
+
     public Formula() {
+        this.background = new Rect(new WorldCoords(0, 1), WorldCoords.getTopRight().x, 1);
         this.selectionLine = new Line(new WorldCoords(0, 0), new WorldCoords(0, 0), Connection.THICKNESS);
 
         this.nodes = new ArrayList<>();
@@ -247,6 +257,9 @@ public class Formula {
     }
 
     public void draw() {
+        // Draw background
+        this.background.draw(BG_SHADER);
+
         // Draw nodes
         for (Node node : this.nodes) {
             node.draw();
