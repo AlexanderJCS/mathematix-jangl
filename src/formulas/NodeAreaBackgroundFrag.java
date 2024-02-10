@@ -1,5 +1,6 @@
 package formulas;
 
+import jangl.coords.WorldCoords;
 import jangl.graphics.shaders.FragmentShader;
 import org.joml.Vector2f;
 import org.lwjgl.opengl.GL41;
@@ -37,5 +38,8 @@ public class NodeAreaBackgroundFrag extends FragmentShader {
 
         location = GL41.glGetUniformLocation(programID, "dotRadius");
         GL41.glUniform1f(location, this.dotRadius);
+
+        location = GL41.glGetUniformLocation(programID, "widthHeight");
+        GL41.glUniform2f(location, WorldCoords.getTopRight().x, WorldCoords.getTopRight().y);
     }
 }
