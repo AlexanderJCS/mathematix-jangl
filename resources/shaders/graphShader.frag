@@ -36,6 +36,23 @@ float calc(float x) {
     return mix(yValues[int(closestIndex)], yValues[int(closestIndex) + 1], onlyDecimals);
 }
 
+float getGridlineSpacing(float rangeX) {
+    // TODO: define a formula for this instead of relying on if statements
+    if (rangeX < 0.4) {
+        return 0.04;
+    } if (rangeX < 4) {
+        return 0.4;
+    } if (rangeX < 40) {
+        return 4;
+    } if (rangeX < 400) {
+        return 40;
+    } if (rangeX < 4000) {
+        return 400;
+    } if (rangeX < 40000) {
+        return 4000;
+    }
+}
+
 void main() {
     vec2 coords = vec2(
         mapRange(texCoords.x, vec2(0, 1), xRange),
@@ -65,10 +82,20 @@ void main() {
     }
 
     // Check for grid lines
-    if (mod(coords.x, 1) < RADIUS / 3 || mod(coords.y, 1) < RADIUS / 3) {
+    float rangeX = xRange.y - xRange.x;
+
+    // Categorize the x value, based on width, on how often a gridline should occur
+    float gridlineSep = getGridlineSpacing(abs(xRange.y - xRange.x));
+    if (mod(coords.x, gridlineSep) < RADIUS / 1.5 || mod(coords.y, gridlineSep) < RADIUS / 1.5) {
         fragColor = vec4(0.5, 0.5, 0.5, 1.0);
         return;
     }
 
-    fragColor = vec4(0.0, 0.0, 0.0, 0.1);
+    // Draw sub-grid lines, which occur 5x as often as the main grid lines
+    if (mod(coords.x, gridlineSep / 4) < RADIUS / 2 || mod(coords.y, gridlineSep / 4) < RADIUS / 2) {
+        fragColor = vec4(0.3, 0.3, 0.3, 1.0);
+        return;
+    }
+
+    fragColor = vec4(0.05, 0.05, 0.05, 1);
 }

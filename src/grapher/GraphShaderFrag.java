@@ -16,7 +16,7 @@ public class GraphShaderFrag extends FragmentShader {
 
         this.xRange = new Vector2f(-10, 10);
         this.yRange = new Vector2f(-10, 10);
-        this.radiusUV = 0.0025f;
+        this.radiusUV = 0.003f;
     }
 
     public Vector2f getXRange() {
