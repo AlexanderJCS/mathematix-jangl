@@ -239,10 +239,6 @@ public abstract class Node {
     public abstract float compute(float x);
 
     public void setScale(float scale) {
-        System.out.println(this.dragBar.getHeight());
-        System.out.println(this.dragBar.getHeight() * scale);
-        System.out.println(0.05f * scale);
-
         this.rect.getTransform().setScale(scale);
         this.nodeTitle.setHeight(0.05f * scale);
         this.dragBar.getTransform().setScale(scale);
