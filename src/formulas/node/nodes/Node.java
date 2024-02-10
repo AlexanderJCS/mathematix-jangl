@@ -240,7 +240,7 @@ public abstract class Node {
 
     public void setScale(float scale) {
         this.rect.getTransform().setScale(scale);
-        this.nodeTitle.setHeight(0.05f * scale);
+        this.nodeTitle.getTransform().setScale(scale);
         this.dragBar.getTransform().setScale(scale);
         this.closeBox.getTransform().setScale(scale);
         this.inputAttachments.forEach(attachment -> attachment.circle().getTransform().setScale(scale));
