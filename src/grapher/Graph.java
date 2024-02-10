@@ -3,9 +3,11 @@ package grapher;
 import jangl.coords.WorldCoords;
 import jangl.graphics.shaders.ShaderProgram;
 import jangl.graphics.shaders.premade.TextureShaderVert;
+import jangl.io.mouse.Mouse;
 import jangl.io.mouse.ScrollEvent;
 import jangl.shapes.Rect;
 import formulas.Formula;
+import org.joml.Vector2f;
 
 import java.util.List;
 
@@ -29,25 +31,42 @@ public class Graph {
         this.getShader().setFormula(gpuGraph);
     }
 
-    private void zoomIn(float amount) {
-        // TODO: use the amount argument
+    private void zoom(float x, float y, float amount) {
         GraphShaderFrag shader = this.getShader();
-        shader.setXRange(shader.getXRange().mul(1.1f));
-        shader.setYRange(shader.getYRange().mul(1.1f));
-    }
 
-    private void zoomOut(float amount) {
-        GraphShaderFrag shader = this.getShader();
-        shader.setXRange(shader.getXRange().mul(0.9f));
-        shader.setYRange(shader.getYRange().mul(0.9f));
+        Vector2f xRange = shader.getXRange();
+        Vector2f yRange = shader.getYRange();
+
+        // Get the current center
+        float xRangeCenter = (xRange.x + xRange.y) / 2;
+        float yRangeCenter = (yRange.x + yRange.y) / 2;
+
+        // Adjust the new range to be centered around the given coordinate
+        xRange.sub(new Vector2f(x - xRangeCenter));
+        yRange.sub(new Vector2f(y - yRangeCenter));
+
+        // Adjust the new range to be scaled by the given amount
+        xRange.mul(amount);
+        yRange.mul(amount);
+
+        // Adjust the new range to be centered around the given coordinate
+        xRange.add(new Vector2f(x - xRangeCenter));
+        yRange.add(new Vector2f(y - yRangeCenter));
     }
 
     public void update(List<ScrollEvent> scrollEvents) {
+        WorldCoords mousePos = Mouse.getMousePos();
+        WorldCoords delta = new WorldCoords(mousePos);
+        delta.sub(this.rect.getTransform().getCenter());
+
+        float xAdjusted = delta.x / this.rect.getWidth() * this.getShader().getXRange().x;
+        float yAdjusted = delta.y / this.rect.getHeight() * this.getShader().getYRange().y;
+
         for (ScrollEvent event : scrollEvents) {
             if (event.yOffset > 0) {
-                this.zoomIn((float) event.yOffset);
+                this.zoom(xAdjusted, yAdjusted, 1.1f);
             } else {
-                this.zoomOut((float) event.yOffset);
+                this.zoom(xAdjusted, yAdjusted, 0.9f);
             }
         }
     }
