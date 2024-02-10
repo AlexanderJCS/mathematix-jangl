@@ -7,6 +7,7 @@ import jangl.io.mouse.Mouse;
 import jangl.io.mouse.ScrollEvent;
 import jangl.shapes.Rect;
 import formulas.Formula;
+import jangl.shapes.Shape;
 import org.joml.Vector2f;
 
 import java.util.List;
@@ -67,9 +68,7 @@ public class Graph {
         );
     }
 
-    public void update(List<ScrollEvent> scrollEvents) {
-        this.clampToRight();
-
+    private void zoomAroundMouse(float amount) {
         WorldCoords mousePos = Mouse.getMousePos();
         WorldCoords delta = new WorldCoords(mousePos);
         delta.sub(this.rect.getTransform().getCenter());
@@ -77,11 +76,22 @@ public class Graph {
         float xAdjusted = delta.x / this.rect.getWidth() * this.getShader().getXRange().y;
         float yAdjusted = delta.y / this.rect.getHeight() * this.getShader().getYRange().y;
 
+        this.zoom(xAdjusted, yAdjusted, amount);
+    }
+
+    public void update(List<ScrollEvent> scrollEvents) {
+        this.clampToRight();
+
+        // Do not zoom if the mouse is not over the graph
+        if (!Shape.collides(this.rect, Mouse.getMousePos())) {
+            return;
+        }
+
         for (ScrollEvent event : scrollEvents) {
             if (event.yOffset < 0) {
-                this.zoom(xAdjusted, yAdjusted, 1 + 0.05f * (float) Math.abs(event.yOffset));
+                this.zoomAroundMouse(1 + 0.05f * (float) Math.abs(event.yOffset));
             } else {
-                this.zoom(xAdjusted, yAdjusted, 1 - 0.05f * (float) Math.abs(event.yOffset));
+                this.zoomAroundMouse(1 - 0.05f * (float) Math.abs(event.yOffset));
             }
         }
     }
