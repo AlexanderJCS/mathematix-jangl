@@ -215,22 +215,13 @@ public class Formula {
         }
     }
 
-    private void zoomIn() {
-        this.scale *= 1.1f;
+    private void zoom(float amount) {
+        this.scale *= amount;
 
         for (Node node : this.nodes) {
             node.setScale(this.scale);
         }
     }
-
-    private void zoomOut() {
-        this.scale *= 0.9f;
-
-        for (Node node : this.nodes) {
-            node.setScale(this.scale);
-        }
-    }
-
     public void update(List<MouseEvent> mouseEvents, List<ScrollEvent> scrollEvents) {
         this.updateSelectionLine();
 
@@ -248,9 +239,9 @@ public class Formula {
 
         for (ScrollEvent event : scrollEvents) {
             if (event.yOffset > 0) {
-                this.zoomIn();
+                this.zoom(1 + 0.05f * (float) Math.abs(event.yOffset));
             } else {
-                this.zoomOut();
+                this.zoom(1 - 0.05f * (float) Math.abs(event.yOffset));
             }
         }
     }

@@ -67,9 +67,9 @@ public class Graph {
 
         for (ScrollEvent event : scrollEvents) {
             if (event.yOffset < 0) {
-                this.zoom(xAdjusted, yAdjusted, 1.1f);
+                this.zoom(xAdjusted, yAdjusted, 1 + 0.05f * (float) Math.abs(event.yOffset));
             } else {
-                this.zoom(xAdjusted, yAdjusted, 0.9f);
+                this.zoom(xAdjusted, yAdjusted, 1 - 0.05f * (float) Math.abs(event.yOffset));
             }
         }
     }
