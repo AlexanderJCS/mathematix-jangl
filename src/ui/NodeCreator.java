@@ -1,5 +1,6 @@
 package ui;
 
+import formulas.Formula;
 import formulas.node.nodes.Node;
 import jangl.color.ColorFactory;
 import jangl.coords.WorldCoords;
@@ -23,7 +24,7 @@ public class NodeCreator {
     // TODO: refactor: make an object called TitledRect that contains a text and a rect
     private final List<Rect> itemRects;
     private final List<Text> itemTexts;
-    private final List<Node> nodes;
+    private final Formula formula;
     private boolean visible;
 
     private static final float HEIGHT_PER_ITEM = 0.05f;
@@ -35,9 +36,9 @@ public class NodeCreator {
             new ColorShader(ColorFactory.fromNorm(0.2f, 0.2f, 0.2f, 1.0f))
     );
 
-    public NodeCreator(LinkedHashMap<String, Class<? extends Node>> selectionItems, List<Node> nodes) {
+    public NodeCreator(LinkedHashMap<String, Class<? extends Node>> selectionItems, Formula formula) {
         this.visible = false;
-        this.nodes = nodes;
+        this.formula = formula;
 
         this.selectionItems = selectionItems;
         this.rect = new Rect(new WorldCoords(0, 0), 0.2f, HEIGHT_PER_ITEM * selectionItems.size());
@@ -104,7 +105,7 @@ public class NodeCreator {
                             );
 
                             if (node != null) {
-                                this.nodes.add(node);
+                                this.formula.addNode(node);
                             }
                         }
                     }

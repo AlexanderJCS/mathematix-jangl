@@ -36,8 +36,13 @@ public class Formula {
         selectionItems.put("Mul", MulNode.class);
         selectionItems.put("Div", DivNode.class);
 
-        this.nodeCreator = new NodeCreator(selectionItems, this.nodes);
+        this.nodeCreator = new NodeCreator(selectionItems, this);
         this.scale = 1;
+    }
+
+    public void addNode(Node node) {
+        node.setScale(this.scale);
+        this.nodes.add(node);
     }
 
     private Node getGraphNode() {
