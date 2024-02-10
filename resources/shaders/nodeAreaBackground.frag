@@ -18,8 +18,8 @@ void main() {
 
     // Create a bunch of dots around every (x, y) such that x and y are multiples of 0.1
     if (distSquared < pow(dotRadius, 2)) {
-        fragColor = vec4(0.1, 0.1, 0.1, 1.0);
+        fragColor = vec4(0.16, 0.16, 0.16, 1.0);
     } else {
-        fragColor = vec4(0.075, 0.075, 0.075, 1.0);
+        fragColor = vec4(0.11, 0.11, 0.11, 1.0);
     }
 }
