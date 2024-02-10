@@ -82,9 +82,8 @@ void main() {
     }
 
     // Check for grid lines
-    float rangeX = xRange.y - xRange.x;
+    float rangeX = abs(xRange.y - xRange.x);
 
-    // Categorize the x value, based on width, on how often a gridline should occur
     float gridlineSep = getGridlineSpacing(abs(xRange.y - xRange.x));
     if (mod(coords.x, gridlineSep) < RADIUS / 1.5 || mod(coords.y, gridlineSep) < RADIUS / 1.5) {
         fragColor = vec4(0.5, 0.5, 0.5, 1.0);
