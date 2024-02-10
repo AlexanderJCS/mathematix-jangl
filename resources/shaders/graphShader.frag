@@ -39,10 +39,8 @@ float calc(float x) {
 void main() {
     vec2 coords = vec2(
         mapRange(texCoords.x, vec2(0, 1), xRange),
-        mapRange(texCoords.y, vec2(0, 1), yRange)
+        mapRange(1 - texCoords.y, vec2(0, 1), yRange)
     );
-
-    coords.y = -coords.y;  // flip the graph due to how texture coords are
 
     float yValue = calc(coords.x);  // f(x)
 
