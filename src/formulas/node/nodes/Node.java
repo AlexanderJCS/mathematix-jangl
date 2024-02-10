@@ -4,6 +4,7 @@ import formulas.node.Attachment;
 import jangl.color.ColorFactory;
 import jangl.coords.WorldCoords;
 import jangl.graphics.font.Font;
+import jangl.graphics.font.Justify;
 import jangl.graphics.font.Text;
 import jangl.graphics.font.TextBuilder;
 import jangl.graphics.shaders.ShaderProgram;
@@ -13,6 +14,7 @@ import jangl.io.mouse.MouseEvent;
 import jangl.shapes.Circle;
 import jangl.shapes.Rect;
 import jangl.shapes.Shape;
+import jangl.shapes.Transform;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -49,17 +51,20 @@ public abstract class Node {
     public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle, Float nodeValue) {
         this.rect = new Rect(pos, 0.2f, 0.3f);
         this.dragBar = new Rect(pos, this.rect.getWidth(), this.rect.getWidth() / 5);
-        this.closeBox = new Rect(new WorldCoords(pos.x + this.dragBar.getWidth() - this.dragBar.getHeight(), pos.y), this.dragBar.getHeight(), this.dragBar.getHeight());
+        this.closeBox = new Rect(pos, this.dragBar.getHeight(), this.dragBar.getHeight());
+        this.refreshCloseBoxPos();
         this.useCloseBox = true;
 
         this.nodeTitle = new TextBuilder(
-                new Font("resources/font/arial.fnt", "resources/font/arial.png"),
+                new Font("resources/font/poppins.fnt", "resources/font/poppins.png"),
                 nodeTitle
         )
-                .setCoords(new WorldCoords(pos.x, pos.y - this.dragBar.getHeight()))
                 .setWrapWidth(this.rect.getWidth())
-                .setYHeight(0.05f)
+                .setJustification(Justify.CENTER)
+                .setHeight(this.dragBar.getHeight() - 0.01f)
                 .toText();
+
+        this.refreshTextPos();
 
         // Both lists must be initialized before calling genAttachments
         this.inputAttachments = new ArrayList<>();
@@ -70,6 +75,47 @@ public abstract class Node {
         this.nodeValue = nodeValue;
 
         this.selectionData = new SelectionData();
+    }
+
+    /**
+     * Refreshes the position of the close box to be at the top right of the drag bar.
+     */
+    private void refreshCloseBoxPos() {
+        WorldCoords dragBarPos = this.dragBar.getTransform().getCenter();
+        float dragBarHalfWidth = this.dragBar.getWidth() / 2 * this.dragBar.getTransform().getScaleX();
+
+        this.closeBox.getTransform().setPos(
+                new WorldCoords(
+                        dragBarPos.x + dragBarHalfWidth - this.closeBox.getWidth() * this.closeBox.getTransform().getScaleX() / 2,
+                        dragBarPos.y
+                )
+        );
+    }
+
+    /**
+     * Refreshes the position of the drag bar to be at the top of the node.
+     */
+    private void refreshDragBarPos() {
+        this.dragBar.getTransform().setPos(
+                new WorldCoords(
+                        this.rect.getTransform().getCenter().x,
+                        this.rect.getTransform().getCenter().y + this.rect.getHeight() / 2 * this.rect.getTransform().getScaleY()
+                )
+        );
+    }
+
+    /**
+     * Refreshes the position of the text to be at the center of the drag bar
+     */
+    private void refreshTextPos() {
+        Transform dragTransform = this.dragBar.getTransform();
+
+        this.nodeTitle.getTransform().setPos(
+                new WorldCoords(
+                        dragTransform.getCenter().x - this.closeBox.getWidth() * this.closeBox.getTransform().getScaleX() / 2,
+                        dragTransform.getCenter().y
+                )
+        );
     }
 
     private void genAttachments(int numAttachments, List<Attachment> attachments, boolean input) {
@@ -94,7 +140,7 @@ public abstract class Node {
         for (int i = 0; i < attachments.size(); i++) {
             Attachment attachment = attachments.get(i);
 
-            int multiplier = input ? -1 : 1;
+            float multiplier = input ? -this.rect.getTransform().getScaleX() : this.rect.getTransform().getScaleX();
 
             attachment.circle().getTransform().setPos(
                     new WorldCoords(
@@ -191,4 +237,24 @@ public abstract class Node {
     }
 
     public abstract float compute(float x);
+
+    public void setScale(float scale) {
+        System.out.println(this.dragBar.getHeight());
+        System.out.println(this.dragBar.getHeight() * scale);
+        System.out.println(0.05f * scale);
+
+        this.rect.getTransform().setScale(scale);
+        this.nodeTitle.setHeight(0.05f * scale);
+        this.dragBar.getTransform().setScale(scale);
+        this.closeBox.getTransform().setScale(scale);
+        this.inputAttachments.forEach(attachment -> attachment.circle().getTransform().setScale(scale));
+        this.outputAttachments.forEach(attachment -> attachment.circle().getTransform().setScale(scale));
+
+        this.updateAttachmentLocations(this.inputAttachments, true);
+        this.updateAttachmentLocations(this.outputAttachments, false);
+
+        this.refreshDragBarPos();
+        this.refreshCloseBoxPos();
+        this.refreshTextPos();
+    }
 }
