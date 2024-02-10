@@ -58,7 +58,7 @@ public class NodeCreator {
         for (int i = 0; i < selectionItems.size(); i++) {
             this.itemTexts.add(
                     new TextBuilder(
-                            new Font("resources/font/arial.fnt", "resources/font/arial.png"),
+                            new Font("resources/font/poppins.fnt", "resources/font/poppins.png"),
                             selectionItems.keySet().toArray(new String[0])[i],
                             new WorldCoords(0, -i * HEIGHT_PER_ITEM)
                     ).toText()
