@@ -71,7 +71,7 @@ void main() {
     // abs(f(x) - y) / sqrt(1 + f'(x)^2)
     float distance = abs(yValue - coords.y) / sqrt(1 + fPrime * fPrime);
     if (distance < RADIUS) {
-        fragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        fragColor = vec4(0.75, 0.3, 0, 1.0);
         return;
     }
 
