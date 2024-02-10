@@ -64,5 +64,11 @@ void main() {
         return;
     }
 
-    fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+    // Check for grid lines
+    if (mod(coords.x, 1) < RADIUS / 3 || mod(coords.y, 1) < RADIUS / 3) {
+        fragColor = vec4(0.5, 0.5, 0.5, 1.0);
+        return;
+    }
+
+    fragColor = vec4(0.0, 0.0, 0.0, 0.1);
 }
