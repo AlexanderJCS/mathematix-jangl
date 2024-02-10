@@ -151,7 +151,7 @@ public abstract class Node {
             Attachment attachment = attachments.get(i);
 
             // yOffset by half of the drag bar height so the attachments are centered on the non-drag-bar part
-            float yOffset = -this.dragBar.getHeight() / 2 * this.dragBar.getTransform().getScaleY();
+            float yOffset = -this.dragBar.getHeight() / 2 * this.dragBar.getTransform().getScaleY() / attachments.size();
             float multiplier = input ? -this.rect.getTransform().getScaleX() : this.rect.getTransform().getScaleX();
 
             attachment.circle().getTransform().setPos(
