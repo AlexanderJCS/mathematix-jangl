@@ -202,6 +202,20 @@ public abstract class Node {
         }
     }
 
+    private void updateConnections() {
+        for (Attachment attachment : this.inputAttachments) {
+            if (attachment.getConnection() != null) {
+                attachment.getConnection().update();
+            }
+        }
+
+        for (Attachment attachment : this.outputAttachments) {
+            if (attachment.getConnection() != null) {
+                attachment.getConnection().update();
+            }
+        }
+    }
+
     private void drag() {
         WorldCoords mousePos = Mouse.getMousePos();
         WorldCoords offset = new WorldCoords(
@@ -216,19 +230,13 @@ public abstract class Node {
 
         for (Attachment attachment : this.inputAttachments) {
             attachment.circle().getTransform().shift(offset);
-
-            if (attachment.getConnection() != null) {
-                attachment.getConnection().update();
-            }
         }
 
         for (Attachment attachment : this.outputAttachments) {
             attachment.circle().getTransform().shift(offset);
-
-            if (attachment.getConnection() != null) {
-                attachment.getConnection().update();
-            }
         }
+
+        this.updateConnections();
     }
 
     public void update(List<MouseEvent> mouseEvents) {
@@ -266,5 +274,7 @@ public abstract class Node {
         this.refreshDragBarPos();
         this.refreshCloseBoxPos();
         this.refreshTextPos();
+
+        this.updateConnections();
     }
 }
