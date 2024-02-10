@@ -43,7 +43,7 @@ public abstract class Node {
             new ColorShader(ColorFactory.fromNorm(0.8f, 0.2f, 0.2f, 1.0f))
     );
 
-    private class SelectionData {
+    private static class SelectionData {
         boolean selected = false;
         WorldCoords lastMousePos = new WorldCoords(0, 0);
     }
