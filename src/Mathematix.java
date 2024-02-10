@@ -21,8 +21,8 @@ public class Mathematix {
 
     private void draw() {
         Window.clear();
-        this.graph.draw();
         this.formulaGui.draw();
+        this.graph.draw();
     }
 
     private void update() {
