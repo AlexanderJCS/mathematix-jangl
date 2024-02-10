@@ -43,7 +43,7 @@ public class Graph {
 
         // Adjust the new range to be centered around the given coordinate
         xRange.sub(new Vector2f(x - xRangeCenter));
-        yRange.sub(new Vector2f(y - yRangeCenter));
+        yRange.add(new Vector2f(y + yRangeCenter));
 
         // Adjust the new range to be scaled by the given amount
         xRange.mul(amount);
@@ -51,7 +51,7 @@ public class Graph {
 
         // Adjust the new range to be centered around the given coordinate
         xRange.add(new Vector2f(x - xRangeCenter));
-        yRange.add(new Vector2f(y - yRangeCenter));
+        yRange.sub(new Vector2f(y + yRangeCenter));
 
         shader.setXRange(xRange);
         shader.setYRange(yRange);
