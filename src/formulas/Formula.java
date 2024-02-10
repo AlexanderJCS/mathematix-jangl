@@ -6,6 +6,8 @@ import formulas.node.nodes.*;
 import jangl.coords.WorldCoords;
 import jangl.io.mouse.Mouse;
 import jangl.io.mouse.MouseEvent;
+import jangl.io.mouse.Scroll;
+import jangl.io.mouse.ScrollEvent;
 import jangl.shapes.Shape;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL41;
@@ -19,6 +21,7 @@ public class Formula {
     private Attachment selected;
     private final Line selectionLine;
     private final NodeCreator nodeCreator;
+    private float scale;
 
     public Formula() {
         this.selectionLine = new Line(new WorldCoords(0, 0), new WorldCoords(0, 0), 0.01f);
@@ -35,6 +38,7 @@ public class Formula {
         selectionItems.put("Div", DivNode.class);
 
         this.nodeCreator = new NodeCreator(selectionItems, this.nodes);
+        this.scale = 1;
     }
 
     private Node getGraphNode() {
@@ -207,7 +211,23 @@ public class Formula {
         }
     }
 
-    public void update(List<MouseEvent> mouseEvents) {
+    private void zoomIn() {
+        this.scale *= 1.1f;
+
+        for (Node node : this.nodes) {
+            node.setScale(this.scale);
+        }
+    }
+
+    private void zoomOut() {
+        this.scale *= 0.9f;
+
+        for (Node node : this.nodes) {
+            node.setScale(this.scale);
+        }
+    }
+
+    public void update(List<MouseEvent> mouseEvents, List<ScrollEvent> scrollEvents) {
         this.updateSelectionLine();
 
         // Handle selecting / removing attachments
@@ -221,6 +241,14 @@ public class Formula {
         }
 
         this.nodeCreator.update(mouseEvents);
+
+        for (ScrollEvent event : scrollEvents) {
+            if (event.yOffset > 0) {
+                this.zoomIn();
+            } else {
+                this.zoomOut();
+            }
+        }
     }
 
     public void draw() {

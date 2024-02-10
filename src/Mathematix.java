@@ -3,6 +3,7 @@ import grapher.Graph;
 import jangl.Jangl;
 import jangl.io.Window;
 import jangl.io.mouse.Mouse;
+import jangl.io.mouse.Scroll;
 import jangl.time.Clock;
 
 public class Mathematix {
@@ -21,7 +22,7 @@ public class Mathematix {
     }
 
     private void update() {
-        this.formulaGui.update(Mouse.getEvents());
+        this.formulaGui.update(Mouse.getEvents(), Scroll.getEvents());
     }
 
     public void run() {
