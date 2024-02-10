@@ -49,7 +49,7 @@ public abstract class Node {
     }
 
     public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle, Float nodeValue) {
-        this.rect = new Rect(pos, 0.2f, 0.3f);
+        this.rect = new Rect(pos, 0.2f, 0.2f);
         this.dragBar = new Rect(pos, this.rect.getWidth(), this.rect.getWidth() / 5);
         this.closeBox = new Rect(pos, this.dragBar.getHeight(), this.dragBar.getHeight());
         this.refreshCloseBoxPos();
@@ -150,12 +150,14 @@ public abstract class Node {
         for (int i = 0; i < attachments.size(); i++) {
             Attachment attachment = attachments.get(i);
 
+            // yOffset by half of the drag bar height so the attachments are centered on the non-drag-bar part
+            float yOffset = -this.dragBar.getHeight() / 2 * this.dragBar.getTransform().getScaleY();
             float multiplier = input ? -this.rect.getTransform().getScaleX() : this.rect.getTransform().getScaleX();
 
             attachment.circle().getTransform().setPos(
                     new WorldCoords(
                             rectCenter.x + rectWidth / 2 * multiplier,
-                            rectCenter.y + rectHeight / 2 * multiplier * i / attachments.size()
+                            rectCenter.y + rectHeight / 2 * multiplier * i / attachments.size() + yOffset
                     )
             );
         }
