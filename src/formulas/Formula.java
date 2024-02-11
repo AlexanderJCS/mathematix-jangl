@@ -4,6 +4,7 @@ import formulas.node.Attachment;
 import formulas.node.Connection;
 import formulas.node.nodes.*;
 import jangl.coords.WorldCoords;
+import jangl.graphics.Camera;
 import jangl.graphics.shaders.ShaderProgram;
 import jangl.graphics.shaders.premade.TextureShaderVert;
 import jangl.io.keyboard.KeyEvent;
@@ -235,30 +236,26 @@ public class Formula implements Draggable {
 
     private void zoom(float amount) {
         this.scale *= amount;
-
-        for (Node node : this.nodes) {
-            node.setScale(this.scale);
-        }
-
-        this.nodeCreator.setScale(this.scale);
+        Camera.setZoom(this.scale);
     }
 
     // Clamps the background to the left side of the screen
     private void clampToLeft() {
         Transform bgTransform = this.background.getTransform();
 
-        bgTransform.setWidth(WorldCoords.getTopRight().x - 1, this.background.getWidth());
+        float width = WorldCoords.getTopRight().x / Camera.getZoom() - 1;
+        float height = WorldCoords.getTopRight().y / Camera.getZoom();
 
-        float scaledWidth = this.background.getWidth() * bgTransform.getScaleX();
-        float scaledHeight = this.background.getHeight() * bgTransform.getScaleY();
+        bgTransform.setWidth(width, this.background.getWidth());
+        bgTransform.setHeight(height, this.background.getHeight());
 
         bgTransform.setPos(new WorldCoords(
-                WorldCoords.getTopRight().x - 1 - scaledWidth / 2,
+                WorldCoords.getTopRight().x - 1 - width / 2,
                 bgTransform.getCenter().y
         ));
 
         BackgroundShader shader = (BackgroundShader) (BG_SHADER.getFragmentShader());
-        shader.setWidthHeight(new WorldCoords(scaledWidth, scaledHeight));
+        shader.setWidthHeight(new WorldCoords(width, height));
     }
 
     public void update(List<KeyEvent> keyEvents, List<MouseEvent> mouseEvents, List<ScrollEvent> scrollEvents) {
