@@ -16,15 +16,18 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL41;
 import ui.Line;
 import ui.NodeCreator;
+import ui.drag.Draggable;
+import ui.drag.Dragger;
 
 import java.util.*;
 
-public class Formula {
+public class Formula implements Draggable {
     private final Rect background;
     private final List<Node> nodes;
     private Attachment selected;
     private final Line selectionLine;
     private final NodeCreator nodeCreator;
+    private final Dragger dragger;
     private float scale;
 
     private static final ShaderProgram BG_SHADER = new ShaderProgram(
@@ -49,6 +52,8 @@ public class Formula {
 
         this.nodeCreator = new NodeCreator(selectionItems, this);
         this.scale = 1;
+
+        this.dragger = new Dragger(this);
     }
 
     public void addNode(Node node) {
@@ -269,6 +274,39 @@ public class Formula {
 
         this.nodeCreator.update(mouseEvents);
 
+        // Handle dragging the background
+        for (MouseEvent event : mouseEvents) {
+            if (event.button != GLFW.GLFW_MOUSE_BUTTON_1) {
+                continue;
+            }
+
+            if (event.action == GLFW.GLFW_RELEASE) {
+                this.dragger.deselect();
+                continue;
+            }
+
+            boolean canDrag = true;
+            for (Node node : this.nodes) {
+                if (Shape.collides(node.getRect(), Mouse.getMousePos())) {
+                    canDrag = false;
+                    break;
+                }
+            }
+
+            for (Attachment attachment : this.getAttachments()) {
+                if (Shape.collides(attachment.circle(), Mouse.getMousePos())) {
+                    canDrag = false;
+                    break;
+                }
+            }
+
+            if (canDrag) {
+                this.dragger.select();
+            }
+        }
+
+        this.dragger.update();
+
         // Do not zoom if the mouse is not over the formulas area
         if (!Shape.collides(this.background, Mouse.getMousePos())) {
             return;
@@ -307,5 +345,15 @@ public class Formula {
         }
 
         this.nodeCreator.draw();
+    }
+
+    @Override
+    public void drag(WorldCoords offset) {
+        for (Node node : this.nodes) {
+            node.drag(offset);
+        }
+
+        BackgroundShader shader = (BackgroundShader) (BG_SHADER.getFragmentShader());
+        shader.setOffset(shader.getOffset().add(offset.toVector2f()));
     }
 }

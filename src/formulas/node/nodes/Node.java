@@ -247,8 +247,6 @@ public abstract class Node implements Draggable {
     public abstract float compute(float x);
 
     public void setScale(float scale) {
-        // TODO: bug - start dragging the node, then zoom in/out - you can't release the node
-
         this.rect.getTransform().setScale(scale);
         this.nodeTitle.getTransform().setScale(scale);
         this.dragBar.getTransform().setScale(scale);
@@ -264,5 +262,9 @@ public abstract class Node implements Draggable {
         this.refreshTextPos();
 
         this.updateConnections();
+    }
+
+    public Rect getRect() {
+        return this.rect;
     }
 }
