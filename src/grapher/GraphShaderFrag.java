@@ -1,6 +1,7 @@
 package grapher;
 
 import formulas.Formula;
+import jangl.coords.PixelCoords;
 import jangl.graphics.shaders.FragmentShader;
 import org.joml.Vector2f;
 import org.lwjgl.opengl.GL41;
@@ -8,7 +9,7 @@ import org.lwjgl.opengl.GL41;
 public class GraphShaderFrag extends FragmentShader {
     private Vector2f xRange;
     private Vector2f yRange;
-    private float radiusUV;
+    private int radiusPixels;
     private Formula formula;
 
     public GraphShaderFrag() {
@@ -16,7 +17,7 @@ public class GraphShaderFrag extends FragmentShader {
 
         this.xRange = new Vector2f(-10, 10);
         this.yRange = new Vector2f(-10, 10);
-        this.radiusUV = 0.003f;
+        this.radiusPixels = 2;
     }
 
     public Vector2f getXRange() {
@@ -35,12 +36,12 @@ public class GraphShaderFrag extends FragmentShader {
         this.yRange = new Vector2f(yRange);
     }
 
-    public float getRadiusUV() {
-        return this.radiusUV;
+    public int getRadiusPixels() {
+        return this.radiusPixels;
     }
 
-    public void setRadiusUV(float radiusUV) {
-        this.radiusUV = radiusUV;
+    public void setRadiusPixels(int radiusPixels) {
+        this.radiusPixels = radiusPixels;
     }
 
     public void setFormula(Formula formula) {
@@ -56,7 +57,7 @@ public class GraphShaderFrag extends FragmentShader {
         GL41.glUniform2f(location, this.yRange.x, this.yRange.y);
 
         location = GL41.glGetUniformLocation(programID, "radiusUV");
-        GL41.glUniform1f(location, this.radiusUV);
+        GL41.glUniform1f(location, PixelCoords.distToWorldCoords(this.radiusPixels));
 
         this.formula.uploadUniforms(xRange.x, xRange.y, 1000, "yValues", programID);
     }
