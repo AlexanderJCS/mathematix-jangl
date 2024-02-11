@@ -98,10 +98,13 @@ public abstract class Node implements Draggable {
      * Refreshes the position of the drag bar to be at the top of the node.
      */
     private void refreshDragBarPos() {
+        float scaledRectHeight = this.rect.getHeight() * this.rect.getTransform().getScaleY();
+        float scaledDragBarHeight = this.dragBar.getHeight() * this.dragBar.getTransform().getScaleY();
+
         this.dragBar.getTransform().setPos(
                 new WorldCoords(
                         this.rect.getTransform().getCenter().x,
-                        this.rect.getTransform().getCenter().y + this.rect.getHeight() / 2 * this.rect.getTransform().getScaleY()
+                        this.rect.getTransform().getCenter().y + scaledRectHeight / 2 - scaledDragBarHeight / 2
                 )
         );
     }
