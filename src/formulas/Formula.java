@@ -107,7 +107,7 @@ public class Formula implements Draggable {
 
     private void updateConnections(List<MouseEvent> mouseEvents) {
         for (MouseEvent event : mouseEvents) {
-            if (event.button != GLFW.GLFW_MOUSE_BUTTON_1 || event.action != GLFW.GLFW_RELEASE) {
+            if (event.button != GLFW.GLFW_MOUSE_BUTTON_1) {
                 continue;
             }
 
@@ -115,7 +115,7 @@ public class Formula implements Draggable {
             for (Attachment attachment : this.getAttachments()) {
                 if (Shape.collides(attachment.circle(), Mouse.getMousePos())) {
                     selected = true;
-                    this.performAction(attachment);
+                    this.performAction(attachment, event.action == GLFW.GLFW_PRESS);
                     break;
                 }
             }
@@ -152,15 +152,20 @@ public class Formula implements Draggable {
         connection.getOut().setConnection(null);
     }
 
-    private void performAction(Attachment attachment) {
-        if (this.selected == null && attachment != null && attachment.getConnection() == null) {
+    private void performAction(Attachment attachment, boolean press) {
+        // Return, since it's likely a click-and-press instead of a click-and-drag
+        if (attachment == this.selected && !press) {
+            return;
+        }
+
+        if (this.selected == null && press && attachment != null && attachment.getConnection() == null) {
             this.select(attachment);
             return;
         }
 
         // If you try to connect to a node that already has a connection, and you currently have no selection, then
         // remove the connection
-        if (this.selected == null && attachment != null) {
+        if (this.selected == null && attachment != null && press) {
             this.removeConnection(attachment);
             return;
         }
@@ -171,6 +176,10 @@ public class Formula implements Draggable {
         }
 
         // do not double-up on connections
+        if (this.selected == null) {
+            return;
+        }
+
         boolean bothNoConnection = this.selected.getConnection() == null && attachment.getConnection() == null;
 
         // do not connect to itself
