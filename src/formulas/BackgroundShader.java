@@ -12,7 +12,7 @@ public class BackgroundShader extends FragmentShader {
     private float dotSeparation;
 
     public BackgroundShader() {
-        super("resources/shaders/backgroundShader.frag");
+        super("shaders/backgroundShader.frag");
         this.offset = new Vector2f().zero();
         this.dotRadius = 0.1f;
         this.dotSeparation = 0.03f;

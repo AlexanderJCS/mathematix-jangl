@@ -13,7 +13,7 @@ public class GraphShaderFrag extends FragmentShader {
     private Formula formula;
 
     public GraphShaderFrag() {
-        super("resources/shaders/graphShader.frag");
+        super("shaders/graphShader.frag");
 
         this.xRange = new Vector2f(-10, 10);
         this.yRange = new Vector2f(-10, 10);
