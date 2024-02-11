@@ -11,6 +11,7 @@ import jangl.io.mouse.MouseEvent;
 import jangl.io.mouse.ScrollEvent;
 import jangl.shapes.Rect;
 import jangl.shapes.Shape;
+import jangl.shapes.Transform;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL41;
 import ui.Line;
@@ -28,7 +29,7 @@ public class Formula {
 
     private static final ShaderProgram BG_SHADER = new ShaderProgram(
             new TextureShaderVert(),
-            new NodeAreaBackgroundFrag()
+            new BackgroundShader()
     );
 
     public Formula() {
@@ -232,7 +233,28 @@ public class Formula {
             node.setScale(this.scale);
         }
     }
+
+    // Clamps the background to the left side of the screen
+    private void clampToLeft() {
+        Transform bgTransform = this.background.getTransform();
+
+        bgTransform.setWidth(WorldCoords.getTopRight().x - 1, this.background.getWidth());
+
+        float scaledWidth = this.background.getWidth() * bgTransform.getScaleX();
+        float scaledHeight = this.background.getHeight() * bgTransform.getScaleY();
+
+        bgTransform.setPos(new WorldCoords(
+                WorldCoords.getTopRight().x - 1 - scaledWidth / 2,
+                bgTransform.getCenter().y
+        ));
+
+        BackgroundShader shader = (BackgroundShader) (BG_SHADER.getFragmentShader());
+        shader.setWidthHeight(new WorldCoords(scaledWidth, scaledHeight));
+    }
+
     public void update(List<MouseEvent> mouseEvents, List<ScrollEvent> scrollEvents) {
+        this.clampToLeft();
+
         this.updateSelectionLine();
 
         // Handle selecting / removing attachments
