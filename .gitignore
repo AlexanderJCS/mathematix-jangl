@@ -2,6 +2,7 @@
 .vscode
 .idea
 out
+MANIFEST.MF
 
 # Compiled class file
 *.class
