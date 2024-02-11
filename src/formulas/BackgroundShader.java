@@ -5,16 +5,26 @@ import jangl.graphics.shaders.FragmentShader;
 import org.joml.Vector2f;
 import org.lwjgl.opengl.GL41;
 
-public class NodeAreaBackgroundFrag extends FragmentShader {
+public class BackgroundShader extends FragmentShader {
     private Vector2f offset;
+    private WorldCoords widthHeight;
     private float dotRadius;
     private float dotSeparation;
 
-    public NodeAreaBackgroundFrag() {
-        super("resources/shaders/nodeAreaBackground.frag");
+    public BackgroundShader() {
+        super("resources/shaders/backgroundShader.frag");
         this.offset = new Vector2f().zero();
         this.dotRadius = 0.1f;
         this.dotSeparation = 0.03f;
+        this.widthHeight = WorldCoords.getTopRight();
+    }
+
+    public void setWidthHeight(WorldCoords widthHeight) {
+        this.widthHeight = new WorldCoords(widthHeight);
+    }
+
+    public WorldCoords getWidthHeight() {
+        return new WorldCoords(this.widthHeight);
     }
 
     public Vector2f getOffset() {
@@ -50,7 +60,7 @@ public class NodeAreaBackgroundFrag extends FragmentShader {
         GL41.glUniform1f(location, this.dotRadius);
 
         location = GL41.glGetUniformLocation(programID, "widthHeight");
-        GL41.glUniform2f(location, WorldCoords.getTopRight().x, WorldCoords.getTopRight().y);
+        GL41.glUniform2f(location, this.widthHeight.x, this.widthHeight.y);
 
         location = GL41.glGetUniformLocation(programID, "dotSeparation");
         GL41.glUniform1f(location, this.dotSeparation);
