@@ -78,7 +78,7 @@ void main() {
     }
 
     // Draw sub-grid lines, which occur 5x as often as the main grid lines
-    if (mod(coords.x, gridlineSep / 4) < RADIUS / 2 || mod(coords.y, gridlineSep / 4) < RADIUS / 2) {
+    if (mod(coords.x, gridlineSep / 5) < RADIUS / 2 || mod(coords.y, gridlineSep / 5) < RADIUS / 2) {
         fragColor = vec4(0.15, 0.15, 0.15, 1.0);
         return;
     }
