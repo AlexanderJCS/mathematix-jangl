@@ -20,6 +20,7 @@ public class InputBox {
     private boolean selected;
     private Rect background;
     private final Text text;
+    private final float originalTextHeight;
 
     private static final ShaderProgram BG_COLOR = new ShaderProgram(
             new ColorShader(ColorFactory.fromNorm(0.4f, 0.4f, 0.4f, 1.0f))
@@ -30,16 +31,15 @@ public class InputBox {
             "resources/font/poppins.png"
     );
 
-    public InputBox(WorldCoords pos, String label, float width, float height) {
-        // TODO: add label
+    public InputBox(WorldCoords pos, float width, float height) {
         this.background = new Rect(pos, width, height);
         this.selected = false;
-        this.text = new TextBuilder(FONT, "", pos).setHeight(height).toText();
+        this.text = new TextBuilder(FONT, "", pos).setHeight(height * 0.9f).toText();
+        this.originalTextHeight = this.text.getHeight();
     }
 
     public void setCenter(WorldCoords center) {
         this.background.getTransform().setPos(center);
-
     }
 
     /**
@@ -90,7 +90,7 @@ public class InputBox {
     }
 
     public void setScale(float scale) {
-        this.text.getTransform().setScale(scale);
+        this.text.setHeight(this.originalTextHeight * scale);
         this.background.getTransform().setScale(scale);
         this.refreshTextPos();
     }

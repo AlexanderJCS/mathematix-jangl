@@ -15,7 +15,6 @@ public abstract class InputBoxNode extends Node {
 
         this.inputBox = new InputBox(
                 new WorldCoords(0, 0),
-                "Input",
                 0.1f, 0.05f
         );
 
