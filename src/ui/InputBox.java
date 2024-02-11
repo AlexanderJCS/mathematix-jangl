@@ -31,8 +31,31 @@ public class InputBox {
     );
 
     public InputBox(WorldCoords pos, String label, float width, float height) {
+        // TODO: add label
+        this.background = new Rect(pos, width, height);
         this.selected = false;
-        this.text = new TextBuilder(FONT, "", pos).setHeight(height).setWrapWidth(width).setYCutoff(height).toText();
+        this.text = new TextBuilder(FONT, "", pos).setHeight(height).toText();
+    }
+
+    public void setCenter(WorldCoords center) {
+        this.background.getTransform().setPos(center);
+
+    }
+
+    /**
+     * Clamps the text position to the background
+     */
+    private void refreshTextPos() {
+        WorldCoords center = this.background.getTransform().getCenter();
+        float bgHalfScaledWidth = this.background.getWidth() * this.background.getTransform().getScaleX() / 2;
+        float bgHalfScaledHeight = this.background.getHeight() * this.background.getTransform().getScaleY() / 2;
+
+        this.text.setCoords(
+                new WorldCoords(
+                        center.x - bgHalfScaledWidth,
+                        center.y + bgHalfScaledHeight
+                )
+        );
     }
 
     private void select(List<MouseEvent> mouseEvents) {
@@ -50,16 +73,31 @@ public class InputBox {
             }
 
             if (event.key == GLFW.GLFW_KEY_BACKSPACE) {
+                if (this.text.getText().isEmpty()) {
+                    continue;
+                }
+
                 this.text.setText(this.text.getText().substring(0, this.text.getText().length() - 1));
                 continue;
             }
 
-            if (!Character.isDigit(event.key) || event.key != '.') {
+            if (!Character.isDigit(event.key) && event.key != '.') {
                 continue;
             }
 
             this.text.setText(this.text.getText() + event.key);
         }
+    }
+
+    public void setScale(float scale) {
+        this.text.getTransform().setScale(scale);
+        this.background.getTransform().setScale(scale);
+        this.refreshTextPos();
+    }
+
+    public void drag(WorldCoords delta) {
+        this.background.getTransform().shift(delta);
+        this.refreshTextPos();
     }
 
     public float getValue() {

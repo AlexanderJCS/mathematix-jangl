@@ -105,6 +105,7 @@ public class NodeCreator {
             }
 
             if (event.button == GLFW.GLFW_MOUSE_BUTTON_1) {
+                // TODO: refactor by negating the condition, among other things
                 if (this.visible) {
                     for (int i = 0; i < this.itemRects.size(); i++) {
                         if (Shape.collides(this.itemRects.get(i), Mouse.getMousePos())) {
@@ -200,6 +201,7 @@ public class NodeCreator {
             return nodeClass.getDeclaredConstructor(WorldCoords.class).newInstance(pos);
         } catch (InstantiationException | IllegalAccessException | java.lang.reflect.InvocationTargetException |
                  NoSuchMethodException e) {
+            e.printStackTrace();
             return null;
         }
     }

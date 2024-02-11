@@ -2,14 +2,13 @@ package formulas.node.nodes;
 
 import jangl.coords.WorldCoords;
 
-public class ValueNode extends Node {
-
+public class ValueNode extends InputBoxNode {
     public ValueNode(WorldCoords pos) {
-        super(pos, 0, 1, "Value",  0f);
+        super(pos, 0, 1, "Value");
     }
 
     @Override
     public float compute(float x) {
-        return this.nodeValue;
+        return this.getInputValue();
     }
 }

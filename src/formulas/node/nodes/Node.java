@@ -7,6 +7,7 @@ import jangl.graphics.font.Justify;
 import jangl.graphics.font.Text;
 import jangl.graphics.font.TextBuilder;
 import jangl.graphics.textures.Texture;
+import jangl.io.keyboard.KeyEvent;
 import jangl.io.keyboard.Keyboard;
 import jangl.io.mouse.Mouse;
 import jangl.io.mouse.MouseEvent;
@@ -29,13 +30,12 @@ public abstract class Node implements Draggable {
     private final List<Attachment> inputAttachments;
     private final List<Attachment> outputAttachments;
     private final Text nodeTitle;
-    protected Float nodeValue;
     private boolean selected;
 
     private static final Texture NODE_TEXTURE = new Texture("resources/textures/node.png");
     private static final Texture NODE_TEXTURE_SELECTED = new Texture("resources/textures/node_selected.png");
 
-    public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle, Float nodeValue) {
+    public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle) {
         this.rect = new Rect(pos, 0.2f, 0.2f);
         this.dragBar = new Rect(pos, this.rect.getWidth(), this.rect.getWidth() / 4);
         this.allowClosing = true;
@@ -58,7 +58,6 @@ public abstract class Node implements Draggable {
 
         this.genAttachments(attachmentsIn, this.inputAttachments, true);
         this.genAttachments(attachmentsOut, this.outputAttachments, false);
-        this.nodeValue = nodeValue;
 
         this.dragger = new Dragger(this);
     }
@@ -225,7 +224,7 @@ public abstract class Node implements Draggable {
         }
     }
 
-    public void update(List<MouseEvent> mouseEvents) {
+    public void update(List<KeyEvent> keyEvents, List<MouseEvent> mouseEvents) {
         this.updateSelectionData(mouseEvents);
         this.select(mouseEvents);
         this.dragger.update();

@@ -6,7 +6,7 @@ import jangl.coords.WorldCoords;
 public class DivNode extends Node {
 
     public DivNode(WorldCoords pos) {
-        super(pos, 2, 1, "Divide", null);
+        super(pos, 2, 1, "Divide");
     }
 
     @Override

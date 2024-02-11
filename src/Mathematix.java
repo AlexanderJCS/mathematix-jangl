@@ -2,6 +2,8 @@ import formulas.Formula;
 import grapher.Graph;
 import jangl.Jangl;
 import jangl.io.Window;
+import jangl.io.keyboard.KeyEvent;
+import jangl.io.keyboard.Keyboard;
 import jangl.io.mouse.Mouse;
 import jangl.io.mouse.MouseEvent;
 import jangl.io.mouse.Scroll;
@@ -26,10 +28,11 @@ public class Mathematix {
     }
 
     private void update() {
+        List<KeyEvent> keyEvents = Keyboard.getEvents();
         List<MouseEvent> mouseEvents = Mouse.getEvents();
         List<ScrollEvent> scrollEvents = Scroll.getEvents();
 
-        this.formulaGui.update(mouseEvents, scrollEvents);
+        this.formulaGui.update(keyEvents, mouseEvents, scrollEvents);
         this.graph.update(mouseEvents, scrollEvents);
     }
 

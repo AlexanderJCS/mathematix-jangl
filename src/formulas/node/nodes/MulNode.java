@@ -7,7 +7,7 @@ import java.util.List;
 
 public class MulNode extends Node {
     public MulNode(WorldCoords pos) {
-        super(pos, 2, 1, "Mul",  null);
+        super(pos, 2, 1, "Mul");
     }
 
     @Override

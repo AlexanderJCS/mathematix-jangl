@@ -6,6 +6,7 @@ import formulas.node.nodes.*;
 import jangl.coords.WorldCoords;
 import jangl.graphics.shaders.ShaderProgram;
 import jangl.graphics.shaders.premade.TextureShaderVert;
+import jangl.io.keyboard.KeyEvent;
 import jangl.io.mouse.Mouse;
 import jangl.io.mouse.MouseEvent;
 import jangl.io.mouse.ScrollEvent;
@@ -247,7 +248,7 @@ public class Formula implements Draggable {
         shader.setWidthHeight(new WorldCoords(scaledWidth, scaledHeight));
     }
 
-    public void update(List<MouseEvent> mouseEvents, List<ScrollEvent> scrollEvents) {
+    public void update(List<KeyEvent> keyEvents, List<MouseEvent> mouseEvents, List<ScrollEvent> scrollEvents) {
         this.clampToLeft();
         this.dragger.update();
 
@@ -260,7 +261,7 @@ public class Formula implements Draggable {
         this.removeBoxes();
 
         for (Node node : this.nodes) {
-            node.update(mouseEvents);
+            node.update(keyEvents, mouseEvents);
         }
 
         this.nodeCreator.update(mouseEvents);
