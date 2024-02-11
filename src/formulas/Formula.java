@@ -50,6 +50,10 @@ public class Formula implements Draggable {
         selectionItems.put("Sub", SubNode.class);
         selectionItems.put("Mul", MulNode.class);
         selectionItems.put("Div", DivNode.class);
+        selectionItems.put("Power", PowerNode.class);
+        selectionItems.put("Sin", SinNode.class);
+        selectionItems.put("Cos", CosNode.class);
+        selectionItems.put("Tan", TanNode.class);
 
         this.nodeCreator = new NodeCreator(selectionItems, this);
         this.scale = 1;
