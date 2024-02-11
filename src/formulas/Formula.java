@@ -354,6 +354,6 @@ public class Formula implements Draggable {
         }
 
         BackgroundShader shader = (BackgroundShader) (BG_SHADER.getFragmentShader());
-        shader.setOffset(shader.getOffset().add(offset.toVector2f()));
+        shader.setOffset(shader.getOffset().add(offset.toVector2f().mul(-1, 1)));
     }
 }
