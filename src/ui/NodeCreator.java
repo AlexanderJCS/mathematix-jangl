@@ -67,6 +67,14 @@ public class NodeCreator {
         }
     }
 
+    private float scaledRectWidth() {
+        return this.rect.getWidth() * this.rect.getTransform().getScaleX();
+    }
+
+    private float scaledRectHeight() {
+        return this.rect.getHeight() * this.rect.getTransform().getScaleY();
+    }
+
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
@@ -76,7 +84,7 @@ public class NodeCreator {
         delta.sub(pos);
         delta.mul(-1, -1);
 
-        delta.sub(-1 * this.rect.getWidth() / 2, this.rect.getHeight() / 2);
+        delta.sub(-1 * this.scaledRectWidth() / 2, this.scaledRectHeight() / 2);
 
         this.rect.getTransform().shift(delta);
 
@@ -87,6 +95,7 @@ public class NodeCreator {
         for (Text itemText : this.itemTexts) {
             itemText.getTransform().shift(delta);
         }
+        this.resetTextPos();  // center-justify text
     }
 
     public void update(List<MouseEvent> events) {
@@ -137,6 +146,46 @@ public class NodeCreator {
         for (Text itemText : this.itemTexts) {
             itemText.draw();
         }
+    }
+
+    private void resetRectPos() {
+        WorldCoords originalPos = this.rect.getTransform().getCenter();
+        originalPos.y += this.scaledRectHeight() / 2;
+
+        for (int i = 0; i < this.itemRects.size(); i++) {
+            this.itemRects.get(i).getTransform().setPos(
+                    originalPos.x,
+                    originalPos.y - i * HEIGHT_PER_ITEM * this.rect.getTransform().getScaleY() - HEIGHT_PER_ITEM * this.rect.getTransform().getScaleY() / 2
+            );
+        }
+    }
+
+    private void resetTextPos() {
+        WorldCoords originalPos = this.rect.getTransform().getCenter();
+        originalPos.y += this.scaledRectHeight() / 2;
+
+        for (int i = 0; i < this.itemTexts.size(); i++) {
+            this.itemTexts.get(i).getTransform().setPos(
+                    originalPos.x,
+                    originalPos.y - i * HEIGHT_PER_ITEM * this.rect.getTransform().getScaleY() - HEIGHT_PER_ITEM * this.rect.getTransform().getScaleY() / 2
+            );
+        }
+    }
+
+    public void setScale(float scale) {
+        this.rect.getTransform().setScale(scale);
+
+        for (Rect itemRect : this.itemRects) {
+            itemRect.getTransform().setScale(scale);
+        }
+
+        this.resetRectPos();
+
+        for (Text itemText : this.itemTexts) {
+            itemText.getTransform().setScale(scale);
+        }
+
+        this.resetTextPos();
     }
 
     /**

@@ -237,6 +237,8 @@ public class Formula implements Draggable {
         for (Node node : this.nodes) {
             node.setScale(this.scale);
         }
+
+        this.nodeCreator.setScale(this.scale);
     }
 
     // Clamps the background to the left side of the screen
