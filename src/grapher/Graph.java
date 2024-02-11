@@ -4,17 +4,22 @@ import jangl.coords.WorldCoords;
 import jangl.graphics.shaders.ShaderProgram;
 import jangl.graphics.shaders.premade.TextureShaderVert;
 import jangl.io.mouse.Mouse;
+import jangl.io.mouse.MouseEvent;
 import jangl.io.mouse.ScrollEvent;
 import jangl.shapes.Rect;
 import formulas.Formula;
 import jangl.shapes.Shape;
 import org.joml.Vector2f;
+import org.lwjgl.glfw.GLFW;
+import ui.drag.Draggable;
+import ui.drag.Dragger;
 
 import java.util.List;
 
-public class Graph {
+public class Graph implements Draggable {
     private final Rect rect;
     private final ShaderProgram shader;
+    private final Dragger dragger;
 
     public Graph() {
         this.rect = new Rect(new WorldCoords(WorldCoords.getTopRight().x - 1, 1), 1, 1);
@@ -22,6 +27,7 @@ public class Graph {
                 new TextureShaderVert(),
                 new GraphShaderFrag()
         );
+        this.dragger = new Dragger(this);
     }
 
     private GraphShaderFrag getShader() {
@@ -79,8 +85,23 @@ public class Graph {
         this.zoom(xAdjusted, yAdjusted, amount);
     }
 
-    public void update(List<ScrollEvent> scrollEvents) {
+    public void update(List<MouseEvent> mouseEvents, List<ScrollEvent> scrollEvents) {
         this.clampToRight();
+        this.dragger.update();
+
+        for (MouseEvent event : mouseEvents) {
+            if (event.button != GLFW.GLFW_MOUSE_BUTTON_1) {
+                continue;
+            }
+
+            if (event.action == GLFW.GLFW_PRESS) {
+                if (Shape.collides(this.rect, Mouse.getMousePos())) {
+                    this.dragger.select();
+                }
+            } else {
+                this.dragger.deselect();
+            }
+        }
 
         // Do not zoom if the mouse is not over the graph
         if (!Shape.collides(this.rect, Mouse.getMousePos())) {
@@ -100,5 +121,22 @@ public class Graph {
         this.shader.bind();
         this.rect.draw();
         this.shader.unbind();
+    }
+
+    @Override
+    public void drag(WorldCoords offset) {
+        Vector2f xRange = this.getShader().getXRange();
+        Vector2f yRange = this.getShader().getYRange();
+
+        float multiplier = Math.abs(xRange.y - xRange.x) / this.rect.getWidth();
+        offset.mul(multiplier, multiplier);
+
+        this.getShader().setXRange(
+                xRange.add(-offset.x, -offset.x)
+        );
+
+        this.getShader().setYRange(
+                yRange.add(-offset.y, -offset.y)
+        );
     }
 }

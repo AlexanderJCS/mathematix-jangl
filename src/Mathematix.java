@@ -30,7 +30,7 @@ public class Mathematix {
         List<ScrollEvent> scrollEvents = Scroll.getEvents();
 
         this.formulaGui.update(mouseEvents, scrollEvents);
-        this.graph.update(scrollEvents);
+        this.graph.update(mouseEvents, scrollEvents);
     }
 
     public void run() {

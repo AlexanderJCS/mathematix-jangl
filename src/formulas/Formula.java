@@ -261,6 +261,7 @@ public class Formula implements Draggable {
 
     public void update(List<MouseEvent> mouseEvents, List<ScrollEvent> scrollEvents) {
         this.clampToLeft();
+        this.dragger.update();
 
         this.updateSelectionLine();
 
@@ -276,6 +277,7 @@ public class Formula implements Draggable {
 
         this.nodeCreator.update(mouseEvents);
 
+        // TODO: refactor and move to function
         // Handle dragging the background
         for (MouseEvent event : mouseEvents) {
             if (event.button != GLFW.GLFW_MOUSE_BUTTON_1) {
@@ -284,6 +286,10 @@ public class Formula implements Draggable {
 
             if (event.action == GLFW.GLFW_RELEASE) {
                 this.dragger.deselect();
+                continue;
+            }
+
+            if (!Shape.collides(this.background, Mouse.getMousePos())) {
                 continue;
             }
 
@@ -307,9 +313,7 @@ public class Formula implements Draggable {
             }
         }
 
-        this.dragger.update();
-
-        // Do not zoom if the mouse is not over the formulas area
+        // Do not zoom or drag if the mouse is not over the formulas area
         if (!Shape.collides(this.background, Mouse.getMousePos())) {
             return;
         }
