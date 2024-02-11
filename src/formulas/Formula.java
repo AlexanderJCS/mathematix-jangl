@@ -269,6 +269,11 @@ public class Formula {
 
         this.nodeCreator.update(mouseEvents);
 
+        // Do not zoom if the mouse is not over the formulas area
+        if (!Shape.collides(this.background, Mouse.getMousePos())) {
+            return;
+        }
+
         for (ScrollEvent event : scrollEvents) {
             if (event.yOffset > 0) {
                 this.zoom(1 + 0.05f * (float) Math.abs(event.yOffset));
