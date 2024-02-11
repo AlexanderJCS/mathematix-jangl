@@ -185,21 +185,9 @@ public class Formula implements Draggable {
     /**
      * Remove all boxes that should be removed when the mouse is clicked.
      */
-    private void removeBoxes(List<MouseEvent> mouseEvents) {
-        boolean clicked = false;
-        for (MouseEvent event : mouseEvents) {
-            if (event.button == GLFW.GLFW_MOUSE_BUTTON_1 && event.action == GLFW.GLFW_RELEASE) {
-                clicked = true;
-                break;
-            }
-        }
-
-        if (!clicked) {
-            return;
-        }
-
+    private void removeBoxes() {
         for (Node node : this.nodes) {
-            if (!node.shouldClose(Mouse.getMousePos())) {
+            if (!node.shouldClose()) {
                 continue;
             }
 
@@ -269,7 +257,7 @@ public class Formula implements Draggable {
         this.updateConnections(mouseEvents);
 
         // Handle the closing of nodes
-        this.removeBoxes(mouseEvents);
+        this.removeBoxes();
 
         for (Node node : this.nodes) {
             node.update(mouseEvents);

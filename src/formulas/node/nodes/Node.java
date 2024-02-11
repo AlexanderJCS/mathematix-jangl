@@ -1,14 +1,13 @@
 package formulas.node.nodes;
 
 import formulas.node.Attachment;
-import jangl.color.ColorFactory;
 import jangl.coords.WorldCoords;
 import jangl.graphics.font.Font;
 import jangl.graphics.font.Justify;
 import jangl.graphics.font.Text;
 import jangl.graphics.font.TextBuilder;
-import jangl.graphics.shaders.ShaderProgram;
-import jangl.graphics.shaders.premade.ColorShader;
+import jangl.graphics.textures.Texture;
+import jangl.io.keyboard.Keyboard;
 import jangl.io.mouse.Mouse;
 import jangl.io.mouse.MouseEvent;
 import jangl.shapes.Circle;
@@ -24,33 +23,23 @@ import java.util.List;
 
 public abstract class Node implements Draggable {
     private final Dragger dragger;
-    private final Rect closeBox;
-    private boolean useCloseBox;
+    private boolean allowClosing;
     private final Rect dragBar;
     private final Rect rect;
     private final List<Attachment> inputAttachments;
     private final List<Attachment> outputAttachments;
     private final Text nodeTitle;
     protected Float nodeValue;
+    private boolean selected;
 
-    private static final ShaderProgram BAR_COLOR = new ShaderProgram(
-            new ColorShader(ColorFactory.fromNorm(0.2f, 0.2f, 0.2f, 1.0f))
-    );
-
-    private static final ShaderProgram NODE_COLOR = new ShaderProgram(
-            new ColorShader(ColorFactory.fromNorm(0.4f, 0.4f, 0.4f, 1.0f))
-    );
-
-    private static final ShaderProgram CLOSE_COLOR = new ShaderProgram(
-            new ColorShader(ColorFactory.fromNorm(0.8f, 0.2f, 0.2f, 1.0f))
-    );
+    private static final Texture NODE_TEXTURE = new Texture("resources/textures/node.png");
+    private static final Texture NODE_TEXTURE_SELECTED = new Texture("resources/textures/node_selected.png");
 
     public Node(WorldCoords pos, int attachmentsIn, int attachmentsOut, String nodeTitle, Float nodeValue) {
         this.rect = new Rect(pos, 0.2f, 0.2f);
-        this.dragBar = new Rect(pos, this.rect.getWidth(), this.rect.getWidth() / 5);
-        this.closeBox = new Rect(pos, this.dragBar.getHeight(), this.dragBar.getHeight());
-        this.refreshCloseBoxPos();
-        this.useCloseBox = true;
+        this.dragBar = new Rect(pos, this.rect.getWidth(), this.rect.getWidth() / 4);
+        this.allowClosing = true;
+        this.selected = false;
 
         this.nodeTitle = new TextBuilder(
                 new Font("resources/font/poppins.fnt", "resources/font/poppins.png"),
@@ -75,23 +64,8 @@ public abstract class Node implements Draggable {
     }
 
     protected void useCloseBox(boolean use) {
-        this.useCloseBox = use;
+        this.allowClosing = use;
         this.refreshTextPos();  // since the text pos depends on if there's a close box
-    }
-
-    /**
-     * Refreshes the position of the close box to be at the top right of the drag bar.
-     */
-    private void refreshCloseBoxPos() {
-        WorldCoords dragBarPos = this.dragBar.getTransform().getCenter();
-        float dragBarHalfWidth = this.dragBar.getWidth() / 2 * this.dragBar.getTransform().getScaleX();
-
-        this.closeBox.getTransform().setPos(
-                new WorldCoords(
-                        dragBarPos.x + dragBarHalfWidth - this.closeBox.getWidth() * this.closeBox.getTransform().getScaleX() / 2,
-                        dragBarPos.y
-                )
-        );
     }
 
     /**
@@ -115,14 +89,9 @@ public abstract class Node implements Draggable {
     private void refreshTextPos() {
         Transform dragTransform = this.dragBar.getTransform();
 
-        float xOffset = 0;
-        if (this.useCloseBox) {
-            xOffset = -this.closeBox.getWidth() * this.closeBox.getTransform().getScaleX() / 2;
-        }
-
         this.nodeTitle.getTransform().setPos(
                 new WorldCoords(
-                        dragTransform.getCenter().x + xOffset,
+                        dragTransform.getCenter().x,
                         dragTransform.getCenter().y
                 )
         );
@@ -163,17 +132,12 @@ public abstract class Node implements Draggable {
         }
     }
 
-    public boolean shouldClose(WorldCoords mousePos) {
-        return this.useCloseBox && Shape.collides(this.closeBox, mousePos);
+    public boolean shouldClose() {
+        return this.allowClosing && this.selected && Keyboard.getKeyDown(GLFW.GLFW_KEY_DELETE);
     }
 
     public void draw() {
-        this.rect.draw(NODE_COLOR);
-        this.dragBar.draw(BAR_COLOR);
-
-        if (this.useCloseBox) {
-            this.closeBox.draw(CLOSE_COLOR);
-        }
+        this.rect.draw(this.selected ? NODE_TEXTURE_SELECTED : NODE_TEXTURE);
 
         this.nodeTitle.draw();
 
@@ -221,7 +185,6 @@ public abstract class Node implements Draggable {
         this.nodeTitle.getTransform().shift(offset);
         this.rect.getTransform().shift(offset);
         this.dragBar.getTransform().shift(offset);
-        this.closeBox.getTransform().shift(offset);
 
         for (Attachment attachment : this.inputAttachments) {
             attachment.circle().getTransform().shift(offset);
@@ -234,8 +197,37 @@ public abstract class Node implements Draggable {
         this.updateConnections();
     }
 
+    private void select(List<MouseEvent> mouseEvents) {
+        WorldCoords mousePos = Mouse.getMousePos();
+        // Exit if the mouse collides with any attachments or the drag bar
+        if (Shape.collides(this.dragBar, mousePos)) {
+            return;
+        }
+
+        // TODO: make a getAllAttachments method
+        for (Attachment attachment : this.inputAttachments) {
+            if (Shape.collides(attachment.circle(), mousePos)) {
+                return;
+            }
+        }
+
+        for (Attachment attachment : this.outputAttachments) {
+            if (Shape.collides(attachment.circle(), mousePos)) {
+                return;
+            }
+        }
+
+        // Check for click events
+        for (MouseEvent event : mouseEvents) {
+            if (event.action == GLFW.GLFW_PRESS && event.button == GLFW.GLFW_MOUSE_BUTTON_1) {
+                this.selected = Shape.collides(this.rect, mousePos);
+            }
+        }
+    }
+
     public void update(List<MouseEvent> mouseEvents) {
         this.updateSelectionData(mouseEvents);
+        this.select(mouseEvents);
         this.dragger.update();
     }
 
@@ -253,7 +245,6 @@ public abstract class Node implements Draggable {
         this.rect.getTransform().setScale(scale);
         this.nodeTitle.getTransform().setScale(scale);
         this.dragBar.getTransform().setScale(scale);
-        this.closeBox.getTransform().setScale(scale);
         this.inputAttachments.forEach(attachment -> attachment.circle().getTransform().setScale(scale));
         this.outputAttachments.forEach(attachment -> attachment.circle().getTransform().setScale(scale));
 
@@ -261,7 +252,6 @@ public abstract class Node implements Draggable {
         this.updateAttachmentLocations(this.outputAttachments, false);
 
         this.refreshDragBarPos();
-        this.refreshCloseBoxPos();
         this.refreshTextPos();
 
         this.updateConnections();
