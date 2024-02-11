@@ -36,21 +36,8 @@ float calc(float x) {
     return mix(yValues[int(closestIndex)], yValues[int(closestIndex) + 1], onlyDecimals);
 }
 
-float getGridlineSpacing(float rangeX) {
-    // TODO: define a formula for this instead of relying on if statements
-    if (rangeX < 0.4) {
-        return 0.04;
-    } if (rangeX < 4) {
-        return 0.4;
-    } if (rangeX < 40) {
-        return 4;
-    } if (rangeX < 400) {
-        return 40;
-    } if (rangeX < 4000) {
-        return 400;
-    } if (rangeX < 40000) {
-        return 4000;
-    }
+float getGridlineSpacing(float rangeX, float maxGridlines) {
+    return pow(maxGridlines, floor(log(rangeX) / log(maxGridlines))) / 2;
 }
 
 void main() {
@@ -84,7 +71,7 @@ void main() {
     // Check for grid lines
     float rangeX = abs(xRange.y - xRange.x);
 
-    float gridlineSep = getGridlineSpacing(abs(xRange.y - xRange.x));
+    float gridlineSep = getGridlineSpacing(abs(xRange.y - xRange.x), 5);
     if (mod(coords.x, gridlineSep) < RADIUS / 1.5 || mod(coords.y, gridlineSep) < RADIUS / 1.5) {
         fragColor = vec4(0.3, 0.3, 0.3, 1.0);
         return;
