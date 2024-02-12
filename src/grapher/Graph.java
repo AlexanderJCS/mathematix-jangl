@@ -1,13 +1,14 @@
 package grapher;
 
+import formulas.Formula;
 import jangl.coords.WorldCoords;
+import jangl.graphics.Camera;
 import jangl.graphics.shaders.ShaderProgram;
 import jangl.graphics.shaders.premade.TextureShaderVert;
 import jangl.io.mouse.Mouse;
 import jangl.io.mouse.MouseEvent;
 import jangl.io.mouse.ScrollEvent;
 import jangl.shapes.Rect;
-import formulas.Formula;
 import jangl.shapes.Shape;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
@@ -65,11 +66,16 @@ public class Graph implements Draggable {
     }
 
     /**
-     * Clamps the graph to the right side of the screen, ensuring that it does not shift when the window is resized.
+     * Clamps the graph to the right side of the screen, ensuring that it does not shift when the window is resized
+     * or camera is zoomed.
      */
     private void clampToRight() {
+        float widthHeight = this.rect.getWidth() / Camera.getZoom();
+        this.rect.getTransform().setWidth(widthHeight, this.rect.getWidth());
+        this.rect.getTransform().setHeight(widthHeight, this.rect.getHeight());
+
         this.rect.getTransform().setPos(
-                WorldCoords.getTopRight().x - this.rect.getWidth() / 2,
+                WorldCoords.getTopRight().x / 2 + 0.5f * WorldCoords.getTopRight().x / Camera.getZoom() - widthHeight / 2,
                 this.rect.getTransform().getCenter().y
         );
     }
