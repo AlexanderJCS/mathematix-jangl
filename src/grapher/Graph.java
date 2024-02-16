@@ -35,8 +35,8 @@ public class Graph implements Draggable {
         return (GraphShaderFrag) this.shader.getFragmentShader();
     }
 
-    public void setFormula(Formula gpuGraph) {
-        this.getShader().setFormula(gpuGraph);
+    public void setFormula(Formula formula) {
+        this.getShader().setFormula(formula);
     }
 
     private void zoom(float x, float y, float amount) {
