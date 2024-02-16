@@ -61,7 +61,7 @@ public class InputBox {
     private void select(List<MouseEvent> mouseEvents) {
         for (MouseEvent event : mouseEvents) {
             if (event.button == GLFW.GLFW_MOUSE_BUTTON_1 && event.action == GLFW.GLFW_PRESS) {
-                this.selected = Shape.collides(this.background, Mouse.getMousePos());
+                this.selected = Shape.collides(this.background, Mouse.getMousePosAdjusted());
             }
         }
     }

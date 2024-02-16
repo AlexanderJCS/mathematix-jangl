@@ -28,7 +28,7 @@ public class Graph implements Draggable {
                 new TextureShaderVert(),
                 new GraphShaderFrag()
         );
-        this.dragger = new Dragger(this);
+        this.dragger = new Dragger(this, false);
     }
 
     private GraphShaderFrag getShader() {
@@ -81,7 +81,7 @@ public class Graph implements Draggable {
     }
 
     private void zoomAroundMouse(float amount) {
-        WorldCoords mousePos = Mouse.getMousePos();
+        WorldCoords mousePos = Mouse.getMousePosAdjusted();
         WorldCoords delta = new WorldCoords(mousePos);
         delta.sub(this.rect.getTransform().getCenter());
 
@@ -101,7 +101,7 @@ public class Graph implements Draggable {
             }
 
             if (event.action == GLFW.GLFW_PRESS) {
-                if (Shape.collides(this.rect, Mouse.getMousePos())) {
+                if (Shape.collides(this.rect, Mouse.getMousePosAdjusted())) {
                     this.dragger.select();
                 }
             } else {
@@ -110,7 +110,7 @@ public class Graph implements Draggable {
         }
 
         // Do not zoom if the mouse is not over the graph
-        if (!Shape.collides(this.rect, Mouse.getMousePos())) {
+        if (!Shape.collides(this.rect, Mouse.getMousePosAdjusted())) {
             return;
         }
 

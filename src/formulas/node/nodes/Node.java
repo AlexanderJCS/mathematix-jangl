@@ -59,7 +59,7 @@ public abstract class Node implements Draggable {
         this.genAttachments(attachmentsIn, this.inputAttachments, true);
         this.genAttachments(attachmentsOut, this.outputAttachments, false);
 
-        this.dragger = new Dragger(this);
+        this.dragger = new Dragger(this, true);
     }
 
     protected void useCloseBox(boolean use) {
@@ -155,7 +155,7 @@ public abstract class Node implements Draggable {
                 this.dragger.deselect();
             }
 
-            if (event.button != GLFW.GLFW_MOUSE_BUTTON_1 || !Shape.collides(this.dragBar, Mouse.getMousePos())) {
+            if (event.button != GLFW.GLFW_MOUSE_BUTTON_1 || !Shape.collides(this.dragBar, Mouse.getMousePosAdjusted())) {
                 continue;
             }
 
@@ -197,7 +197,7 @@ public abstract class Node implements Draggable {
     }
 
     private void select(List<MouseEvent> mouseEvents) {
-        WorldCoords mousePos = Mouse.getMousePos();
+        WorldCoords mousePos = Mouse.getMousePosAdjusted();
         // Exit if the mouse collides with any attachments or the drag bar
         if (Shape.collides(this.dragBar, mousePos)) {
             return;

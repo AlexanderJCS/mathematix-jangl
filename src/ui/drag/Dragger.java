@@ -7,15 +7,25 @@ public class Dragger {
     private final Draggable draggable;
     private boolean selected;
     private WorldCoords lastMousePos;
+    private final boolean useAdjustedMousePos;
 
-    public Dragger(Draggable draggable) {
+    public Dragger(Draggable draggable, boolean useAdjustedMousePos) {
         this.draggable = draggable;
         this.selected = false;
-        this.lastMousePos = Mouse.getMousePos();
+        this.useAdjustedMousePos = useAdjustedMousePos;
+        this.lastMousePos = this.mousePos();
+    }
+
+    private WorldCoords mousePos() {
+        if (this.useAdjustedMousePos) {
+            return Mouse.getMousePosAdjusted();
+        } else {
+            return Mouse.getMousePos();
+        }
     }
 
     public void update() {
-        WorldCoords mousePos = Mouse.getMousePos();
+        WorldCoords mousePos = this.mousePos();
 
         if (this.selected) {
             WorldCoords offset = new WorldCoords(

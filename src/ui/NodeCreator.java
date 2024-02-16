@@ -108,10 +108,10 @@ public class NodeCreator {
                 // TODO: refactor by negating the condition, among other things
                 if (this.visible) {
                     for (int i = 0; i < this.itemRects.size(); i++) {
-                        if (Shape.collides(this.itemRects.get(i), Mouse.getMousePos())) {
+                        if (Shape.collides(this.itemRects.get(i), Mouse.getMousePosAdjusted())) {
                             Node node = this.createNode(
                                     this.itemTexts.get(i).getText(),
-                                    Mouse.getMousePos()
+                                    Mouse.getMousePosAdjusted()
                             );
 
                             if (node != null) {
@@ -126,7 +126,7 @@ public class NodeCreator {
 
             else if (event.button == GLFW.GLFW_MOUSE_BUTTON_2) {
                 this.setVisible(true);
-                this.setPos(Mouse.getMousePos());
+                this.setPos(Mouse.getMousePosAdjusted());
             }
         }
     }
@@ -139,7 +139,7 @@ public class NodeCreator {
         this.rect.draw(BG_COLOR);
 
         for (Rect itemRect : this.itemRects) {
-            if (Shape.collides(itemRect, Mouse.getMousePos())) {
+            if (Shape.collides(itemRect, Mouse.getMousePosAdjusted())) {
                 itemRect.draw(SELECT_COLOR);
             }
         }

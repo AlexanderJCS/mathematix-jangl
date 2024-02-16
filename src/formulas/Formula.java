@@ -8,6 +8,7 @@ import jangl.graphics.Camera;
 import jangl.graphics.shaders.ShaderProgram;
 import jangl.graphics.shaders.premade.TextureShaderVert;
 import jangl.io.keyboard.KeyEvent;
+import jangl.io.keyboard.Keyboard;
 import jangl.io.mouse.Mouse;
 import jangl.io.mouse.MouseEvent;
 import jangl.io.mouse.ScrollEvent;
@@ -59,7 +60,7 @@ public class Formula implements Draggable {
         this.nodeCreator = new NodeCreator(selectionItems, this);
         this.scale = 1;
 
-        this.dragger = new Dragger(this);
+        this.dragger = new Dragger(this, true);
     }
 
     public void addNode(Node node) {
@@ -118,7 +119,7 @@ public class Formula implements Draggable {
 
             boolean selected = false;
             for (Attachment attachment : this.getAttachments()) {
-                if (Shape.collides(attachment.circle(), Mouse.getMousePos())) {
+                if (Shape.collides(attachment.circle(), Mouse.getMousePosAdjusted())) {
                     selected = true;
                     this.performAction(attachment, event.action == GLFW.GLFW_PRESS);
                     break;
@@ -230,7 +231,7 @@ public class Formula implements Draggable {
     private void updateSelectionLine() {
         if (this.selected != null) {
             this.selectionLine.setStart(this.selected.circle().getTransform().getCenter());
-            this.selectionLine.setEnd(Mouse.getMousePos());
+            this.selectionLine.setEnd(Mouse.getMousePosAdjusted());
         }
     }
 
@@ -243,7 +244,7 @@ public class Formula implements Draggable {
     private void clampToLeft() {
         Transform bgTransform = this.background.getTransform();
 
-        float width = WorldCoords.getTopRight().x / Camera.getZoom() - 1;
+        float width = WorldCoords.getTopRight().x / Camera.getZoom() - 1 / Camera.getZoom();
         float height = WorldCoords.getTopRight().y / Camera.getZoom();
 
         bgTransform.setWidth(width, this.background.getWidth());
@@ -288,20 +289,20 @@ public class Formula implements Draggable {
                 continue;
             }
 
-            if (!Shape.collides(this.background, Mouse.getMousePos())) {
+            if (!Shape.collides(this.background, Mouse.getMousePosAdjusted())) {
                 continue;
             }
 
             boolean canDrag = true;
             for (Node node : this.nodes) {
-                if (Shape.collides(node.getRect(), Mouse.getMousePos())) {
+                if (Shape.collides(node.getRect(), Mouse.getMousePosAdjusted())) {
                     canDrag = false;
                     break;
                 }
             }
 
             for (Attachment attachment : this.getAttachments()) {
-                if (Shape.collides(attachment.circle(), Mouse.getMousePos())) {
+                if (Shape.collides(attachment.circle(), Mouse.getMousePosAdjusted())) {
                     canDrag = false;
                     break;
                 }
@@ -313,7 +314,7 @@ public class Formula implements Draggable {
         }
 
         // Do not zoom or drag if the mouse is not over the formulas area
-        if (!Shape.collides(this.background, Mouse.getMousePos())) {
+        if (!Shape.collides(this.background, Mouse.getMousePosAdjusted())) {
             return;
         }
 
