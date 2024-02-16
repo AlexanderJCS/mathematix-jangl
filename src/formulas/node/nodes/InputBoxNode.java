@@ -47,10 +47,4 @@ public abstract class InputBoxNode extends Node {
         super.drag(delta);
         this.inputBox.drag(delta);
     }
-
-    @Override
-    public void setScale(float scale) {
-        super.setScale(scale);
-        this.inputBox.setScale(scale);
-    }
 }

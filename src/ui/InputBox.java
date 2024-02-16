@@ -89,12 +89,6 @@ public class InputBox {
         }
     }
 
-    public void setScale(float scale) {
-        this.text.setHeight(this.originalTextHeight * scale);
-        this.background.getTransform().setScale(scale);
-        this.refreshTextPos();
-    }
-
     public void drag(WorldCoords delta) {
         this.background.getTransform().shift(delta);
         this.refreshTextPos();

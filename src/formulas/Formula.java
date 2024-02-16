@@ -8,7 +8,6 @@ import jangl.graphics.Camera;
 import jangl.graphics.shaders.ShaderProgram;
 import jangl.graphics.shaders.premade.TextureShaderVert;
 import jangl.io.keyboard.KeyEvent;
-import jangl.io.keyboard.Keyboard;
 import jangl.io.mouse.Mouse;
 import jangl.io.mouse.MouseEvent;
 import jangl.io.mouse.ScrollEvent;
@@ -31,7 +30,6 @@ public class Formula implements Draggable {
     private final Line selectionLine;
     private final NodeCreator nodeCreator;
     private final Dragger dragger;
-    private float scale;
 
     private static final ShaderProgram BG_SHADER = new ShaderProgram(
             new TextureShaderVert(),
@@ -58,13 +56,10 @@ public class Formula implements Draggable {
         selectionItems.put("Tan", TanNode.class);
 
         this.nodeCreator = new NodeCreator(selectionItems, this);
-        this.scale = 1;
-
         this.dragger = new Dragger(this, true);
     }
 
     public void addNode(Node node) {
-        node.setScale(this.scale);
         this.nodes.add(node);
     }
 
@@ -235,11 +230,6 @@ public class Formula implements Draggable {
         }
     }
 
-    private void zoom(float amount) {
-        this.scale *= amount;
-        Camera.setZoom(this.scale);
-    }
-
     // Clamps the background to the left side of the screen
     private void clampToLeft() {
         Transform bgTransform = this.background.getTransform();
@@ -257,6 +247,10 @@ public class Formula implements Draggable {
 
         BackgroundShader shader = (BackgroundShader) (BG_SHADER.getFragmentShader());
         shader.setWidthHeight(new WorldCoords(width, height));
+    }
+
+    private void zoom(float zoom) {
+        Camera.setZoom(Camera.getZoom() * zoom);
     }
 
     public void update(List<KeyEvent> keyEvents, List<MouseEvent> mouseEvents, List<ScrollEvent> scrollEvents) {

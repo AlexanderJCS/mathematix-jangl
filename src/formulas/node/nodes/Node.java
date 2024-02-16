@@ -68,21 +68,6 @@ public abstract class Node implements Draggable {
     }
 
     /**
-     * Refreshes the position of the drag bar to be at the top of the node.
-     */
-    private void refreshDragBarPos() {
-        float scaledRectHeight = this.rect.getHeight() * this.rect.getTransform().getScaleY();
-        float scaledDragBarHeight = this.dragBar.getHeight() * this.dragBar.getTransform().getScaleY();
-
-        this.dragBar.getTransform().setPos(
-                new WorldCoords(
-                        this.rect.getTransform().getCenter().x,
-                        this.rect.getTransform().getCenter().y + scaledRectHeight / 2 - scaledDragBarHeight / 2
-                )
-        );
-    }
-
-    /**
      * Refreshes the position of the text to be at the center of the drag bar
      */
     private void refreshTextPos() {
@@ -239,22 +224,6 @@ public abstract class Node implements Draggable {
     }
 
     public abstract float compute(float x);
-
-    public void setScale(float scale) {
-        this.rect.getTransform().setScale(scale);
-        this.nodeTitle.getTransform().setScale(scale);
-        this.dragBar.getTransform().setScale(scale);
-        this.inputAttachments.forEach(attachment -> attachment.circle().getTransform().setScale(scale));
-        this.outputAttachments.forEach(attachment -> attachment.circle().getTransform().setScale(scale));
-
-        this.updateAttachmentLocations(this.inputAttachments, true);
-        this.updateAttachmentLocations(this.outputAttachments, false);
-
-        this.refreshDragBarPos();
-        this.refreshTextPos();
-
-        this.updateConnections();
-    }
 
     public Rect getRect() {
         return this.rect;
