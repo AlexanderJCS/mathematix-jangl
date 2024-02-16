@@ -45,24 +45,14 @@ public class Graph implements Draggable {
         Vector2f xRange = shader.getXRange();
         Vector2f yRange = shader.getYRange();
 
-        // Get the current center
-        float xRangeCenter = (xRange.x + xRange.y) / 2;
-        float yRangeCenter = (yRange.x + yRange.y) / 2;
+        float zoomedXMin = x - (x - xRange.x) * amount;
+        float zoomedXMax = x + (xRange.y - x) * amount;
 
-        // Adjust the new range to be centered around the given coordinate
-        xRange.sub(new Vector2f(x + xRangeCenter));
-        yRange.sub(new Vector2f(y + yRangeCenter));
+        float zoomedYMin = y - (y - yRange.x) * amount;
+        float zoomedYMax = y + (yRange.y - y) * amount;
 
-        // Adjust the new range to be scaled by the given amount
-        xRange.mul(amount);
-        yRange.mul(amount);
-
-        // Adjust the new range to be centered around the given coordinate
-        xRange.add(new Vector2f(x + xRangeCenter));
-        yRange.add(new Vector2f(y + yRangeCenter));
-
-        shader.setXRange(xRange);
-        shader.setYRange(yRange);
+        shader.setXRange(new Vector2f(zoomedXMin, zoomedXMax));
+        shader.setYRange(new Vector2f(zoomedYMin, zoomedYMax));
     }
 
     /**
@@ -81,12 +71,18 @@ public class Graph implements Draggable {
     }
 
     private void zoomAroundMouse(float amount) {
-        WorldCoords mousePos = Mouse.getMousePosAdjusted();
-        WorldCoords delta = new WorldCoords(mousePos);
+        WorldCoords delta = Mouse.getMousePosAdjusted();
         delta.sub(this.rect.getTransform().getCenter());
+        delta.add(
+                this.rect.getWidth() * this.rect.getTransform().getScaleX() / 2,
+                this.rect.getHeight() * this.rect.getTransform().getScaleY() / 2
+        );
 
-        float xAdjusted = delta.x / this.rect.getWidth() * this.getShader().getXRange().y;
-        float yAdjusted = delta.y / this.rect.getHeight() * this.getShader().getYRange().y;
+        Vector2f xRange = this.getShader().getXRange();
+        Vector2f yRange = this.getShader().getYRange();
+
+        float xAdjusted = delta.x / this.rect.getWidth() * (xRange.y - xRange.x) + xRange.x;
+        float yAdjusted = delta.y / this.rect.getHeight() * (yRange.y - yRange.x) + yRange.x;
 
         this.zoom(xAdjusted, yAdjusted, amount);
     }
