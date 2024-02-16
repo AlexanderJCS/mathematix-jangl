@@ -62,7 +62,7 @@ public abstract class Node implements Draggable {
         this.dragger = new Dragger(this, true);
     }
 
-    protected void useCloseBox(boolean use) {
+    protected void allowClosing(boolean use) {
         this.allowClosing = use;
         this.refreshTextPos();  // since the text pos depends on if there's a close box
     }

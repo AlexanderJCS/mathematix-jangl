@@ -6,7 +6,7 @@ public class GraphNode extends Node {
     public GraphNode(WorldCoords pos) {
         super(pos, 1, 0, "Graph");
 
-        this.useCloseBox(false);  // do not close the graph node
+        this.allowClosing(false);  // do not close the graph node
     }
 
     @Override
