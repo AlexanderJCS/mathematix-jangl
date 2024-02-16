@@ -234,7 +234,7 @@ public class Formula implements Draggable {
     private void clampToLeft() {
         Transform bgTransform = this.background.getTransform();
 
-        float width = WorldCoords.getTopRight().x / Camera.getZoom() - 1 / Camera.getZoom();
+        float width = (WorldCoords.getTopRight().x - 1) / Camera.getZoom();
         float height = WorldCoords.getTopRight().y / Camera.getZoom();
 
         bgTransform.setWidth(width, this.background.getWidth());
