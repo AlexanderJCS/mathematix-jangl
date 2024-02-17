@@ -236,7 +236,13 @@ public class Formula implements Draggable {
     }
 
     private void zoom(float zoom) {
-        Camera.setZoom(Camera.getZoom() * zoom);
+        float newZoom = Camera.getZoom() * zoom;
+
+        if (newZoom < 0.2f || newZoom > 5f) {
+            return;
+        }
+
+        Camera.setZoom(newZoom);
     }
 
     private void resetZoomOffset() {
@@ -301,7 +307,7 @@ public class Formula implements Draggable {
         }
 
         // Do not zoom or drag if the mouse is not over the formulas area
-        if (!Shape.collides(this.background, Mouse.getMousePos())) {
+        if (Mouse.getMousePos().x + 1 > WorldCoords.getTopRight().x) {
             return;
         }
 
