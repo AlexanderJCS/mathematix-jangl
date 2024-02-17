@@ -36,10 +36,13 @@ public class InputBox {
         this.selected = false;
         this.text = new TextBuilder(FONT, "", pos).setHeight(height * 0.9f).toText();
         this.originalTextHeight = this.text.getHeight();
+
+        this.refreshTextPos();
     }
 
     public void setCenter(WorldCoords center) {
         this.background.getTransform().setPos(center);
+        this.refreshTextPos();
     }
 
     /**
