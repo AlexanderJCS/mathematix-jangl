@@ -1,6 +1,7 @@
 package formulas;
 
 import jangl.coords.WorldCoords;
+import jangl.graphics.Camera;
 import jangl.graphics.shaders.FragmentShader;
 import org.joml.Vector2f;
 import org.lwjgl.opengl.GL41;
@@ -64,5 +65,8 @@ public class BackgroundShader extends FragmentShader {
 
         location = GL41.glGetUniformLocation(programID, "dotSeparation");
         GL41.glUniform1f(location, this.dotSeparation);
+
+        location = GL41.glGetUniformLocation(programID, "zoom");
+        GL41.glUniform1f(location, Camera.getZoom());
     }
 }
