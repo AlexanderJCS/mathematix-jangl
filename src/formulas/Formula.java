@@ -282,7 +282,8 @@ public class Formula implements Draggable {
                 continue;
             }
 
-            if (!Shape.collides(this.background, Mouse.getMousePos())) {
+            // Do not zoom or drag if the mouse is not over the formulas area
+            if (Mouse.getMousePos().x + 1 > WorldCoords.getTopRight().x) {
                 continue;
             }
 
