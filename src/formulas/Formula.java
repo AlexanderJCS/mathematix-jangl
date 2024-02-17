@@ -294,7 +294,7 @@ public class Formula implements Draggable {
 
             boolean canDrag = true;
             for (Node node : this.nodes) {
-                if (Shape.collides(node.getRect(), Mouse.getMousePos())) {
+                if (Shape.collides(node.getRect(), Mouse.getMousePosAdjusted())) {
                     canDrag = false;
                     break;
                 }
