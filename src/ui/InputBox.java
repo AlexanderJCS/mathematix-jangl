@@ -18,9 +18,8 @@ import java.util.List;
 
 public class InputBox {
     private boolean selected;
-    private Rect background;
+    private final Rect background;
     private final Text text;
-    private final float originalTextHeight;
 
     private static final ShaderProgram BG_COLOR = new ShaderProgram(
             new ColorShader(ColorFactory.fromNorm(0.4f, 0.4f, 0.4f, 1.0f))
@@ -35,7 +34,6 @@ public class InputBox {
         this.background = new Rect(pos, width, height);
         this.selected = false;
         this.text = new TextBuilder(FONT, "", pos).setHeight(height * 0.9f).toText();
-        this.originalTextHeight = this.text.getHeight();
 
         this.refreshTextPos();
     }
