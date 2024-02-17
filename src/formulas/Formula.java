@@ -246,7 +246,7 @@ public class Formula implements Draggable {
         ));
     }
 
-    public void update(List<KeyEvent> keyEvents, List<MouseEvent> mouseEvents, List<ScrollEvent> scrollEvents) {;
+    public void update(List<KeyEvent> keyEvents, List<MouseEvent> mouseEvents, List<ScrollEvent> scrollEvents) {
         this.resetZoomOffset();
         this.dragger.update();
 
