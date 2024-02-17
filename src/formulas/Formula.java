@@ -6,7 +6,6 @@ import formulas.node.nodes.*;
 import jangl.coords.WorldCoords;
 import jangl.graphics.Camera;
 import jangl.graphics.shaders.ShaderProgram;
-import jangl.graphics.shaders.VertexShader;
 import jangl.graphics.shaders.premade.TextureShaderVert;
 import jangl.io.keyboard.KeyEvent;
 import jangl.io.mouse.Mouse;
@@ -14,7 +13,6 @@ import jangl.io.mouse.MouseEvent;
 import jangl.io.mouse.ScrollEvent;
 import jangl.shapes.Rect;
 import jangl.shapes.Shape;
-import jangl.shapes.Transform;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL41;
 import ui.Line;
@@ -237,11 +235,19 @@ public class Formula implements Draggable {
         }
     }
 
-    private void zoomAroundMouse(float zoom) {
+    private void zoom(float zoom) {
         Camera.setZoom(Camera.getZoom() * zoom);
     }
 
-    public void update(List<KeyEvent> keyEvents, List<MouseEvent> mouseEvents, List<ScrollEvent> scrollEvents) {
+    private void resetZoomOffset() {
+        Camera.setZoomOffset(new WorldCoords(
+                (WorldCoords.getTopRight().x - 1) / 2,
+                WorldCoords.getMiddle().y
+        ));
+    }
+
+    public void update(List<KeyEvent> keyEvents, List<MouseEvent> mouseEvents, List<ScrollEvent> scrollEvents) {;
+        this.resetZoomOffset();
         this.dragger.update();
 
         this.updateSelectionLine();
@@ -301,9 +307,9 @@ public class Formula implements Draggable {
 
         for (ScrollEvent event : scrollEvents) {
             if (event.yOffset > 0) {
-                this.zoomAroundMouse(1 + 0.05f * (float) Math.abs(event.yOffset));
+                this.zoom(1 + 0.05f * (float) Math.abs(event.yOffset));
             } else {
-                this.zoomAroundMouse(1 - 0.05f * (float) Math.abs(event.yOffset));
+                this.zoom(1 - 0.05f * (float) Math.abs(event.yOffset));
             }
         }
     }
