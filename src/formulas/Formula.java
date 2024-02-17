@@ -61,7 +61,7 @@ public class Formula implements Draggable {
         selectionItems.put("Tan", TanNode.class);
 
         this.nodeCreator = new NodeCreator(selectionItems, this);
-        this.dragger = new Dragger(this, true);
+        this.dragger = new Dragger(this, false);
     }
 
     public void addNode(Node node) {
@@ -354,8 +354,11 @@ public class Formula implements Draggable {
 
     @Override
     public void drag(WorldCoords offset) {
+        WorldCoords adjustedForZoom = new WorldCoords(offset);
+        adjustedForZoom.div(new WorldCoords(Camera.getZoom(), Camera.getZoom()));
+
         for (Node node : this.nodes) {
-            node.drag(offset);
+            node.drag(adjustedForZoom);
         }
 
         BackgroundShader shader = (BackgroundShader) (bgShader.getFragmentShader());
