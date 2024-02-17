@@ -76,7 +76,20 @@ public class Graph implements Draggable {
         this.zoom(xAdjusted, yAdjusted, amount);
     }
 
+    private void clampToRight() {
+        WorldCoords oldCenter = this.rect.getTransform().getCenter();
+        WorldCoords topRight = WorldCoords.getTopRight();
+
+        this.rect.getTransform().setPos(
+                new WorldCoords(
+                        topRight.x - this.rect.getWidth() / 2,
+                        oldCenter.y
+                )
+        );
+    }
+
     public void update(List<MouseEvent> mouseEvents, List<ScrollEvent> scrollEvents) {
+        this.clampToRight();
         this.dragger.update();
 
         for (MouseEvent event : mouseEvents) {
