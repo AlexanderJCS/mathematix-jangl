@@ -1,7 +1,5 @@
 #version 410
 
-uniform float zoom;
-uniform vec2 offset;
 uniform vec2 widthHeight;
 uniform float dotRadius;
 uniform float dotSeparation;
@@ -14,7 +12,7 @@ void main() {
     vec2 adjustedTexCoords = texCoords * widthHeight - vec2(0.5, 0.5);
 
     // Calculate the position of the current fragment in the grid
-    vec2 gridPosition = (adjustedTexCoords + offset) / zoom / dotSeparation;
+    vec2 gridPosition = (adjustedTexCoords) / dotSeparation;
 
     // Find the nearest grid point
     vec2 nearestGridPoint = round(gridPosition);

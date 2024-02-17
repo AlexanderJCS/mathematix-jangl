@@ -34,13 +34,15 @@ public class Formula implements Draggable {
     private final ShaderProgram bgShader;
 
     public Formula() {
-        this.background = new Rect(new WorldCoords(0, 1), WorldCoords.getTopRight().x, 1);
+        this.background = new Rect(
+                new WorldCoords(-1000, 1000), 2000, 2000
+        );
 
-        VertexShader vert = new TextureShaderVert();
-        vert.setObeyCamera(false);
+        BackgroundShader bgShader = new BackgroundShader();
+        bgShader.setWidthHeight(new WorldCoords(this.background.getWidth(), this.background.getHeight()));
         this.bgShader = new ShaderProgram(
-                vert,
-                new BackgroundShader()
+                new TextureShaderVert(),
+                bgShader
         );
 
         this.selectionLine = new Line(new WorldCoords(0, 0), new WorldCoords(0, 0), Connection.THICKNESS);
@@ -61,7 +63,7 @@ public class Formula implements Draggable {
         selectionItems.put("Tan", TanNode.class);
 
         this.nodeCreator = new NodeCreator(selectionItems, this);
-        this.dragger = new Dragger(this, false);
+        this.dragger = new Dragger(this, true);
     }
 
     public void addNode(Node node) {
@@ -235,31 +237,11 @@ public class Formula implements Draggable {
         }
     }
 
-    // Clamps the background to the left side of the screen
-    private void clampToLeft() {
-        Transform bgTransform = this.background.getTransform();
-
-        float width = WorldCoords.getTopRight().x - 1;
-        float height = WorldCoords.getTopRight().y;
-
-        bgTransform.setWidth(width, this.background.getWidth());
-        bgTransform.setHeight(height, this.background.getHeight());
-
-        bgTransform.setPos(new WorldCoords(
-                WorldCoords.getTopRight().x - 1 - width / 2,
-                bgTransform.getCenter().y
-        ));
-
-        BackgroundShader shader = (BackgroundShader) (this.bgShader.getFragmentShader());
-        shader.setWidthHeight(new WorldCoords(width, height));
-    }
-
-    private void zoom(float zoom) {
+    private void zoomAroundMouse(float zoom) {
         Camera.setZoom(Camera.getZoom() * zoom);
     }
 
     public void update(List<KeyEvent> keyEvents, List<MouseEvent> mouseEvents, List<ScrollEvent> scrollEvents) {
-        this.clampToLeft();
         this.dragger.update();
 
         this.updateSelectionLine();
@@ -319,9 +301,9 @@ public class Formula implements Draggable {
 
         for (ScrollEvent event : scrollEvents) {
             if (event.yOffset > 0) {
-                this.zoom(1 + 0.05f * (float) Math.abs(event.yOffset));
+                this.zoomAroundMouse(1 + 0.05f * (float) Math.abs(event.yOffset));
             } else {
-                this.zoom(1 - 0.05f * (float) Math.abs(event.yOffset));
+                this.zoomAroundMouse(1 - 0.05f * (float) Math.abs(event.yOffset));
             }
         }
     }
@@ -354,14 +336,8 @@ public class Formula implements Draggable {
 
     @Override
     public void drag(WorldCoords offset) {
-        WorldCoords adjustedForZoom = new WorldCoords(offset);
-        adjustedForZoom.div(new WorldCoords(Camera.getZoom(), Camera.getZoom()));
-
-        for (Node node : this.nodes) {
-            node.drag(adjustedForZoom);
-        }
-
-        BackgroundShader shader = (BackgroundShader) (bgShader.getFragmentShader());
-        shader.setOffset(shader.getOffset().add(offset.toVector2f().mul(-1, 1)));
+        WorldCoords cameraCenter = Camera.getCenter();
+        cameraCenter.sub(offset);
+        Camera.setCenter(cameraCenter);
     }
 }
