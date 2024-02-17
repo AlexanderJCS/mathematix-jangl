@@ -2,8 +2,8 @@ package grapher;
 
 import formulas.Formula;
 import jangl.coords.WorldCoords;
-import jangl.graphics.Camera;
 import jangl.graphics.shaders.ShaderProgram;
+import jangl.graphics.shaders.VertexShader;
 import jangl.graphics.shaders.premade.TextureShaderVert;
 import jangl.io.mouse.Mouse;
 import jangl.io.mouse.MouseEvent;
@@ -24,10 +24,14 @@ public class Graph implements Draggable {
 
     public Graph() {
         this.rect = new Rect(new WorldCoords(WorldCoords.getTopRight().x - 1, 1), 1, 1);
+
+        VertexShader vert = new TextureShaderVert();
+        vert.setObeyCamera(false);
         this.shader = new ShaderProgram(
-                new TextureShaderVert(),
+                vert,
                 new GraphShaderFrag()
         );
+
         this.dragger = new Dragger(this, false);
     }
 
@@ -55,23 +59,8 @@ public class Graph implements Draggable {
         shader.setYRange(new Vector2f(zoomedYMin, zoomedYMax));
     }
 
-    /**
-     * Clamps the graph to the right side of the screen, ensuring that it does not shift when the window is resized
-     * or camera is zoomed.
-     */
-    private void clampToRight() {
-        float widthHeight = this.rect.getWidth() / Camera.getZoom();
-        this.rect.getTransform().setWidth(widthHeight, this.rect.getWidth());
-        this.rect.getTransform().setHeight(widthHeight, this.rect.getHeight());
-
-        this.rect.getTransform().setPos(
-                WorldCoords.getTopRight().x / 2 + 0.5f * WorldCoords.getTopRight().x / Camera.getZoom() - widthHeight / 2,
-                this.rect.getTransform().getCenter().y
-        );
-    }
-
     private void zoomAroundMouse(float amount) {
-        WorldCoords delta = Mouse.getMousePosAdjusted();
+        WorldCoords delta = Mouse.getMousePos();
         delta.sub(this.rect.getTransform().getCenter());
         delta.add(
                 this.rect.getWidth() * this.rect.getTransform().getScaleX() / 2,
@@ -88,7 +77,6 @@ public class Graph implements Draggable {
     }
 
     public void update(List<MouseEvent> mouseEvents, List<ScrollEvent> scrollEvents) {
-        this.clampToRight();
         this.dragger.update();
 
         for (MouseEvent event : mouseEvents) {
@@ -97,7 +85,7 @@ public class Graph implements Draggable {
             }
 
             if (event.action == GLFW.GLFW_PRESS) {
-                if (Shape.collides(this.rect, Mouse.getMousePosAdjusted())) {
+                if (Shape.collides(this.rect, Mouse.getMousePos())) {
                     this.dragger.select();
                 }
             } else {
@@ -106,7 +94,7 @@ public class Graph implements Draggable {
         }
 
         // Do not zoom if the mouse is not over the graph
-        if (!Shape.collides(this.rect, Mouse.getMousePosAdjusted())) {
+        if (!Shape.collides(this.rect, Mouse.getMousePos())) {
             return;
         }
 
