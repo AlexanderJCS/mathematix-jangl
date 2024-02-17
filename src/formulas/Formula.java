@@ -342,8 +342,8 @@ public class Formula implements Draggable {
 
     @Override
     public void drag(WorldCoords offset) {
-        WorldCoords cameraCenter = Camera.getCenter();
-        cameraCenter.sub(offset);
-        Camera.setCenter(cameraCenter);
+        WorldCoords cameraPos = Camera.getCameraPos();
+        cameraPos.sub(offset);
+        Camera.setCameraPos(cameraPos);
     }
 }

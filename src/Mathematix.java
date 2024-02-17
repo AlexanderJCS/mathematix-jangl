@@ -1,6 +1,7 @@
 import formulas.Formula;
 import grapher.Graph;
 import jangl.Jangl;
+import jangl.graphics.Camera;
 import jangl.io.Window;
 import jangl.io.keyboard.KeyEvent;
 import jangl.io.keyboard.Keyboard;

@@ -1,27 +1,30 @@
 package ui.drag;
 
 import jangl.coords.WorldCoords;
+import jangl.graphics.Camera;
 import jangl.io.mouse.Mouse;
 
 public class Dragger {
     private final Draggable draggable;
     private boolean selected;
     private WorldCoords lastMousePos;
-    private final boolean useAdjustedMousePos;
+    private final boolean adjustForZoom;
 
-    public Dragger(Draggable draggable, boolean useAdjustedMousePos) {
+    public Dragger(Draggable draggable, boolean adjustForZoom) {
         this.draggable = draggable;
         this.selected = false;
-        this.useAdjustedMousePos = useAdjustedMousePos;
+        this.adjustForZoom = adjustForZoom;
         this.lastMousePos = this.mousePos();
     }
 
     private WorldCoords mousePos() {
-        if (this.useAdjustedMousePos) {
-            return Mouse.getMousePosAdjusted();
-        } else {
-            return Mouse.getMousePos();
+        WorldCoords mousePos = Mouse.getMousePos();
+
+        if (this.adjustForZoom) {
+            mousePos.div(Camera.getZoom(), Camera.getZoom());
         }
+
+        return mousePos;
     }
 
     public void update() {
