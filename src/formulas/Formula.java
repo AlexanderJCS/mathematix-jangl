@@ -6,6 +6,7 @@ import formulas.node.nodes.*;
 import jangl.coords.WorldCoords;
 import jangl.graphics.Camera;
 import jangl.graphics.shaders.ShaderProgram;
+import jangl.graphics.shaders.VertexShader;
 import jangl.graphics.shaders.premade.TextureShaderVert;
 import jangl.io.keyboard.KeyEvent;
 import jangl.io.mouse.Mouse;
@@ -30,14 +31,18 @@ public class Formula implements Draggable {
     private final Line selectionLine;
     private final NodeCreator nodeCreator;
     private final Dragger dragger;
-
-    private static final ShaderProgram BG_SHADER = new ShaderProgram(
-            new TextureShaderVert(),
-            new BackgroundShader()
-    );
+    private final ShaderProgram bgShader;
 
     public Formula() {
         this.background = new Rect(new WorldCoords(0, 1), WorldCoords.getTopRight().x, 1);
+
+        VertexShader vert = new TextureShaderVert();
+        vert.setObeyCamera(false);
+        this.bgShader = new ShaderProgram(
+                vert,
+                new BackgroundShader()
+        );
+
         this.selectionLine = new Line(new WorldCoords(0, 0), new WorldCoords(0, 0), Connection.THICKNESS);
 
         this.nodes = new ArrayList<>();
@@ -234,8 +239,8 @@ public class Formula implements Draggable {
     private void clampToLeft() {
         Transform bgTransform = this.background.getTransform();
 
-        float width = (WorldCoords.getTopRight().x - 1) / Camera.getZoom();
-        float height = WorldCoords.getTopRight().y / Camera.getZoom();
+        float width = WorldCoords.getTopRight().x - 1;
+        float height = WorldCoords.getTopRight().y;
 
         bgTransform.setWidth(width, this.background.getWidth());
         bgTransform.setHeight(height, this.background.getHeight());
@@ -245,7 +250,7 @@ public class Formula implements Draggable {
                 bgTransform.getCenter().y
         ));
 
-        BackgroundShader shader = (BackgroundShader) (BG_SHADER.getFragmentShader());
+        BackgroundShader shader = (BackgroundShader) (this.bgShader.getFragmentShader());
         shader.setWidthHeight(new WorldCoords(width, height));
     }
 
@@ -308,7 +313,7 @@ public class Formula implements Draggable {
         }
 
         // Do not zoom or drag if the mouse is not over the formulas area
-        if (!Shape.collides(this.background, Mouse.getMousePosAdjusted())) {
+        if (!Shape.collides(this.background, Mouse.getMousePos())) {
             return;
         }
 
@@ -323,7 +328,7 @@ public class Formula implements Draggable {
 
     public void draw() {
         // Draw background
-        this.background.draw(BG_SHADER);
+        this.background.draw(bgShader);
 
         // Draw nodes
         for (Node node : this.nodes) {
@@ -353,7 +358,7 @@ public class Formula implements Draggable {
             node.drag(offset);
         }
 
-        BackgroundShader shader = (BackgroundShader) (BG_SHADER.getFragmentShader());
+        BackgroundShader shader = (BackgroundShader) (bgShader.getFragmentShader());
         shader.setOffset(shader.getOffset().add(offset.toVector2f().mul(-1, 1)));
     }
 }
