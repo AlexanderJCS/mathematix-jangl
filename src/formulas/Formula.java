@@ -252,7 +252,32 @@ public class Formula implements Draggable {
         ));
     }
 
+    /**
+     * Moves the selected node to the top of the list to draw.
+     */
+    private void moveSelectedToTop() {
+        Node selected = null;
+        int selectedIndex = -1;
+
+        for (int i = 0; i < this.nodes.size(); i++) {
+            Node node = this.nodes.get(i);
+
+            if (node.isSelected()) {
+                selected = node;
+                selectedIndex = i;
+            }
+        }
+
+        if (selected == null || selectedIndex == this.nodes.size() - 1) {
+            return;
+        }
+
+        this.nodes.remove(selectedIndex);
+        this.nodes.add(selected);
+    }
+
     public void update(List<KeyEvent> keyEvents, List<MouseEvent> mouseEvents, List<ScrollEvent> scrollEvents) {
+        this.moveSelectedToTop();
         this.resetZoomOffset();
         this.dragger.update();
 

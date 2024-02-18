@@ -120,6 +120,10 @@ public abstract class Node implements Draggable {
         return this.allowClosing && this.selected && Keyboard.getKeyDown(GLFW.GLFW_KEY_DELETE);
     }
 
+    public boolean isSelected() {
+        return this.selected;
+    }
+
     public void draw() {
         this.rect.draw(this.selected ? NODE_TEXTURE_SELECTED : NODE_TEXTURE);
 
