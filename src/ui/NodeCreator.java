@@ -38,12 +38,9 @@ public class NodeCreator {
     );
 
     private static final float HEIGHT_PER_ITEM = 0.05f;
-    private static final ShaderProgram BG_COLOR = new ShaderProgram(
-            new ColorShader(ColorFactory.fromNorm(0.4f, 0.4f, 0.4f, 1.0f))
-    );
 
     private static final ShaderProgram SELECT_COLOR = new ShaderProgram(
-            new ColorShader(ColorFactory.fromNorm(0.2f, 0.2f, 0.2f, 1.0f))
+            new ColorShader(ColorFactory.fromNorm(0.33f, 0.75f, 0.66f, 0.33f))
     );
 
     public NodeCreator(LinkedHashMap<String, Class<? extends Node>> selectionItems, Formula formula) {
@@ -81,14 +78,6 @@ public class NodeCreator {
         }
     }
 
-    private float scaledRectWidth() {
-        return this.rect.getWidth() * this.rect.getTransform().getScaleX();
-    }
-
-    private float scaledRectHeight() {
-        return this.rect.getHeight() * this.rect.getTransform().getScaleY();
-    }
-
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
@@ -98,7 +87,7 @@ public class NodeCreator {
         delta.sub(pos);
         delta.mul(-1, -1);
 
-        delta.sub(-1 * this.scaledRectWidth() / 2, this.scaledRectHeight() / 2);
+        delta.sub(-1 * this.rect.getWidth() / 2, this.rect.getHeight() / 2);
 
         this.rect.getTransform().shift(delta);
 
@@ -175,7 +164,7 @@ public class NodeCreator {
 
     private void resetTextPos() {
         WorldCoords originalPos = this.rect.getTransform().getCenter();
-        originalPos.y += this.scaledRectHeight() / 2;
+        originalPos.y += this.rect.getHeight() / 2;
 
         for (int i = 0; i < this.itemTexts.size(); i++) {
             if (this.itemTexts.get(i) == null) {
@@ -184,7 +173,7 @@ public class NodeCreator {
 
             this.itemTexts.get(i).getTransform().setPos(
                     originalPos.x,
-                    originalPos.y - i * HEIGHT_PER_ITEM * this.rect.getTransform().getScaleY() - HEIGHT_PER_ITEM * this.rect.getTransform().getScaleY() / 2
+                    originalPos.y - i * HEIGHT_PER_ITEM - HEIGHT_PER_ITEM / 2
             );
         }
     }
