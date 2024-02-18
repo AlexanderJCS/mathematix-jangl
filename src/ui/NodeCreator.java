@@ -30,11 +30,11 @@ public class NodeCreator {
 
 
     private static final Texture END_TEXTURE = new Texture(
-            "resources/textures/node.png"
+            "resources/textures/node_creator_top.png"
     );
 
     private static final Texture MIDDLE_TEXTURE = new Texture(
-            "resources/textures/node_selected.png"
+            "resources/textures/node_creator_middle.png"
     );
 
     private static final float HEIGHT_PER_ITEM = 0.05f;
@@ -63,6 +63,9 @@ public class NodeCreator {
                     )
             );
         }
+
+        // Flip the last item rect to have the texture be upside-down
+        this.itemRects.get(this.itemRects.size() - 1).getTransform().rotate((float) Math.PI);
 
         this.itemTexts = new ArrayList<>();
         this.itemTexts.add(null);  // add empty text for the top to be
