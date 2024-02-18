@@ -52,11 +52,7 @@ float calculate(float x) {
     float closestIndex = getClosestIndex(x);
     float onlyDecimals = closestIndex - floor(closestIndex);
 
-    return mix(
-        xyValues[int(closestIndex)].y,
-        xyValues[int(closestIndex) + 1].y,
-        onlyDecimals
-    );
+    return xyValues[int(closestIndex)].y;
 }
 
 float getGridlineSpacing(float rangeX, float maxGridlines) {
@@ -73,7 +69,8 @@ void main() {
 
     // Derivative of the function
     // Since the derivative is the slope of the tangent line, we can get that by finding the slope of the line
-    float fPrime = findSlope(coords.x);
+    float h = 0.0001;
+    float fPrime = (findSlope(coords.x + h) - yValue) / h;
 
     // Line-point distance formula for any given point (x, y):
     // abs(f(x) - y) / sqrt(1 + f'(x)^2)
