@@ -51,10 +51,11 @@ public class NodeCreator {
         this.formula = formula;
 
         this.selectionItems = selectionItems;
-        this.rect = new Rect(new WorldCoords(0, 0), 0.2f, HEIGHT_PER_ITEM * (selectionItems.size() + 2));
+        this.rect = new Rect(new WorldCoords(0, 0), 0.2f, HEIGHT_PER_ITEM * (selectionItems.size()));
+        this.rect.getTransform().setScaleY(0.97f);  // to prevent the rounded edges from being filled in
 
         this.itemRects = new ArrayList<>();
-        for (int i = 0; i < selectionItems.size() + 2; i++) {
+        for (int i = 0; i < selectionItems.size(); i++) {
             this.itemRects.add(
                     new Rect(
                             new WorldCoords(0, -i * HEIGHT_PER_ITEM),
@@ -68,7 +69,6 @@ public class NodeCreator {
         this.itemRects.get(this.itemRects.size() - 1).getTransform().rotate((float) Math.PI);
 
         this.itemTexts = new ArrayList<>();
-        this.itemTexts.add(null);  // add empty text for the top to be
 
         for (int i = 0; i < selectionItems.size(); i++) {
             this.itemTexts.add(
@@ -107,9 +107,7 @@ public class NodeCreator {
         }
 
         for (Text itemText : this.itemTexts) {
-            if (itemText != null) {
-                    itemText.getTransform().shift(delta);
-            }
+            itemText.getTransform().shift(delta);
         }
         this.resetTextPos();  // center-justify text
     }
@@ -171,9 +169,7 @@ public class NodeCreator {
         }
 
         for (Text itemText : this.itemTexts) {
-            if (itemText != null) {
-                itemText.draw();
-            }
+            itemText.draw();
         }
     }
 
