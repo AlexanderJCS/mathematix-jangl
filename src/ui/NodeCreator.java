@@ -9,6 +9,7 @@ import jangl.graphics.font.Text;
 import jangl.graphics.font.TextBuilder;
 import jangl.graphics.shaders.ShaderProgram;
 import jangl.graphics.shaders.premade.ColorShader;
+import jangl.graphics.textures.Texture;
 import jangl.io.mouse.Mouse;
 import jangl.io.mouse.MouseEvent;
 import jangl.shapes.Rect;
@@ -27,6 +28,15 @@ public class NodeCreator {
     private final Formula formula;
     private boolean visible;
 
+
+    private static final Texture END_TEXTURE = new Texture(
+            "resources/textures/node.png"
+    );
+
+    private static final Texture MIDDLE_TEXTURE = new Texture(
+            "resources/textures/node_selected.png"
+    );
+
     private static final float HEIGHT_PER_ITEM = 0.05f;
     private static final ShaderProgram BG_COLOR = new ShaderProgram(
             new ColorShader(ColorFactory.fromNorm(0.4f, 0.4f, 0.4f, 1.0f))
@@ -41,10 +51,10 @@ public class NodeCreator {
         this.formula = formula;
 
         this.selectionItems = selectionItems;
-        this.rect = new Rect(new WorldCoords(0, 0), 0.2f, HEIGHT_PER_ITEM * selectionItems.size());
+        this.rect = new Rect(new WorldCoords(0, 0), 0.2f, HEIGHT_PER_ITEM * (selectionItems.size() + 2));
 
         this.itemRects = new ArrayList<>();
-        for (int i = 0; i < selectionItems.size(); i++) {
+        for (int i = 0; i < selectionItems.size() + 2; i++) {
             this.itemRects.add(
                     new Rect(
                             new WorldCoords(0, -i * HEIGHT_PER_ITEM),
@@ -55,13 +65,14 @@ public class NodeCreator {
         }
 
         this.itemTexts = new ArrayList<>();
+        this.itemTexts.add(null);  // add empty text for the top to be
 
         for (int i = 0; i < selectionItems.size(); i++) {
             this.itemTexts.add(
                     new TextBuilder(
                             new Font("resources/font/poppins.fnt", "resources/font/poppins.png"),
                             selectionItems.keySet().toArray(new String[0])[i],
-                            new WorldCoords(0, -i * HEIGHT_PER_ITEM)
+                            new WorldCoords(0, -i * HEIGHT_PER_ITEM - HEIGHT_PER_ITEM)
                     ).toText()
             );
         }
@@ -93,7 +104,9 @@ public class NodeCreator {
         }
 
         for (Text itemText : this.itemTexts) {
-            itemText.getTransform().shift(delta);
+            if (itemText != null) {
+                    itemText.getTransform().shift(delta);
+            }
         }
         this.resetTextPos();  // center-justify text
     }
@@ -107,7 +120,11 @@ public class NodeCreator {
             if (event.button == GLFW.GLFW_MOUSE_BUTTON_1) {
                 // TODO: refactor by negating the condition, among other things
                 if (this.visible) {
-                    for (int i = 0; i < this.itemRects.size(); i++) {
+                    for (int i = 0; i < this.itemTexts.size(); i++) {
+                        if (this.itemTexts.get(i) == null) {
+                            continue;
+                        }
+
                         if (Shape.collides(this.itemRects.get(i), Mouse.getMousePosAdjusted())) {
                             Node node = this.createNode(
                                     this.itemTexts.get(i).getText(),
@@ -145,7 +162,9 @@ public class NodeCreator {
         }
 
         for (Text itemText : this.itemTexts) {
-            itemText.draw();
+            if (itemText != null) {
+                itemText.draw();
+            }
         }
     }
 
@@ -166,6 +185,10 @@ public class NodeCreator {
         originalPos.y += this.scaledRectHeight() / 2;
 
         for (int i = 0; i < this.itemTexts.size(); i++) {
+            if (this.itemTexts.get(i) == null) {
+                continue;
+            }
+
             this.itemTexts.get(i).getTransform().setPos(
                     originalPos.x,
                     originalPos.y - i * HEIGHT_PER_ITEM * this.rect.getTransform().getScaleY() - HEIGHT_PER_ITEM * this.rect.getTransform().getScaleY() / 2
