@@ -153,9 +153,15 @@ public class NodeCreator {
             return;
         }
 
-        this.rect.draw(BG_COLOR);
+        this.rect.draw(MIDDLE_TEXTURE);
 
-        for (Rect itemRect : this.itemRects) {
+        for (int i = 0; i < this.itemRects.size(); i++) {
+            Rect itemRect = this.itemRects.get(i);
+
+            if (i == 0 || i == this.itemRects.size() - 1) {
+                itemRect.draw(END_TEXTURE);
+            }
+
             if (Shape.collides(itemRect, Mouse.getMousePosAdjusted())) {
                 itemRect.draw(SELECT_COLOR);
             }
