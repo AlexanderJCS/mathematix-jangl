@@ -168,18 +168,6 @@ public class NodeCreator {
         }
     }
 
-    private void resetRectPos() {
-        WorldCoords originalPos = this.rect.getTransform().getCenter();
-        originalPos.y += this.scaledRectHeight() / 2;
-
-        for (int i = 0; i < this.itemRects.size(); i++) {
-            this.itemRects.get(i).getTransform().setPos(
-                    originalPos.x,
-                    originalPos.y - i * HEIGHT_PER_ITEM * this.rect.getTransform().getScaleY() - HEIGHT_PER_ITEM * this.rect.getTransform().getScaleY() / 2
-            );
-        }
-    }
-
     private void resetTextPos() {
         WorldCoords originalPos = this.rect.getTransform().getCenter();
         originalPos.y += this.scaledRectHeight() / 2;
