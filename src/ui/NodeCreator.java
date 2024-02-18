@@ -196,22 +196,6 @@ public class NodeCreator {
         }
     }
 
-    public void setScale(float scale) {
-        this.rect.getTransform().setScale(scale);
-
-        for (Rect itemRect : this.itemRects) {
-            itemRect.getTransform().setScale(scale);
-        }
-
-        this.resetRectPos();
-
-        for (Text itemText : this.itemTexts) {
-            itemText.getTransform().setScale(scale);
-        }
-
-        this.resetTextPos();
-    }
-
     /**
      * Create a node at the given position
      * @param name the name of the node
