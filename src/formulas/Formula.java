@@ -268,12 +268,15 @@ public class Formula implements Draggable {
             node.update(keyEvents, mouseEvents);
         }
 
-        this.nodeCreator.update(mouseEvents);
-
         // TODO: refactor and move to function
         // Handle dragging the background
         for (MouseEvent event : mouseEvents) {
             if (event.button != GLFW.GLFW_MOUSE_BUTTON_1) {
+                continue;
+            }
+
+            // Do not drag if the mouse is clicking the node creator
+            if (this.nodeCreator.isVisible()) {
                 continue;
             }
 
@@ -306,6 +309,9 @@ public class Formula implements Draggable {
                 this.dragger.select();
             }
         }
+
+        // Update this after to prevent the background from being dragged when creating a node
+        this.nodeCreator.update(mouseEvents);
 
         // Do not zoom or drag if the mouse is not over the formulas area
         if (Mouse.getMousePos().x + 1 > WorldCoords.getTopRight().x) {

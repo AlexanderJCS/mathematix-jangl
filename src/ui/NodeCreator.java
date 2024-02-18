@@ -82,6 +82,10 @@ public class NodeCreator {
         this.visible = visible;
     }
 
+    public boolean isVisible() {
+        return this.visible;
+    }
+
     public void setPos(WorldCoords pos) {
         WorldCoords delta = this.rect.getTransform().getCenter();
         delta.sub(pos);
