@@ -79,6 +79,7 @@ public class Formula implements Draggable {
     }
 
     public void uploadUniforms(float start, float end, int n, String uniformName, int programID) {
+        float[] xValues = new float[n];
         float[] yValues = new float[n];
 
         float step = (end - start) / n;
@@ -91,12 +92,13 @@ public class Formula implements Draggable {
                 continue;
             }
 
+            xValues[i] = xValue;
             yValues[i] = graphNode.compute(xValue);
         }
 
         for (int i = 0; i < yValues.length; i++) {
             int location = GL41.glGetUniformLocation(programID, uniformName + "[" + i + "]");
-            GL41.glUniform1f(location, yValues[i]);
+            GL41.glUniform2f(location, xValues[i], yValues[i]);
         }
     }
 
