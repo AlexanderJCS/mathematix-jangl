@@ -30,7 +30,7 @@ float mapRange(float value, vec2 inRange, vec2 outRange) {
     return mappedValue;
 }
 
-float calc(float x) {
+float calculate(float x) {
     float closestIndex = mapRange(x, xRange, vec2(0, NUM_INPUTS - 1));
     float onlyDecimals = closestIndex - floor(closestIndex);
     return mix(xyValues[int(closestIndex)].y, xyValues[int(closestIndex) + 1].y, onlyDecimals);
@@ -46,13 +46,13 @@ void main() {
         mapRange(1 - texCoords.y, vec2(0, 1), yRange)
     );
 
-    float yValue = calc(coords.x);  // f(x)
+    float yValue = calculate(coords.x);  // f(x)
 
     // Derivative of the function
     // Since we can't do limits, we'll just use a really small value for h as a good approximation
     // f'(x) = (f(x + h) - f(x)) / h
     float h = 0.0001;
-    float fPrime = (calc(coords.x + h) - yValue) / h;  // f`(x)
+    float fPrime = (calculate(coords.x + h) - yValue) / h;  // f`(x)
 
     // Line-point distance formula for any given point (x, y):
     // abs(f(x) - y) / sqrt(1 + f'(x)^2)
