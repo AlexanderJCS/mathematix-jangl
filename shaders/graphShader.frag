@@ -1,11 +1,11 @@
 #version 410
 
-#define NUM_INPUTS 500
+#define NUM_INPUTS 1000
 
 uniform vec2 xRange;
 uniform vec2 yRange;
 uniform float radiusUV;
-uniform vec2 xyValues[NUM_INPUTS];
+uniform vec2 xyValues[1000];
 
 in vec2 texCoords;
 out vec4 fragColor;
@@ -30,29 +30,10 @@ float mapRange(float value, vec2 inRange, vec2 outRange) {
     return mappedValue;
 }
 
-float getClosestIndex(float x) {
-    return mapRange(x, xRange, vec2(0, NUM_INPUTS - 1));
-}
-
-float findSlope(float x) {
-    float closestIndex = getClosestIndex(x);
-    int lowIndex = int(closestIndex);
-    int highIndex = int(ceil(closestIndex));
-
-    // y2 - y1
-    float deltaY = xyValues[highIndex].y - xyValues[lowIndex].y;
-
-    // x2 - x1
-    float deltaX = xyValues[highIndex].x - xyValues[lowIndex].x;
-
-    return deltaY / deltaX;
-}
-
-float calculate(float x) {
-    float closestIndex = getClosestIndex(x);
+float calc(float x) {
+    float closestIndex = mapRange(x, xRange, vec2(0, NUM_INPUTS - 1));
     float onlyDecimals = closestIndex - floor(closestIndex);
-
-    return xyValues[int(closestIndex)].y;
+    return mix(xyValues[int(closestIndex)].y, xyValues[int(closestIndex) + 1].y, onlyDecimals);
 }
 
 float getGridlineSpacing(float rangeX, float maxGridlines) {
@@ -65,12 +46,13 @@ void main() {
         mapRange(1 - texCoords.y, vec2(0, 1), yRange)
     );
 
-    float yValue = calculate(coords.x);  // f(x)
+    float yValue = calc(coords.x);  // f(x)
 
     // Derivative of the function
-    // Since the derivative is the slope of the tangent line, we can get that by finding the slope of the line
+    // Since we can't do limits, we'll just use a really small value for h as a good approximation
+    // f'(x) = (f(x + h) - f(x)) / h
     float h = 0.0001;
-    float fPrime = (findSlope(coords.x + h) - yValue) / h;
+    float fPrime = (calc(coords.x + h) - yValue) / h;  // f`(x)
 
     // Line-point distance formula for any given point (x, y):
     // abs(f(x) - y) / sqrt(1 + f'(x)^2)
