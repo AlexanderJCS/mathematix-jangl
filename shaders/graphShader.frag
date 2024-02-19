@@ -30,10 +30,14 @@ float mapRange(float value, vec2 inRange, vec2 outRange) {
     return mappedValue;
 }
 
+float closestIndex(float x) {
+    return mapRange(x, xRange, vec2(0, NUM_INPUTS - 1));
+}
+
 float calculate(float x) {
-    float closestIndex = mapRange(x, xRange, vec2(0, NUM_INPUTS - 1));
-    float onlyDecimals = closestIndex - floor(closestIndex);
-    return mix(xyValues[int(closestIndex)].y, xyValues[int(closestIndex) + 1].y, onlyDecimals);
+    float closest = closestIndex(x);
+    float onlyDecimals = closest - floor(closest);
+    return mix(xyValues[int(closest)].y, xyValues[int(closest) + 1].y, onlyDecimals);
 }
 
 float getGridlineSpacing(float rangeX, float maxGridlines) {
