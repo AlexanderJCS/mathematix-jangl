@@ -8,7 +8,7 @@ uniform vec2 yRange;
 uniform float radiusUV;
 uniform vec2 xyValues[NUM_INPUTS];
 uniform vec2 invalidRanges[NUM_INVALID_RANGES];
-uniform float invalidRangesLength;
+uniform int invalidRangesLength;
 
 in vec2 texCoords;
 out vec4 fragColor;
@@ -59,9 +59,9 @@ float getGridlineSpacing(float rangeX, float maxGridlines) {
     return pow(maxGridlines, floor(log(rangeX) / log(maxGridlines))) / 2;
 }
 
-bool isInDomain(float x) {
+bool isInDomain(float x, float padding) {
     for (int i = 0; i < invalidRangesLength; i++) {
-        if (x - RADIUS >= invalidRanges[i].x && x + RADIUS <= invalidRanges[i].y) {
+        if (x + padding >= invalidRanges[i].x && x - padding <= invalidRanges[i].y) {
             return false;
         }
     }
@@ -84,7 +84,7 @@ void main() {
     // Line-point distance formula for any given point (x, y):
     // abs(f(x) - y) / sqrt(1 + f'(x)^2)
     float distance = abs(yValue - coords.y) / sqrt(1 + fPrime * fPrime);
-    if (isInDomain(coords.x) && distance < RADIUS) {
+    if (isInDomain(coords.x, RADIUS) && distance < RADIUS) {
         fragColor = vec4(0.75, 0.3, 0, 1.0);
         return;
     }
