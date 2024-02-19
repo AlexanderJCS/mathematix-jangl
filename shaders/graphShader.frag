@@ -42,8 +42,7 @@ float slope(float x) {
 
 
     // m = (y2 - y1) / (x2 - x1)
-    return
-        (xyValues[higher].y - xyValues[lower].y) /
+    return (xyValues[higher].y - xyValues[lower].y) /
         (xyValues[higher].x - xyValues[lower].x);
 }
 
