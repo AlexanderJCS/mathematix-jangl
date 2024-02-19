@@ -13,6 +13,7 @@ import jangl.io.mouse.MouseEvent;
 import jangl.io.mouse.ScrollEvent;
 import jangl.shapes.Rect;
 import jangl.shapes.Shape;
+import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL41;
 import ui.Line;
@@ -78,7 +79,9 @@ public class Formula implements Draggable {
         return null;
     }
 
-    public void uploadUniforms(float start, float end, int n, String uniformName, int programID) {
+    public void uploadPointUniform(float start, float end, int n, String uniformName, int programID) {
+        // TODO: refactor, move this to a subclass maybe?
+
         float[] xValues = new float[n];
         float[] yValues = new float[n];
 
@@ -100,6 +103,31 @@ public class Formula implements Draggable {
             int location = GL41.glGetUniformLocation(programID, uniformName + "[" + i + "]");
             GL41.glUniform2f(location, xValues[i], yValues[i]);
         }
+    }
+
+    public void uploadDomainUniform(int programID, String uniformName, int n) {
+        List<Vector2f> invalidRanges = this.getInvalidRanges();
+        for (int i = 0; i < invalidRanges.size(); i++) {
+            if (i >= n) {
+                break;
+            }
+
+            int location = GL41.glGetUniformLocation(programID, uniformName + "[" + i + "]");
+            GL41.glUniform2f(location, invalidRanges.get(i).x, invalidRanges.get(i).y);
+        }
+
+        int location = GL41.glGetUniformLocation(programID, uniformName + "Length");
+        GL41.glUniform1i(location, Math.min(invalidRanges.size(), n));
+    }
+
+    private List<Vector2f> getInvalidRanges() {
+        List<Vector2f> invalidRanges = new ArrayList<>();
+
+        for (Node node : this.nodes) {
+            invalidRanges.addAll(node.getInvalidRanges());
+        }
+
+        return invalidRanges;
     }
 
     private List<Attachment> getAttachments() {

@@ -15,6 +15,7 @@ import jangl.shapes.Circle;
 import jangl.shapes.Rect;
 import jangl.shapes.Shape;
 import jangl.shapes.Transform;
+import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 import ui.drag.Draggable;
 import ui.drag.Dragger;
@@ -228,6 +229,10 @@ public abstract class Node implements Draggable {
     }
 
     public abstract float compute(float x);
+
+    public List<Vector2f> getInvalidRanges() {
+        return new ArrayList<>();
+    }
 
     public Rect getRect() {
         return this.rect;

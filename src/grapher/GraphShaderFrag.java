@@ -59,6 +59,7 @@ public class GraphShaderFrag extends FragmentShader {
         location = GL41.glGetUniformLocation(programID, "radiusUV");
         GL41.glUniform1f(location, PixelCoords.distToWorldCoords(this.radiusPixels));
 
-        this.formula.uploadUniforms(xRange.x, xRange.y, 1000, "xyValues", programID);
+        this.formula.uploadPointUniform(xRange.x, xRange.y, 1000, "xyValues", programID);
+        this.formula.uploadDomainUniform(programID, "invalidRanges", 10);
     }
 }
