@@ -34,6 +34,19 @@ float closestIndex(float x) {
     return mapRange(x, xRange, vec2(0, NUM_INPUTS - 1));
 }
 
+float slope(float x) {
+    float closest = closestIndex(x);
+
+    int lower = int(closest);
+    int higher = int(closest) + 1;
+
+
+    // m = (y2 - y1) / (x2 - x1)
+    return
+        (xyValues[higher].y - xyValues[lower].y) /
+        (xyValues[higher].x - xyValues[lower].x);
+}
+
 float calculate(float x) {
     float closest = closestIndex(x);
     float onlyDecimals = closest - floor(closest);
@@ -53,10 +66,8 @@ void main() {
     float yValue = calculate(coords.x);  // f(x)
 
     // Derivative of the function
-    // Since we can't do limits, we'll just use a really small value for h as a good approximation
-    // f'(x) = (f(x + h) - f(x)) / h
-    float h = 0.0001;
-    float fPrime = (calculate(coords.x + h) - yValue) / h;  // f`(x)
+    // Since the slope at f(x) = the derivative, we can find the slope at the point
+    float fPrime = slope(coords.x);
 
     // Line-point distance formula for any given point (x, y):
     // abs(f(x) - y) / sqrt(1 + f'(x)^2)
