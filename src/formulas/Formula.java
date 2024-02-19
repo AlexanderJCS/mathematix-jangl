@@ -121,6 +121,8 @@ public class Formula implements Draggable {
     }
 
     private List<Vector2f> getInvalidRanges() {
+        // TODO: asymptotes must be connected to the graph node to be included
+
         List<Vector2f> invalidRanges = new ArrayList<>();
 
         for (Node node : this.nodes) {
