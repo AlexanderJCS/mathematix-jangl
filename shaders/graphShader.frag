@@ -52,14 +52,18 @@ float slope(float x) {
 float calculate(float x) {
     float closest = closestIndex(x);
     float onlyDecimals = closest - floor(closest);
-    return mix(xyValues[int(closest)].y, xyValues[int(closest) + 1].y, onlyDecimals);
+    return xyValues[int(closest)].y;
 }
 
 float getGridlineSpacing(float rangeX, float maxGridlines) {
     return pow(maxGridlines, floor(log(rangeX) / log(maxGridlines))) / 2;
 }
 
-bool isInDomain(float x, float padding) {
+bool isInDomain(float x) {
+    float closest = closestIndex(x);
+    float minValue = xyValues[int(closest)].x;
+    float maxValue = xyValues[int(closest) + 1].x;
+
     for (int i = 0; i < invalidRangesLength; i++) {
         if (x + padding >= invalidRanges[i].x && x - padding <= invalidRanges[i].y) {
             return false;
@@ -84,7 +88,7 @@ void main() {
     // Line-point distance formula for any given point (x, y):
     // abs(f(x) - y) / sqrt(1 + f'(x)^2)
     float distance = abs(yValue - coords.y) / sqrt(1 + fPrime * fPrime);
-    if (isInDomain(coords.x, RADIUS) && distance < RADIUS) {
+    if (isInDomain(coords.x) && distance < RADIUS) {
         fragColor = vec4(0.75, 0.3, 0, 1.0);
         return;
     }
