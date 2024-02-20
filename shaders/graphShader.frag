@@ -65,7 +65,7 @@ bool isInDomain(float x) {
     float maxValue = xyValues[int(closest) + 1].x;
 
     for (int i = 0; i < invalidRangesLength; i++) {
-        if (x + padding >= invalidRanges[i].x && x - padding <= invalidRanges[i].y) {
+        if (minValue <= invalidRanges[i].x && maxValue >= invalidRanges[i].y) {
             return false;
         }
     }
